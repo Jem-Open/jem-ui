@@ -1,0 +1,289 @@
+/**
+ * JEM Design System - CSS Variables
+ * Import this file in your project to use JEM design tokens
+ */
+
+:root {
+  /* Colour Primitives - Pink */
+  --pink-50: #fff0f2;
+  --pink-100: #ffe1e5;
+  --pink-200: #ffd2d9;
+  --pink-300: #ffc3cc;
+  --pink-400: #ffb4bf;
+  --pink-500: #ffa5b2;
+  --pink-600: #ff96a5;
+  --pink-700: #ff8799;
+  --pink-800: #ff788c;
+  --pink-900: #ff697f;
+
+  /* Colour Primitives - Navy */
+  --navy-50: #fafbfb;
+  --navy-100: #f5f6f7;
+  --navy-200: #dadee0;
+  --navy-300: #cdd3d6;
+  --navy-400: #c1c7cc;
+  --navy-500: #6a7a85;
+  --navy-600: #516470;
+  --navy-700: #384d5c;
+  --navy-800: #1f3747;
+  --navy-900: #062133;
+
+  /* Colour Primitives - Lime */
+  --lime-50: #f7ffe7;
+  --lime-100: #e8fdc6;
+  --lime-200: #d1f89b;
+  --lime-300: #adf267;
+  --lime-400: #8be342;
+  --lime-500: #6cc636;
+  --lime-600: #4c9b22;
+  --lime-700: #3a701e;
+  --lime-800: #31571c;
+  --lime-900: #2b4b18;
+
+  /* Colour Primitives - Purple */
+  --purple-50: #faf5fd;
+  --purple-100: #f3e6fe;
+  --purple-200: #e7cefb;
+  --purple-300: #d7acfd;
+  --purple-400: #be77f7;
+  --purple-500: #a54def;
+  --purple-600: #8d2fe1;
+  --purple-700: #791fc5;
+  --purple-800: #651e9b;
+  --purple-900: #52187a;
+
+  /* Colour Primitives - Violet */
+  --violet-50: #f4f1ff;
+  --violet-100: #e9e4fc;
+  --violet-200: #d6d0f7;
+  --violet-300: #bcacf7;
+  --violet-400: #9f80f5;
+  --violet-500: #8253f0;
+  --violet-600: #7132e5;
+  --violet-700: #6325cc;
+  --violet-800: #511fa7;
+  --violet-900: #441b87;
+
+  /* Colour Primitives - Blue */
+  --blue-50: #edf4fb;
+  --blue-100: #d2e6fb;
+  --blue-200: #acd6fd;
+  --blue-300: #75bffd;
+  --blue-400: #3b9bf1;
+  --blue-500: #0078ef;
+  --blue-600: #005be7;
+  --blue-700: #0048cf;
+  --blue-800: #00399f;
+  --blue-900: #07347d;
+
+  /* Colour Primitives - Green */
+  --green-50: #e9fdf2;
+  --green-100: #d2fae5;
+  --green-200: #a7f8ce;
+  --green-300: #59eea4;
+  --green-400: #00da7c;
+  --green-500: #00be5c;
+  --green-600: #009b48;
+  --green-700: #00773a;
+  --green-800: #005c30;
+  --green-900: #00492a;
+
+  /* Colour Primitives - Orange */
+  --orange-50: #fff5e8;
+  --orange-100: #ffe8cd;
+  --orange-200: #ffd0a6;
+  --orange-300: #ffaf6e;
+  --orange-400: #ff843f;
+  --orange-500: #ff601f;
+  --orange-600: #f94a23;
+  --orange-700: #c7341c;
+  --orange-800: #9a2b1b;
+  --orange-900: #7c2415;
+
+  /* Colour Primitives - Yellow */
+  --yellow-50: #fffce4;
+  --yellow-100: #fff6be;
+  --yellow-200: #ffef8d;
+  --yellow-300: #ffdc4d;
+  --yellow-400: #ffc338;
+  --yellow-500: #f4aa2f;
+  --yellow-600: #cd7d24;
+  --yellow-700: #9f5419;
+  --yellow-800: #82441c;
+  --yellow-900: #6c3517;
+
+  /* Colour Primitives - Red */
+  --red-50: #fdf0f1;
+  --red-100: #ffdfe0;
+  --red-200: #ffc0c2;
+  --red-300: #ff9a9d;
+  --red-400: #ff5e67;
+  --red-500: #ff3140;
+  --red-600: #ee0626;
+  --red-700: #c20f1e;
+  --red-800: #99101c;
+  --red-900: #7e191e;
+
+  /* Colour Primitives - Neutral */
+  --neutral-50: #fbfbfb;
+  --neutral-100: #f3f3f3;
+  --neutral-200: #e0e0e0;
+  --neutral-300: #cecece;
+  --neutral-400: #9a9a9a;
+  --neutral-500: #696969;
+  --neutral-600: #494949;
+  --neutral-700: #383838;
+  --neutral-800: #222222;
+  --neutral-900: #161616;
+
+  /* Colour Primitives - Slate */
+  --slate-50: #f7f7f7;
+  --slate-100: #ecf5fb;
+  --slate-200: #dee5ec;
+  --slate-300: #c2d0dc;
+  --slate-400: #8299b1;
+  --slate-500: #54687d;
+  --slate-600: #3b4d5f;
+  --slate-700: #28394a;
+  --slate-800: #182534;
+  --slate-900: #0f1725;
+
+  /* Colour Primitives - Neutral Extras */
+  --neutral-white: #ffffff;
+  --neutral-cream: #fff7ec;
+  --neutral-black: #000000;
+
+  /* Greyscale Style Tokens */
+  --greyscale-surface-default: #f3f3f3;
+  --greyscale-surface-subtle: #fbfbfb;
+  --greyscale-surface-disabled: #f3f3f3;
+  --greyscale-border-default: #cecece;
+  --greyscale-border-disabled: #f3f3f3;
+  --greyscale-border-darker: #9a9a9a;
+  --greyscale-text-title: #062133;
+  --greyscale-text-body: #384d5c;
+  --greyscale-text-subtitle: #1f3747;
+  --greyscale-text-caption: #6a7a85;
+  --greyscale-text-negative: #fbfbfb;
+  --greyscale-text-disabled: #cdd3d6;
+
+  /* Semantic Colours - Primary */
+  --primary-surface-default: #062133;
+  --primary-surface-lighter: #516470;
+  --primary-surface-subtle: #c1c7cc;
+  --primary-surface-darker: #161616;
+  --primary-border-default: #dadee0;
+  --primary-border-lighter: #516470;
+  --primary-border-subtle: #c1c7cc;
+  --primary-border-darker: #062133;
+  --primary-text-label: #062133;
+
+  /* Semantic Colours - Secondary */
+  --secondary-surface-default: #ff697f;
+  --secondary-surface-lighter: #ffa5b2;
+  --secondary-surface-subtle: #fff0f2;
+  --secondary-surface-darker: #ff697f;
+  --secondary-border-default: #ffc3cc;
+  --secondary-border-lighter: #ffd2d9;
+  --secondary-border-subtle: #fff0f2;
+  --secondary-border-darker: #ffb4bf;
+  --secondary-text-label: #062133;
+
+  /* Semantic Colours - Error */
+  --error-surface-default: #ff3140;
+  --error-surface-lighter: #ff9a9d;
+  --error-surface-subtle: #fdf0f1;
+  --error-surface-darker: #ee0626;
+  --error-border-default: #ffc0c2;
+  --error-border-lighter: #ff9a9d;
+  --error-border-subtle: #fdf0f1;
+  --error-border-darker: #ee0626;
+  --error-text-label: #ee0626;
+
+  /* Semantic Colours - Warning */
+  --warning-surface-default: #ff601f;
+  --warning-surface-lighter: #ffaf6e;
+  --warning-surface-subtle: #fff5e8;
+  --warning-surface-darker: #f94a23;
+  --warning-border-default: #ffd0a6;
+  --warning-border-lighter: #ffaf6e;
+  --warning-border-subtle: #fff5e8;
+  --warning-border-darker: #f94a23;
+  --warning-text-label: #f94a23;
+
+  /* Semantic Colours - Success */
+  --success-surface-default: #00be5c;
+  --success-surface-lighter: #59eea4;
+  --success-surface-subtle: #e9fdf2;
+  --success-surface-darker: #009b48;
+  --success-border-default: #a7f8ce;
+  --success-border-lighter: #59eea4;
+  --success-border-subtle: #e9fdf2;
+  --success-border-darker: #009b48;
+  --success-text-label: #009b48;
+
+  /* Spacing */
+  --spacing-none: 0px;
+  --spacing-xxxxs: 2px;
+  --spacing-xxxs: 4px;
+  --spacing-xxs: 8px;
+  --spacing-xs: 12px;
+  --spacing-sm: 16px;
+  --spacing-md: 24px;
+  --spacing-lg: 32px;
+  --spacing-xl: 48px;
+  --spacing-xxl: 64px;
+  --spacing-xxxl: 96px;
+  --spacing-xxxxl: 128px;
+
+  /* Typography - Font Sizes */
+  --font-size-xxs: 10px;
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 30px;
+  --font-size-4xl: 36px;
+  --font-size-5xl: 48px;
+  --font-size-6xl: 60px;
+  --font-size-7xl: 72px;
+  --font-size-8xl: 96px;
+  --font-size-9xl: 128px;
+
+  /* Typography - Font Weights */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+
+  /* Typography - Line Heights */
+  --line-height-14: 14px;
+  --line-height-18: 18px;
+  --line-height-24: 24px;
+  --line-height-28: 28px;
+  --line-height-30: 30px;
+  --line-height-36: 36px;
+  --line-height-45: 45px;
+  --line-height-54: 54px;
+  --line-height-68: 68px;
+  --line-height-84: 84px;
+  --line-height-100: 100px;
+  --line-height-124: 124px;
+
+  /* Border Radius */
+  --radius-none: 0px;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+  --radius-4xl: 32px;
+  --radius-full: 100px;
+}

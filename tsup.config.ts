@@ -1,0 +1,46 @@
+import { defineConfig } from "tsup"
+
+export default defineConfig({
+  entry: {
+    index: "src/index.ts",
+    "tailwind-preset": "src/tailwind-preset.ts",
+  },
+  format: ["cjs", "esm"],
+  dts: {
+    compilerOptions: {
+      incremental: false,
+    },
+  },
+  tsconfig: "tsconfig.build.json",
+  splitting: false,
+  sourcemap: true,
+  clean: true,
+  external: [
+    "react",
+    "react-dom",
+    "next",
+    "tailwindcss",
+    "@radix-ui/react-accordion",
+    "@radix-ui/react-avatar",
+    "@radix-ui/react-checkbox",
+    "@radix-ui/react-dropdown-menu",
+    "@radix-ui/react-label",
+    "@radix-ui/react-popover",
+    "@radix-ui/react-radio-group",
+    "@radix-ui/react-select",
+    "@radix-ui/react-slot",
+    "@radix-ui/react-tabs",
+    "@radix-ui/react-tooltip",
+    "@tanstack/react-table",
+    "class-variance-authority",
+    "clsx",
+    "date-fns",
+    "lucide-react",
+    "react-day-picker",
+    "sonner",
+    "tailwind-merge",
+    "vaul",
+  ],
+  treeshake: true,
+  minify: false,
+})

@@ -1,0 +1,347 @@
+'use strict';
+
+// src/tailwind-preset.ts
+var jemPreset = {
+  theme: {
+    extend: {
+      colors: {
+        /* Colour Primitives - Primary Navy */
+        "primary-navy": {
+          50: "var(--navy-50)",
+          100: "var(--navy-100)",
+          200: "var(--navy-200)",
+          300: "var(--navy-300)",
+          400: "var(--navy-400)",
+          500: "var(--navy-500)",
+          600: "var(--navy-600)",
+          700: "var(--navy-700)",
+          800: "var(--navy-800)",
+          900: "var(--navy-900)"
+        },
+        /* Colour Primitives - Secondary Pink */
+        "secondary-pink": {
+          50: "var(--pink-50)",
+          100: "var(--pink-100)",
+          200: "var(--pink-200)",
+          300: "var(--pink-300)",
+          400: "var(--pink-400)",
+          500: "var(--pink-500)",
+          600: "var(--pink-600)",
+          700: "var(--pink-700)",
+          800: "var(--pink-800)",
+          900: "var(--pink-900)"
+        },
+        lime: {
+          50: "var(--lime-50)",
+          100: "var(--lime-100)",
+          200: "var(--lime-200)",
+          300: "var(--lime-300)",
+          400: "var(--lime-400)",
+          500: "var(--lime-500)",
+          600: "var(--lime-600)",
+          700: "var(--lime-700)",
+          800: "var(--lime-800)",
+          900: "var(--lime-900)"
+        },
+        purple: {
+          50: "var(--purple-50)",
+          100: "var(--purple-100)",
+          200: "var(--purple-200)",
+          300: "var(--purple-300)",
+          400: "var(--purple-400)",
+          500: "var(--purple-500)",
+          600: "var(--purple-600)",
+          700: "var(--purple-700)",
+          800: "var(--purple-800)",
+          900: "var(--purple-900)"
+        },
+        violet: {
+          50: "var(--violet-50)",
+          100: "var(--violet-100)",
+          200: "var(--violet-200)",
+          300: "var(--violet-300)",
+          400: "var(--violet-400)",
+          500: "var(--violet-500)",
+          600: "var(--violet-600)",
+          700: "var(--violet-700)",
+          800: "var(--violet-800)",
+          900: "var(--violet-900)"
+        },
+        blue: {
+          50: "var(--blue-50)",
+          100: "var(--blue-100)",
+          200: "var(--blue-200)",
+          300: "var(--blue-300)",
+          400: "var(--blue-400)",
+          500: "var(--blue-500)",
+          600: "var(--blue-600)",
+          700: "var(--blue-700)",
+          800: "var(--blue-800)",
+          900: "var(--blue-900)"
+        },
+        green: {
+          50: "var(--green-50)",
+          100: "var(--green-100)",
+          200: "var(--green-200)",
+          300: "var(--green-300)",
+          400: "var(--green-400)",
+          500: "var(--green-500)",
+          600: "var(--green-600)",
+          700: "var(--green-700)",
+          800: "var(--green-800)",
+          900: "var(--green-900)"
+        },
+        orange: {
+          50: "var(--orange-50)",
+          100: "var(--orange-100)",
+          200: "var(--orange-200)",
+          300: "var(--orange-300)",
+          400: "var(--orange-400)",
+          500: "var(--orange-500)",
+          600: "var(--orange-600)",
+          700: "var(--orange-700)",
+          800: "var(--orange-800)",
+          900: "var(--orange-900)"
+        },
+        yellow: {
+          50: "var(--yellow-50)",
+          100: "var(--yellow-100)",
+          200: "var(--yellow-200)",
+          300: "var(--yellow-300)",
+          400: "var(--yellow-400)",
+          500: "var(--yellow-500)",
+          600: "var(--yellow-600)",
+          700: "var(--yellow-700)",
+          800: "var(--yellow-800)",
+          900: "var(--yellow-900)"
+        },
+        red: {
+          50: "var(--red-50)",
+          100: "var(--red-100)",
+          200: "var(--red-200)",
+          300: "var(--red-300)",
+          400: "var(--red-400)",
+          500: "var(--red-500)",
+          600: "var(--red-600)",
+          700: "var(--red-700)",
+          800: "var(--red-800)",
+          900: "var(--red-900)"
+        },
+        neutral: {
+          50: "var(--neutral-50)",
+          100: "var(--neutral-100)",
+          200: "var(--neutral-200)",
+          300: "var(--neutral-300)",
+          400: "var(--neutral-400)",
+          500: "var(--neutral-500)",
+          600: "var(--neutral-600)",
+          700: "var(--neutral-700)",
+          800: "var(--neutral-800)",
+          900: "var(--neutral-900)",
+          white: "var(--neutral-white)",
+          cream: "var(--neutral-cream)",
+          black: "var(--neutral-black)"
+        },
+        slate: {
+          50: "var(--slate-50)",
+          100: "var(--slate-100)",
+          200: "var(--slate-200)",
+          300: "var(--slate-300)",
+          400: "var(--slate-400)",
+          500: "var(--slate-500)",
+          600: "var(--slate-600)",
+          700: "var(--slate-700)",
+          800: "var(--slate-800)",
+          900: "var(--slate-900)"
+        },
+        /* Greyscale Style Tokens */
+        greyscale: {
+          surface: {
+            DEFAULT: "var(--greyscale-surface-default)",
+            subtle: "var(--greyscale-surface-subtle)",
+            disabled: "var(--greyscale-surface-disabled)"
+          },
+          border: {
+            DEFAULT: "var(--greyscale-border-default)",
+            disabled: "var(--greyscale-border-disabled)",
+            darker: "var(--greyscale-border-darker)"
+          },
+          text: {
+            title: "var(--greyscale-text-title)",
+            body: "var(--greyscale-text-body)",
+            subtitle: "var(--greyscale-text-subtitle)",
+            caption: "var(--greyscale-text-caption)",
+            negative: "var(--greyscale-text-negative)",
+            disabled: "var(--greyscale-text-disabled)"
+          }
+        },
+        /* Semantic Colours */
+        primary: {
+          surface: {
+            DEFAULT: "var(--primary-surface-default)",
+            lighter: "var(--primary-surface-lighter)",
+            subtle: "var(--primary-surface-subtle)",
+            darker: "var(--primary-surface-darker)"
+          },
+          border: {
+            DEFAULT: "var(--primary-border-default)",
+            lighter: "var(--primary-border-lighter)",
+            subtle: "var(--primary-border-subtle)",
+            darker: "var(--primary-border-darker)"
+          },
+          text: {
+            label: "var(--primary-text-label)"
+          }
+        },
+        secondary: {
+          surface: {
+            DEFAULT: "var(--secondary-surface-default)",
+            lighter: "var(--secondary-surface-lighter)",
+            subtle: "var(--secondary-surface-subtle)",
+            darker: "var(--secondary-surface-darker)"
+          },
+          border: {
+            DEFAULT: "var(--secondary-border-default)",
+            lighter: "var(--secondary-border-lighter)",
+            subtle: "var(--secondary-border-subtle)",
+            darker: "var(--secondary-border-darker)"
+          },
+          text: {
+            label: "var(--secondary-text-label)"
+          }
+        },
+        error: {
+          surface: {
+            DEFAULT: "var(--error-surface-default)",
+            lighter: "var(--error-surface-lighter)",
+            subtle: "var(--error-surface-subtle)",
+            darker: "var(--error-surface-darker)"
+          },
+          border: {
+            DEFAULT: "var(--error-border-default)",
+            lighter: "var(--error-border-lighter)",
+            subtle: "var(--error-border-subtle)",
+            darker: "var(--error-border-darker)"
+          },
+          text: {
+            label: "var(--error-text-label)"
+          }
+        },
+        warning: {
+          surface: {
+            DEFAULT: "var(--warning-surface-default)",
+            lighter: "var(--warning-surface-lighter)",
+            subtle: "var(--warning-surface-subtle)",
+            darker: "var(--warning-surface-darker)"
+          },
+          border: {
+            DEFAULT: "var(--warning-border-default)",
+            lighter: "var(--warning-border-lighter)",
+            subtle: "var(--warning-border-subtle)",
+            darker: "var(--warning-border-darker)"
+          },
+          text: {
+            label: "var(--warning-text-label)"
+          }
+        },
+        success: {
+          surface: {
+            DEFAULT: "var(--success-surface-default)",
+            lighter: "var(--success-surface-lighter)",
+            subtle: "var(--success-surface-subtle)",
+            darker: "var(--success-surface-darker)"
+          },
+          border: {
+            DEFAULT: "var(--success-border-default)",
+            lighter: "var(--success-border-lighter)",
+            subtle: "var(--success-border-subtle)",
+            darker: "var(--success-border-darker)"
+          },
+          text: {
+            label: "var(--success-text-label)"
+          }
+        }
+      },
+      /* Spacing */
+      spacing: {
+        none: "var(--spacing-none)",
+        xxxxs: "var(--spacing-xxxxs)",
+        xxxs: "var(--spacing-xxxs)",
+        xxs: "var(--spacing-xxs)",
+        xs: "var(--spacing-xs)",
+        sm: "var(--spacing-sm)",
+        md: "var(--spacing-md)",
+        lg: "var(--spacing-lg)",
+        xl: "var(--spacing-xl)",
+        xxl: "var(--spacing-xxl)",
+        xxxl: "var(--spacing-xxxl)",
+        xxxxl: "var(--spacing-xxxxl)"
+      },
+      /* Typography - Font Families */
+      fontFamily: {
+        heading: "var(--font-family-heading)",
+        body: "var(--font-family-body)"
+      },
+      /* Typography - Font Sizes */
+      fontSize: {
+        xxs: "var(--font-size-xxs)",
+        xs: "var(--font-size-xs)",
+        sm: "var(--font-size-sm)",
+        base: "var(--font-size-base)",
+        lg: "var(--font-size-lg)",
+        xl: "var(--font-size-xl)",
+        "2xl": "var(--font-size-2xl)",
+        "3xl": "var(--font-size-3xl)",
+        "4xl": "var(--font-size-4xl)",
+        "5xl": "var(--font-size-5xl)",
+        "6xl": "var(--font-size-6xl)",
+        "7xl": "var(--font-size-7xl)",
+        "8xl": "var(--font-size-8xl)",
+        "9xl": "var(--font-size-9xl)"
+      },
+      /* Typography - Font Weights */
+      fontWeight: {
+        light: "var(--font-weight-light)",
+        regular: "var(--font-weight-regular)",
+        medium: "var(--font-weight-medium)",
+        semibold: "var(--font-weight-semibold)",
+        bold: "var(--font-weight-bold)",
+        extrabold: "var(--font-weight-extrabold)",
+        black: "var(--font-weight-black)"
+      },
+      /* Typography - Line Heights */
+      lineHeight: {
+        14: "var(--line-height-14)",
+        18: "var(--line-height-18)",
+        24: "var(--line-height-24)",
+        28: "var(--line-height-28)",
+        30: "var(--line-height-30)",
+        36: "var(--line-height-36)",
+        45: "var(--line-height-45)",
+        54: "var(--line-height-54)",
+        68: "var(--line-height-68)",
+        84: "var(--line-height-84)",
+        100: "var(--line-height-100)",
+        124: "var(--line-height-124)"
+      },
+      /* Border Radius */
+      borderRadius: {
+        none: "var(--radius-none)",
+        xs: "var(--radius-xs)",
+        sm: "var(--radius-sm)",
+        md: "var(--radius-md)",
+        lg: "var(--radius-lg)",
+        xl: "var(--radius-xl)",
+        "2xl": "var(--radius-2xl)",
+        "3xl": "var(--radius-3xl)",
+        "4xl": "var(--radius-4xl)",
+        full: "var(--radius-full)"
+      }
+    }
+  }
+};
+var tailwind_preset_default = jemPreset;
+
+module.exports = tailwind_preset_default;
+//# sourceMappingURL=tailwind-preset.js.map
+//# sourceMappingURL=tailwind-preset.js.map
