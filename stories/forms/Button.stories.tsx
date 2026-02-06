@@ -36,68 +36,43 @@ export const CompleteShowcase: Story = {
   render: () => (
     <div className="flex flex-col gap-12">
       {/* Header */}
-      <div style={{ marginBottom: "16px" }}>
-        <p
-          style={{
-            fontFamily: "var(--font-heading)",
-            fontWeight: 700,
-            fontSize: "18px",
-            lineHeight: "28px",
-            color: "var(--pink-900)",
-            marginBottom: "8px",
-          }}
-        >
+      <div>
+        <p className="text-lg font-bold text-secondary-pink-900 mb-2">
           Forms
         </p>
-        <h1
-          style={{
-            fontFamily: "var(--font-heading)",
-            fontWeight: 600,
-            fontSize: "48px",
-            lineHeight: "56px",
-            color: "var(--greyscale-text-title)",
-            marginBottom: "16px",
-          }}
-        >
+        <h1 className="text-5xl font-semibold text-greyscale-text-title mb-4">
           Button
         </h1>
-        <p
-          style={{
-            fontSize: "16px",
-            lineHeight: "24px",
-            color: "var(--greyscale-text-body)",
-            maxWidth: "600px",
-          }}
-        >
+        <p className="text-base text-greyscale-text-body max-w-xl">
           Buttons allow users to take actions and make choices with a single tap.
         </p>
       </div>
 
       {/* Primary */}
       <div>
-        <h3 className="font-semibold text-lg mb-4" style={{ color: 'var(--greyscale-text-title)' }}>Primary</h3>
+        <h3 className="font-semibold text-lg mb-4 text-greyscale-text-title">Primary</h3>
         <div className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-4">
-            <Button variant="primary" size="large" leftIcon={<Mail size={16} />}>Button Title</Button>
-            <Button variant="primary" size="medium" leftIcon={<Mail size={14} />}>Button Title</Button>
-            <Button variant="primary" size="small" leftIcon={<Mail size={12} />}>Button Title</Button>
+            <Button variant="primary" size="large" leftIcon={<Mail />}>Button Title</Button>
+            <Button variant="primary" size="medium" leftIcon={<Mail />}>Button Title</Button>
+            <Button variant="primary" size="small" leftIcon={<Mail />}>Button Title</Button>
           </div>
           <div className="flex flex-wrap items-center gap-4">
-            <Button variant="primary" size="large" disabled leftIcon={<Mail size={16} />}>Button Title</Button>
-            <Button variant="primary" size="medium" disabled leftIcon={<Mail size={14} />}>Button Title</Button>
-            <Button variant="primary" size="small" disabled leftIcon={<Mail size={12} />}>Button Title</Button>
+            <Button variant="primary" size="large" disabled leftIcon={<Mail />}>Button Title</Button>
+            <Button variant="primary" size="medium" disabled leftIcon={<Mail />}>Button Title</Button>
+            <Button variant="primary" size="small" disabled leftIcon={<Mail />}>Button Title</Button>
           </div>
         </div>
       </div>
 
       {/* Secondary */}
       <div>
-        <h3 className="font-semibold text-lg mb-4" style={{ color: 'var(--greyscale-text-title)' }}>Secondary</h3>
+        <h3 className="font-semibold text-lg mb-4 text-greyscale-text-title">Secondary</h3>
         <div className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-4">
-            <Button variant="secondary" size="large" leftIcon={<Mail size={16} />}>Button Title</Button>
-            <Button variant="secondary" size="medium" leftIcon={<Mail size={14} />}>Button Title</Button>
-            <Button variant="secondary" size="small" leftIcon={<Mail size={12} />}>Button Title</Button>
+            <Button variant="secondary" size="large" leftIcon={<Mail />}>Button Title</Button>
+            <Button variant="secondary" size="medium" leftIcon={<Mail />}>Button Title</Button>
+            <Button variant="secondary" size="small" leftIcon={<Mail />}>Button Title</Button>
           </div>
           <div className="flex flex-wrap items-center gap-4">
             <Button variant="secondary" size="large" disabled>Button Title</Button>
@@ -109,7 +84,7 @@ export const CompleteShowcase: Story = {
 
       {/* Outline */}
       <div>
-        <h3 className="font-semibold text-lg mb-4" style={{ color: 'var(--greyscale-text-title)' }}>Outline</h3>
+        <h3 className="font-semibold text-lg mb-4 text-greyscale-text-title">Outline</h3>
         <div className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-4">
             <Button variant="outline" size="large">Outline Button</Button>
@@ -117,16 +92,16 @@ export const CompleteShowcase: Story = {
             <Button variant="outline" size="small">Outline Button</Button>
           </div>
           <div className="flex flex-wrap items-center gap-4">
-            <Button variant="outline" size="large" disabled>Disabled Button</Button>
-            <Button variant="outline" size="medium" disabled>Disabled Button</Button>
-            <Button variant="outline" size="small" disabled>Disabled Button</Button>
+            <Button variant="outline" size="large" disabled>Outline Button</Button>
+            <Button variant="outline" size="medium" disabled>Outline Button</Button>
+            <Button variant="outline" size="small" disabled>Outline Button</Button>
           </div>
         </div>
       </div>
 
       {/* Subtle */}
       <div>
-        <h3 className="font-semibold text-lg mb-4" style={{ color: 'var(--greyscale-text-title)' }}>Subtle</h3>
+        <h3 className="font-semibold text-lg mb-4 text-greyscale-text-title">Subtle</h3>
         <div className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-4">
             <Button variant="subtle" size="large">Subtle Button</Button>
@@ -134,16 +109,16 @@ export const CompleteShowcase: Story = {
             <Button variant="subtle" size="small">Subtle Button</Button>
           </div>
           <div className="flex flex-wrap items-center gap-4">
-            <Button variant="subtle" size="large" disabled>Disabled Button</Button>
-            <Button variant="subtle" size="medium" disabled>Disabled Button</Button>
-            <Button variant="subtle" size="small" disabled>Disabled Button</Button>
+            <Button variant="subtle" size="large" disabled>Subtle Button</Button>
+            <Button variant="subtle" size="medium" disabled>Subtle Button</Button>
+            <Button variant="subtle" size="small" disabled>Subtle Button</Button>
           </div>
         </div>
       </div>
 
       {/* Destructive */}
       <div>
-        <h3 className="font-semibold text-lg mb-4" style={{ color: 'var(--greyscale-text-title)' }}>Destructive</h3>
+        <h3 className="font-semibold text-lg mb-4 text-greyscale-text-title">Destructive</h3>
         <div className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-4">
             <Button variant="destructive" size="large">Destructive</Button>
@@ -151,16 +126,16 @@ export const CompleteShowcase: Story = {
             <Button variant="destructive" size="small">Destructive</Button>
           </div>
           <div className="flex flex-wrap items-center gap-4">
-            <Button variant="destructive" size="large" disabled>Disabled Button</Button>
-            <Button variant="destructive" size="medium" disabled>Disabled Button</Button>
-            <Button variant="destructive" size="small" disabled>Disabled Button</Button>
+            <Button variant="destructive" size="large" disabled>Destructive</Button>
+            <Button variant="destructive" size="medium" disabled>Destructive</Button>
+            <Button variant="destructive" size="small" disabled>Destructive</Button>
           </div>
         </div>
       </div>
 
       {/* Approve */}
       <div>
-        <h3 className="font-semibold text-lg mb-4" style={{ color: 'var(--greyscale-text-title)' }}>Approve</h3>
+        <h3 className="font-semibold text-lg mb-4 text-greyscale-text-title">Approve</h3>
         <div className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-4">
             <Button variant="approve" size="large">Approve</Button>
@@ -168,16 +143,16 @@ export const CompleteShowcase: Story = {
             <Button variant="approve" size="small">Approve</Button>
           </div>
           <div className="flex flex-wrap items-center gap-4">
-            <Button variant="approve" size="large" disabled>Disabled Button</Button>
-            <Button variant="approve" size="medium" disabled>Disabled Button</Button>
-            <Button variant="approve" size="small" disabled>Disabled Button</Button>
+            <Button variant="approve" size="large" disabled>Approve</Button>
+            <Button variant="approve" size="medium" disabled>Approve</Button>
+            <Button variant="approve" size="small" disabled>Approve</Button>
           </div>
         </div>
       </div>
 
       {/* Link */}
       <div>
-        <h3 className="font-semibold text-lg mb-4" style={{ color: 'var(--greyscale-text-title)' }}>Links</h3>
+        <h3 className="font-semibold text-lg mb-4 text-greyscale-text-title">Links</h3>
         <div className="flex flex-wrap items-center gap-4">
           <Button variant="link" size="large">This is a link</Button>
           <Button variant="link" size="medium">This is a link</Button>
@@ -187,7 +162,7 @@ export const CompleteShowcase: Story = {
 
       {/* Loading */}
       <div>
-        <h3 className="font-semibold text-lg mb-4" style={{ color: 'var(--greyscale-text-title)' }}>Loading</h3>
+        <h3 className="font-semibold text-lg mb-4 text-greyscale-text-title">Loading button</h3>
         <div className="flex flex-wrap items-center gap-4">
           <Button variant="primary" size="large" loading>Loading</Button>
           <Button variant="primary" size="medium" loading>Loading</Button>
@@ -196,24 +171,21 @@ export const CompleteShowcase: Story = {
       </div>
 
       {/* Icon Buttons */}
-      <div>
-        <h3 className="font-semibold text-lg mb-4" style={{ color: 'var(--greyscale-text-title)' }}>Icon Buttons</h3>
-        <div className="flex flex-wrap items-center gap-12">
-          <div className="flex flex-col gap-4">
-            <span className="text-sm" style={{ color: 'var(--greyscale-text-caption)' }}>Square</span>
-            <div className="flex items-center gap-4">
-              <IconButton icon={<Plus size={16} />} size="large" shape="square" />
-              <IconButton icon={<Plus size={14} />} size="medium" shape="square" />
-              <IconButton icon={<Plus size={12} />} size="small" shape="square" />
-            </div>
+      <div className="flex flex-wrap items-start gap-12">
+        <div>
+          <h3 className="font-semibold text-lg mb-4 text-greyscale-text-title">Icon button</h3>
+          <div className="flex flex-wrap items-center gap-4">
+            <IconButton icon={<Plus />} size="large" shape="square" />
+            <IconButton icon={<Plus />} size="medium" shape="square" />
+            <IconButton icon={<Plus />} size="small" shape="square" />
           </div>
-          <div className="flex flex-col gap-4">
-            <span className="text-sm" style={{ color: 'var(--greyscale-text-caption)' }}>Circle</span>
-            <div className="flex items-center gap-4">
-              <IconButton icon={<Plus size={16} />} size="large" shape="circle" />
-              <IconButton icon={<Plus size={14} />} size="medium" shape="circle" />
-              <IconButton icon={<Plus size={12} />} size="small" shape="circle" />
-            </div>
+        </div>
+        <div>
+          <h3 className="font-semibold text-lg mb-4 text-greyscale-text-title">Icon button (circle)</h3>
+          <div className="flex flex-wrap items-center gap-4">
+            <IconButton icon={<Plus />} size="large" shape="circle" />
+            <IconButton icon={<Plus />} size="medium" shape="circle" />
+            <IconButton icon={<Plus />} size="small" shape="circle" />
           </div>
         </div>
       </div>
@@ -335,16 +307,14 @@ export const WithRightIcon: Story = {
 // All Variants Showcase
 export const AllVariants: Story = {
   render: () => (
-    <div className="flex flex-col gap-8">
-      <div className="flex flex-wrap items-center gap-4">
-        <Button variant="primary">Primary</Button>
-        <Button variant="secondary">Secondary</Button>
-        <Button variant="outline">Outline</Button>
-        <Button variant="subtle">Subtle</Button>
-        <Button variant="destructive">Destructive</Button>
-        <Button variant="approve">Approve</Button>
-        <Button variant="link">Link</Button>
-      </div>
+    <div className="flex flex-wrap items-center gap-4">
+      <Button variant="primary">Primary</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="subtle">Subtle</Button>
+      <Button variant="destructive">Destructive</Button>
+      <Button variant="approve">Approve</Button>
+      <Button variant="link">Link</Button>
     </div>
   ),
 };
@@ -363,37 +333,14 @@ export const AllSizes: Story = {
 // All States Showcase
 export const AllStates: Story = {
   render: () => (
-    <div className="flex flex-col gap-8">
-      <div className="flex flex-wrap items-center gap-4">
-        <Button variant="primary">Default</Button>
-        <Button variant="primary" disabled>Disabled</Button>
-        <Button variant="primary" loading>Loading</Button>
-      </div>
-      <div className="flex flex-wrap items-center gap-4">
-        <Button variant="secondary">Default</Button>
-        <Button variant="secondary" disabled>Disabled</Button>
-        <Button variant="secondary" loading>Loading</Button>
-      </div>
-      <div className="flex flex-wrap items-center gap-4">
-        <Button variant="outline">Default</Button>
-        <Button variant="outline" disabled>Disabled</Button>
-        <Button variant="outline" loading>Loading</Button>
-      </div>
-      <div className="flex flex-wrap items-center gap-4">
-        <Button variant="subtle">Default</Button>
-        <Button variant="subtle" disabled>Disabled</Button>
-        <Button variant="subtle" loading>Loading</Button>
-      </div>
-      <div className="flex flex-wrap items-center gap-4">
-        <Button variant="destructive">Default</Button>
-        <Button variant="destructive" disabled>Disabled</Button>
-        <Button variant="destructive" loading>Loading</Button>
-      </div>
-      <div className="flex flex-wrap items-center gap-4">
-        <Button variant="approve">Default</Button>
-        <Button variant="approve" disabled>Disabled</Button>
-        <Button variant="approve" loading>Loading</Button>
-      </div>
+    <div className="flex flex-col gap-4">
+      {(["primary", "secondary", "outline", "subtle", "destructive", "approve"] as const).map((variant) => (
+        <div key={variant} className="flex flex-wrap items-center gap-4">
+          <Button variant={variant}>Default</Button>
+          <Button variant={variant} disabled>Disabled</Button>
+          <Button variant={variant} loading>Loading</Button>
+        </div>
+      ))}
     </div>
   ),
 };
@@ -402,9 +349,9 @@ export const AllStates: Story = {
 export const IconButtonSquare: StoryObj<typeof IconButton> = {
   render: () => (
     <div className="flex flex-wrap items-center gap-4">
-      <IconButton icon={<Plus size={16} />} size="large" shape="square" />
-      <IconButton icon={<Plus size={14} />} size="medium" shape="square" />
-      <IconButton icon={<Plus size={12} />} size="small" shape="square" />
+      <IconButton icon={<Plus />} size="large" shape="square" />
+      <IconButton icon={<Plus />} size="medium" shape="square" />
+      <IconButton icon={<Plus />} size="small" shape="square" />
     </div>
   ),
 };
@@ -412,9 +359,9 @@ export const IconButtonSquare: StoryObj<typeof IconButton> = {
 export const IconButtonCircle: StoryObj<typeof IconButton> = {
   render: () => (
     <div className="flex flex-wrap items-center gap-4">
-      <IconButton icon={<Plus size={16} />} size="large" shape="circle" />
-      <IconButton icon={<Plus size={14} />} size="medium" shape="circle" />
-      <IconButton icon={<Plus size={12} />} size="small" shape="circle" />
+      <IconButton icon={<Plus />} size="large" shape="circle" />
+      <IconButton icon={<Plus />} size="medium" shape="circle" />
+      <IconButton icon={<Plus />} size="small" shape="circle" />
     </div>
   ),
 };
