@@ -18,7 +18,6 @@ export default defineConfig({
   external: [
     "react",
     "react-dom",
-    "next",
     "tailwindcss",
     "@radix-ui/react-accordion",
     "@radix-ui/react-avatar",

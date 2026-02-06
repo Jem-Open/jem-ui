@@ -48,7 +48,8 @@ export {
   PaginationNext,
   PaginationPrevious,
 } from "../components/navigation/pagination"
-export { Sidebar } from "../components/navigation/sidebar"
+// TODO: Sidebar requires Next.js - commented out for pure React compatibility
+// export { Sidebar } from "../components/navigation/sidebar"
 export {
   Tabs,
   TabsContent,

@@ -1,36 +1,129 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# @jem-hr/jem-ui
 
-## Getting Started
+JEM Design System - A React component library with Tailwind CSS design tokens, built with Radix UI primitives and Class Variance Authority.
 
-First, run the development server:
+## Authentication
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+This package is published to GitHub Packages. To install it, you need to authenticate with a GitHub Personal Access Token (PAT).
+
+### Create a GitHub Personal Access Token
+
+1. Go to [GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)](https://github.com/settings/tokens)
+2. Click "Generate new token (classic)"
+3. Give it a descriptive name (e.g., "Read GitHub Packages")
+4. Select the `read:packages` scope
+5. Click "Generate token" and copy the token
+
+### Configure npm
+
+Create or edit `~/.npmrc` in your home directory:
+
+```
+//npm.pkg.github.com/:_authToken=TOKEN
+@jem-hr:registry=https://npm.pkg.github.com
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Replace `TOKEN` with your actual token. It is recommended to set it in your .zshrc file and reference in your .npmrc so it is safe to commit.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Installation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Install the package and its peer dependencies:
 
-## Learn More
+```bash
+npm install @jem-hr/jem-ui
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Required Peer Dependencies
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The following are always required:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm install react react-dom tailwindcss class-variance-authority clsx tailwind-merge lucide-react @radix-ui/react-slot
+```
 
-## Deploy on Vercel
+### Optional Peer Dependencies
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Install only the components you use:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `@radix-ui/react-accordion` - for Accordion
+- `@radix-ui/react-avatar` - for Avatar
+- `@radix-ui/react-checkbox` - for Checkbox
+- `@radix-ui/react-dropdown-menu` - for DropdownMenu
+- `@radix-ui/react-label` - for Label
+- `@radix-ui/react-popover` - for Popover
+- `@radix-ui/react-radio-group` - for RadioGroup
+- `@radix-ui/react-select` - for Select
+- `@radix-ui/react-tabs` - for Tabs
+- `@tanstack/react-table` - for DataTable
+- `date-fns` - for Calendar
+- `react-day-picker` - for Calendar
+- `sonner` - for Toaster
+- `vaul` - for Drawer
+
+## Integration
+
+### 1. Import the CSS Variables
+
+In your app's root or layout file:
+
+```tsx
+import "@jem-hr/jem-ui/styles.css"
+```
+
+This CSS file defines the design tokens (colors, spacing, etc.) as CSS variables.
+
+### 2. Configure Tailwind
+
+Update your `tailwind.config.js` to use the JEM preset:
+
+```js
+const jemPreset = require("@jem-hr/jem-ui/tailwind-preset");
+
+module.exports = {
+  presets: [jemPreset],
+  content: [
+    "./src/**/*.{ts,tsx}",
+    // IMPORTANT: Include jem-ui dist files so Tailwind scans them
+    "./node_modules/@jem-hr/jem-ui/dist/**/*.{js,mjs}",
+  ],
+  // your other config...
+};
+```
+
+**Why both steps are needed:**
+
+- The **CSS variables** (`styles.css`) provide the actual color values referenced by the preset
+- The **Tailwind preset** extends Tailwind with JEM design tokens (colors, spacing, etc.)
+- The **content path** ensures Tailwind scans the library's components for class names
+
+## Usage
+
+```tsx
+import { Button } from "@jem-hr/jem-ui"
+
+export default function App() {
+  return (
+    <Button variant="primary" size="lg">
+      Click me
+    </Button>
+  )
+}
+```
+
+## Publishing (for maintainers)
+
+1. Create a GitHub PAT with `write:packages` scope
+2. Set it as an environment variable:
+
+```bash
+export PUBLISH_TOKEN=your_github_pat
+```
+
+3. Update the version in `package.json`
+4. Publish:
+
+```bash
+npm publish
+```
+
+The `prepublishOnly` script will automatically build the library before publishing.
