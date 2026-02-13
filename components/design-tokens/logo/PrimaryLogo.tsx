@@ -2,6 +2,18 @@ import React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
+type VariantColors = {
+  backgroundColor: string | null;
+  logoColor: string;
+};
+
+const VARIANT_COLOR_LOOKUP = {
+  "bg-pink": { backgroundColor: "#FF697F", logoColor: "white" },
+  "bg-white": { backgroundColor: "white", logoColor: "#FF697F" },
+  pink: { backgroundColor: null, logoColor: "#FF697F" },
+  white: { backgroundColor: null, logoColor: "white" },
+} as const satisfies Record<string, VariantColors>;
+
 const primaryLogoVariants = cva("relative inline-flex", {
   variants: {
     variant: {
@@ -29,7 +41,8 @@ export interface PrimaryLogoProps
 
 const PrimaryLogo = React.forwardRef<HTMLDivElement, PrimaryLogoProps>(
   ({ className, variant, size, ...props }, ref) => {
-    const logoSrc = getLogoSrc(variant);
+    const { backgroundColor, logoColor } =
+      VARIANT_COLOR_LOOKUP[variant || "bg-pink"];
 
     return (
       <div
@@ -37,31 +50,34 @@ const PrimaryLogo = React.forwardRef<HTMLDivElement, PrimaryLogoProps>(
         className={cn(primaryLogoVariants({ variant, size, className }))}
         {...props}
       >
-        <img
-          src={logoSrc}
-          alt="Jem logo"
-          className="h-full w-auto object-contain"
-        />
+        <svg
+          viewBox="0 0 95 50"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-full w-auto"
+          role="img"
+          aria-label="Jem logo"
+        >
+          {backgroundColor && (
+            <rect width="95" height="49.8649" rx="24.9324" fill={backgroundColor} />
+          )}
+          <g clipPath="url(#clip0_primary)">
+            <path d="M48.9579 14.7624C50.3601 14.7624 51.7254 14.7527 53.0908 14.7776C53.2239 14.7797 53.4121 14.9756 53.4738 15.1249C53.7995 15.9006 54.0927 16.6904 54.4292 17.5592C55.7275 15.2753 57.6955 14.2593 60.1839 14.2637C62.7556 14.268 64.5559 15.5706 65.7558 17.8892C65.9808 17.5505 66.1485 17.2617 66.3497 16.9998C67.9445 14.9226 70.0953 14.0397 72.6465 14.3069C75.492 14.6055 77.2576 16.3648 78.1513 18.9841C78.4943 19.9892 78.676 21.0949 78.6912 22.1573C78.7507 26.432 78.7172 30.7088 78.7161 34.9846C78.7161 35.0744 78.7053 35.1631 78.6955 35.2994H72.9732V34.6827C72.9732 31.0388 72.9862 27.3938 72.9614 23.7499C72.957 23.1289 72.864 22.4873 72.6898 21.8923C72.3587 20.766 71.6057 20.013 70.4026 19.8864C69.153 19.7544 68.2106 20.3321 67.5463 21.3665C66.9091 22.3564 66.7533 23.4795 66.7511 24.6274C66.7436 27.9651 66.749 31.3028 66.749 34.6405V35.3135H61.11C61.11 35.0841 61.11 34.8742 61.11 34.6633C61.11 31.0367 61.123 27.4111 61.097 23.7846C61.0927 23.1646 60.978 22.5295 60.8092 21.9301C60.503 20.8417 59.7847 20.0855 58.6497 19.908C57.4672 19.723 56.4523 20.1309 55.695 21.0895C54.9366 22.0502 54.6564 23.1743 54.6531 24.372C54.6434 27.7822 54.6499 31.1914 54.6499 34.6016C54.6499 34.8169 54.6499 35.0322 54.6499 35.2994H48.9579V14.7624Z" fill={logoColor} />
+            <path d="M46.7226 26.3768H32.7345C32.9411 28.2842 34.4104 30.0045 36.0744 30.3756C37.8108 30.7629 39.8946 30.0867 40.7785 28.1068C42.6449 28.6965 44.5177 29.2883 46.5051 29.9158C46.2228 30.4502 45.9988 30.9728 45.6894 31.4391C44.1541 33.7609 41.9405 35.0754 39.2628 35.6175C36.334 36.2104 33.5665 35.7711 31.0845 34.0422C28.6578 32.3523 27.3508 29.9385 26.904 27.0628C26.5048 24.4954 26.7958 21.994 27.9697 19.6408C29.8393 15.8941 33.9203 13.8255 38.09 14.3177C43.4747 14.9528 46.2174 19.4233 46.6425 23.077C46.7215 23.7564 46.7735 24.4402 46.8005 25.1229C46.8157 25.5145 46.7551 25.9083 46.7237 26.3757L46.7226 26.3768ZM40.7493 23.0099C40.4897 21.1068 38.7824 19.6462 36.8436 19.643C34.9546 19.6397 33.1716 21.149 32.9043 23.0099H40.7493Z" fill={logoColor} />
+            <path d="M19.1164 14.7754H24.8495C24.8603 14.9853 24.8787 15.1595 24.8787 15.3337C24.8873 21.07 24.9003 26.8074 24.8971 32.5437C24.8971 34.3105 24.8949 36.0805 24.8116 37.8441C24.6731 40.7653 22.3621 43.4939 19.5221 44.156C19.3663 44.1928 19.0796 44.1105 19.006 43.9905C18.0918 42.5039 17.2046 40.9989 16.3131 39.4983C16.2882 39.4561 16.2893 39.3977 16.2742 39.3241C16.4083 39.2679 16.5349 39.2084 16.6658 39.1618C18.2833 38.5809 19.1164 37.407 19.1164 35.6813C19.1185 28.9518 19.1164 22.2222 19.1164 15.4938C19.1164 15.2817 19.1164 15.0686 19.1164 14.7754Z" fill={logoColor} />
+            <path d="M22.0484 5.69916C24.0727 5.70132 25.5549 7.24739 25.5484 9.34739C25.5419 11.4214 24.0337 12.948 21.9889 12.948C19.9484 12.948 18.4683 11.402 18.4618 9.26192C18.4542 7.20736 19.9754 5.697 22.0484 5.69916Z" fill={logoColor} />
+          </g>
+          <defs>
+            <clipPath id="clip0_primary">
+              <rect width="62.4538" height="38.4666" fill="white" transform="translate(16.2731 5.69916)" />
+            </clipPath>
+          </defs>
+        </svg>
       </div>
     );
   }
 );
 
 PrimaryLogo.displayName = "PrimaryLogo";
-
-function getLogoSrc(variant: PrimaryLogoProps["variant"]): string {
-  switch (variant) {
-    case "bg-pink":
-      return "/primary-pink.svg";
-    case "bg-white":
-      return "/primary-white.svg";
-    case "pink":
-      return "/primary-no-bg-pink.svg";
-    case "white":
-      return "/primary-no-bg-white.svg";
-    default:
-      return "/primary-pink.svg";
-  }
-}
 
 export { PrimaryLogo, primaryLogoVariants };
