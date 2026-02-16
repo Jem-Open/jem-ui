@@ -38,7 +38,7 @@ npm install @jem-hr/jem-ui
 The following are always required:
 
 ```bash
-npm install react react-dom tailwindcss class-variance-authority clsx tailwind-merge lucide-react @radix-ui/react-slot
+npm install react react-dom tailwindcss lucide-react
 ```
 
 ### Optional Peer Dependencies
@@ -53,9 +53,9 @@ Install only the components you use:
 - `@radix-ui/react-popover` - for Popover
 - `@radix-ui/react-radio-group` - for RadioGroup
 - `@radix-ui/react-select` - for Select
+- `@radix-ui/react-slot` - for Button and Breadcrumb (asChild prop)
 - `@radix-ui/react-tabs` - for Tabs
 - `@tanstack/react-table` - for DataTable
-- `date-fns` - for Calendar
 - `react-day-picker` - for Calendar
 - `sonner` - for Toaster
 - `vaul` - for Drawer
