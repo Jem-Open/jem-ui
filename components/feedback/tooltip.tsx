@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Tooltip as TooltipPrimitive } from "radix-ui"
+import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
