@@ -85,7 +85,7 @@ export const CompleteShowcase: Story = {
           <AccordionItem value="item-3">
             <AccordionTrigger>Is it animated?</AccordionTrigger>
             <AccordionContent>
-              Yes. It's animated by default, but you can disable it if you prefer.
+              Yes. It&apos;s animated by default, but you can disable it if you prefer.
             </AccordionContent>
           </AccordionItem>
         </Accordion>
@@ -103,7 +103,7 @@ export const CompleteShowcase: Story = {
           <AccordionItem value="item-1">
             <AccordionTrigger>Can I open multiple items?</AccordionTrigger>
             <AccordionContent>
-              Yes. Set the type prop to "multiple" to allow multiple items to be open at once.
+              Yes. Set the type prop to &quot;multiple&quot; to allow multiple items to be open at once.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
@@ -163,7 +163,7 @@ export const CompleteShowcase: Story = {
           <AccordionItem value="faq-1">
             <AccordionTrigger>What is your refund policy?</AccordionTrigger>
             <AccordionContent>
-              We offer a 30-day money-back guarantee on all purchases. If you're not satisfied with your purchase, contact our support team for a full refund.
+              We offer a 30-day money-back guarantee on all purchases. If you&apos;re not satisfied with your purchase, contact our support team for a full refund.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="faq-2">
@@ -203,7 +203,7 @@ export const Default: Story = {
       <AccordionItem value="item-3">
         <AccordionTrigger>Is it animated?</AccordionTrigger>
         <AccordionContent>
-          Yes. It's animated by default, but you can disable it if you prefer.
+          Yes. It&apos;s animated by default, but you can disable it if you prefer.
         </AccordionContent>
       </AccordionItem>
     </Accordion>
@@ -217,7 +217,7 @@ export const Multiple: Story = {
       <AccordionItem value="item-1">
         <AccordionTrigger>Can I open multiple items?</AccordionTrigger>
         <AccordionContent>
-          Yes. Set the type prop to "multiple" to allow multiple items to be open at once.
+          Yes. Set the type prop to &quot;multiple&quot; to allow multiple items to be open at once.
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-2">

@@ -56,7 +56,7 @@ export const CompleteShowcase: Story = {
               <DialogTitle>Dialog message here</DialogTitle>
               <DialogDescription>
                 This is a description of what the dialog message is about.
-                Please make sure the text in here isn't too long.
+                Please make sure the text in here isn&apos;t too long.
               </DialogDescription>
             </DialogHeader>
             <DialogContact />
@@ -81,7 +81,7 @@ export const CompleteShowcase: Story = {
             <DialogHeader>
               <DialogTitle variant="error">Oops 404!</DialogTitle>
               <DialogDescription>
-                You won't be able to continue right now - please reach out to
+                You won&apos;t be able to continue right now - please reach out to
                 our support team so we can assist you or try again a bit later.
               </DialogDescription>
             </DialogHeader>
@@ -133,7 +133,7 @@ export const Default: Story = {
           <DialogTitle>Dialog message here</DialogTitle>
           <DialogDescription>
             This is a description of what the dialog message is about. Please
-            make sure the text in here isn't too long.
+            make sure the text in here isn&apos;t too long.
           </DialogDescription>
         </DialogHeader>
         <DialogContact />
@@ -157,7 +157,7 @@ export const Error: Story = {
         <DialogHeader>
           <DialogTitle variant="error">Oops 404!</DialogTitle>
           <DialogDescription>
-            You won't be able to continue right now - please reach out to our
+            You won&apos;t be able to continue right now - please reach out to our
             support team so we can assist you or try again a bit later.
           </DialogDescription>
         </DialogHeader>

@@ -53,11 +53,8 @@ function DrawerOverlay({
 function DrawerContent({
   className,
   children,
-  showCloseButton = true,
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Content> & {
-  showCloseButton?: boolean
-}) {
+}: React.ComponentProps<typeof DrawerPrimitive.Content>) {
   return (
     <DrawerPortal data-slot="drawer-portal">
       <DrawerOverlay />
