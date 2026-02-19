@@ -2,11 +2,13 @@
 
 JEM Design System - A React component library with Tailwind CSS design tokens, built with Radix UI primitives and Class Variance Authority.
 
-## Authentication
+## Usage
+
+### Authentication
 
 This package is published to GitHub Packages. To install it, you need to authenticate with a GitHub Personal Access Token (PAT).
 
-### Create a GitHub Personal Access Token
+#### Create a GitHub Personal Access Token
 
 1. Go to [GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)](https://github.com/settings/tokens)
 2. Click "Generate new token (classic)"
@@ -14,7 +16,7 @@ This package is published to GitHub Packages. To install it, you need to authent
 4. Select the `read:packages` scope
 5. Click "Generate token" and copy the token
 
-### Configure npm
+#### Configure npm
 
 Create or edit `~/.npmrc` in your home directory:
 
@@ -25,7 +27,7 @@ Create or edit `~/.npmrc` in your home directory:
 
 Replace `TOKEN` with your actual token. It is recommended to set it in your .zshrc file and reference in your .npmrc so it is safe to commit.
 
-## Installation
+### Installation
 
 Install the package and its peer dependencies:
 
@@ -33,36 +35,19 @@ Install the package and its peer dependencies:
 npm install @jem-hr/jem-ui
 ```
 
-### Required Peer Dependencies
+#### Peer Dependencies
 
-The following are always required:
+The following peer dependencies are required:
 
 ```bash
-npm install react react-dom tailwindcss lucide-react
+npm install react@"^18.0.0 || ^19.0.0" react-dom@"^18.0.0 || ^19.0.0" tailwindcss@"^3.4.0"
 ```
 
-### Optional Peer Dependencies
+All other dependencies (Radix UI components, Lucide icons, etc.) are bundled with the package, so you don't need to install them separately.
 
-Install only the components you use:
+### Integration
 
-- `@radix-ui/react-accordion` - for Accordion
-- `@radix-ui/react-avatar` - for Avatar
-- `@radix-ui/react-checkbox` - for Checkbox
-- `@radix-ui/react-dropdown-menu` - for DropdownMenu
-- `@radix-ui/react-label` - for Label
-- `@radix-ui/react-popover` - for Popover
-- `@radix-ui/react-radio-group` - for RadioGroup
-- `@radix-ui/react-select` - for Select
-- `@radix-ui/react-slot` - for Button and Breadcrumb (asChild prop)
-- `@radix-ui/react-tabs` - for Tabs
-- `@tanstack/react-table` - for DataTable
-- `react-day-picker` - for Calendar
-- `sonner` - for Toaster
-- `vaul` - for Drawer
-
-## Integration
-
-### 1. Import the CSS Variables
+#### 1. Import the CSS Variables
 
 In your app's root or layout file:
 
@@ -72,7 +57,7 @@ import "@jem-hr/jem-ui/styles.css"
 
 This CSS file defines the design tokens (colors, spacing, etc.) as CSS variables.
 
-### 2. Configure Tailwind
+#### 2. Configure Tailwind
 
 Update your `tailwind.config.js` to use the JEM preset:
 
@@ -96,7 +81,7 @@ module.exports = {
 - The **Tailwind preset** extends Tailwind with JEM design tokens (colors, spacing, etc.)
 - The **content path** ensures Tailwind scans the library's components for class names
 
-## Usage
+### Example
 
 ```tsx
 import { Button } from "@jem-hr/jem-ui"
@@ -110,20 +95,70 @@ export default function App() {
 }
 ```
 
-## Publishing (for maintainers)
+## Contributing
 
-1. Create a GitHub PAT with `write:packages` scope
-2. Set it as an environment variable:
+We welcome contributions to the JEM Design System! Contributors are expected to create their own releases after merging changes.
 
-```bash
-export PUBLISH_TOKEN=your_github_pat
-```
+### Local Development
 
-3. Update the version in `package.json`
-4. Publish:
+Once you have cloned the repository:
+
+1. **Install dependencies**:
 
 ```bash
-npm publish
+npm install
 ```
 
-The `prepublishOnly` script will automatically build the library before publishing.
+2. **Start Storybook** for component development:
+
+```bash
+npm run storybook
+```
+
+Storybook will open at `http://localhost:6006` where you can view and interact with all components.
+
+### Making Changes
+
+1. **Create a feature branch** from `main`:
+
+```bash
+git checkout -b feature/your-feature-name
+```
+
+2. **Make your changes** following the existing patterns in `components/` and `stories/`
+
+3. **Test your changes** in Storybook and ensure lint passes:
+
+```bash
+npm run lint
+```
+
+4. **Commit and push** your changes:
+
+```bash
+git add .
+git commit -m "Description of your changes"
+git push origin feature/your-feature-name
+```
+
+5. **Open a Pull Request** against the `main` branch
+
+Quality checks (linting, type checking) will run automatically on your PR.
+
+### Publishing Your Changes
+
+After your PR is approved and merged to `main`, you should create a release to publish the changes:
+
+1. **Navigate to the releases page** and click "Draft a new release":
+
+   [https://github.com/Jem-HR/jem-ui/releases/new](https://github.com/Jem-HR/jem-ui/releases/new)
+
+2. **Create a new tag** by typing the version number (e.g., `v0.2.1`) in the "Choose a tag" field and clicking "Create new tag on publish"
+
+3. **Generate release notes** by clicking "Generate release notes" - this will automatically create a changelog from merged PRs
+
+4. **Review and edit** the release notes as needed
+
+5. **Publish the release** by clicking "Publish release"
+
+The GitHub Actions workflow will automatically detect the new tag, build the library, and publish it to GitHub Packages.
