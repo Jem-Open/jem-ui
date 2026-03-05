@@ -164,7 +164,7 @@ function DialogDescription({
 
 function DialogContact({
   className,
-  email = "customersuccess@jemhr.com",
+  email = "support@example.com",
   ...props
 }: React.ComponentProps<"p"> & { email?: string }) {
   return (

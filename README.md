@@ -1,41 +1,16 @@
-# @jem-hr/jem-ui
+# @jem-open/jem-ui
+
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 JEM Design System - A React component library with Tailwind CSS design tokens, built with Radix UI primitives and Class Variance Authority.
 
-## Usage
-
-### Authentication
-
-This package is published to GitHub Packages. To install it, you need to authenticate with a GitHub Personal Access Token (PAT).
-
-#### Create a GitHub Personal Access Token
-
-1. Go to [GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)](https://github.com/settings/tokens)
-2. Click "Generate new token (classic)"
-3. Give it a descriptive name (e.g., "Read GitHub Packages")
-4. Select the `read:packages` scope
-5. Click "Generate token" and copy the token
-
-#### Configure npm
-
-Create or edit `~/.npmrc` in your home directory:
-
-```
-//npm.pkg.github.com/:_authToken=TOKEN
-@jem-hr:registry=https://npm.pkg.github.com
-```
-
-Replace `TOKEN` with your actual token. It is recommended to set it in your .zshrc file and reference in your .npmrc so it is safe to commit.
-
-### Installation
-
-Install the package and its peer dependencies:
+## Installation
 
 ```bash
-npm install @jem-hr/jem-ui
+npm install @jem-open/jem-ui
 ```
 
-#### Peer Dependencies
+### Peer Dependencies
 
 The following peer dependencies are required:
 
@@ -45,31 +20,31 @@ npm install react@"^18.0.0 || ^19.0.0" react-dom@"^18.0.0 || ^19.0.0" tailwindcs
 
 All other dependencies (Radix UI components, Lucide icons, etc.) are bundled with the package, so you don't need to install them separately.
 
-### Integration
+## Integration
 
-#### 1. Import the CSS Variables
+### 1. Import the CSS Variables
 
 In your app's root or layout file:
 
 ```tsx
-import "@jem-hr/jem-ui/styles.css"
+import "@jem-open/jem-ui/styles.css"
 ```
 
 This CSS file defines the design tokens (colors, spacing, etc.) as CSS variables.
 
-#### 2. Configure Tailwind
+### 2. Configure Tailwind
 
 Update your `tailwind.config.js` to use the JEM preset:
 
 ```js
-const jemPreset = require("@jem-hr/jem-ui/tailwind-preset");
+const jemPreset = require("@jem-open/jem-ui/tailwind-preset");
 
 module.exports = {
   presets: [jemPreset],
   content: [
     "./src/**/*.{ts,tsx}",
     // IMPORTANT: Include jem-ui dist files so Tailwind scans them
-    "./node_modules/@jem-hr/jem-ui/dist/**/*.{js,mjs}",
+    "./node_modules/@jem-open/jem-ui/dist/**/*.{js,mjs}",
   ],
   // your other config...
 };
@@ -81,10 +56,10 @@ module.exports = {
 - The **Tailwind preset** extends Tailwind with JEM design tokens (colors, spacing, etc.)
 - The **content path** ensures Tailwind scans the library's components for class names
 
-### Example
+## Example
 
 ```tsx
-import { Button } from "@jem-hr/jem-ui"
+import { Button } from "@jem-open/jem-ui"
 
 export default function App() {
   return (
@@ -97,7 +72,7 @@ export default function App() {
 
 ## Contributing
 
-We welcome contributions to the JEM Design System! Contributors are expected to create their own releases after merging changes.
+We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
 ### Local Development
 
@@ -145,20 +120,17 @@ git push origin feature/your-feature-name
 
 Quality checks (linting, type checking) will run automatically on your PR.
 
-### Publishing Your Changes
+### Publishing
 
-After your PR is approved and merged to `main`, you should create a release to publish the changes:
+After your PR is approved and merged to `main`, create a release to publish the changes:
 
-1. **Navigate to the releases page** and click "Draft a new release":
+1. Navigate to [https://github.com/Jem-Open/jem-ui/releases/new](https://github.com/Jem-Open/jem-ui/releases/new)
+2. Create a new tag (e.g., `v0.2.1`) and click "Create new tag on publish"
+3. Click "Generate release notes" for an automatic changelog
+4. Review and publish the release
 
-   [https://github.com/Jem-HR/jem-ui/releases/new](https://github.com/Jem-HR/jem-ui/releases/new)
+The GitHub Actions workflow will automatically build and publish to npm.
 
-2. **Create a new tag** by typing the version number (e.g., `v0.2.1`) in the "Choose a tag" field and clicking "Create new tag on publish"
+## License
 
-3. **Generate release notes** by clicking "Generate release notes" - this will automatically create a changelog from merged PRs
-
-4. **Review and edit** the release notes as needed
-
-5. **Publish the release** by clicking "Publish release"
-
-The GitHub Actions workflow will automatically detect the new tag, build the library, and publish it to GitHub Packages.
+This project is licensed under the Apache License 2.0 - see the [LICENSE](./LICENSE) file for details.

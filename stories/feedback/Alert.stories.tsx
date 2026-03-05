@@ -116,7 +116,7 @@ export const CompleteShowcase: Story = {
           <AlertTitle>Oops, something went wrong!</AlertTitle>
           <AlertDescription>
             <p>Please reach out to our support team if you need assistance or try again a bit later.</p>
-            <p className="mt-2">Email: customersuccess@jemhr.com</p>
+            <p className="mt-2">Email: support@example.com</p>
           </AlertDescription>
         </Alert>
       </div>
@@ -190,7 +190,7 @@ export const Destructive: Story = {
         <AlertTitle>Oops, something went wrong!</AlertTitle>
         <AlertDescription>
           <p>Please reach out to our support team if you need assistance or try again a bit later.</p>
-          <p className="mt-2">Email: customersuccess@jemhr.com</p>
+          <p className="mt-2">Email: support@example.com</p>
         </AlertDescription>
       </Alert>
     </div>

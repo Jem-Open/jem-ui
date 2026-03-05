@@ -1,44 +1,32 @@
-import { Sidebar } from "@/components/navigation/sidebar"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/navigation/tabs"
-
 export default function Home() {
   return (
-    <div className="flex min-h-screen">
-      <Sidebar user={{ name: "Username", initials: "CN" }} />
-
-      <main className="flex-1 bg-white p-8">
-        <h1 className="text-2xl font-heading font-semibold text-greyscale-text-title leading-9">
-          Hello, Amber!
+    <div className="flex min-h-screen items-center justify-center bg-white">
+      <main className="max-w-2xl text-center px-8">
+        <h1 className="text-4xl font-heading font-semibold text-greyscale-text-title leading-tight">
+          JEM Design System
         </h1>
-        <p className="text-base text-greyscale-text-caption mt-2">
-          Welcome back to Jem Hub. See what&apos;s new at Jem and review your company&apos;s activities.
+        <p className="text-lg text-greyscale-text-body mt-4 max-w-lg mx-auto">
+          A React component library built with Tailwind CSS, Radix UI primitives, and Class Variance Authority.
         </p>
 
-        <Tabs defaultValue="news-feed" className="mt-10">
-          <div className="border-b border-greyscale-border">
-            <TabsList variant="line" className="border-b-0">
-              <TabsTrigger value="news-feed" variant="line">News Feed</TabsTrigger>
-              <TabsTrigger value="company-activity" variant="line">Company Activity</TabsTrigger>
-            </TabsList>
-          </div>
+        <div className="flex gap-4 justify-center mt-8">
+          <a
+            href="http://localhost:6006"
+            className="inline-flex items-center px-6 py-3 rounded-lg bg-primary-900 text-white font-medium hover:opacity-90 transition-opacity"
+          >
+            View Storybook
+          </a>
+          <a
+            href="https://github.com/Jem-Open/jem-ui"
+            className="inline-flex items-center px-6 py-3 rounded-lg border border-greyscale-border text-greyscale-text-title font-medium hover:bg-greyscale-surface-default transition-colors"
+          >
+            GitHub
+          </a>
+        </div>
 
-          <TabsContent value="news-feed">
-            <div className="bg-neutral-50 rounded-xs p-md mt-4">
-              <iframe
-                src="https://helpdesk.jemhr.online/ebd//26a4331e23ef80e0889ac81e8a7dc181"
-                width="100%"
-                height="600"
-                style={{ border: 0 }}
-                allowFullScreen
-                className="rounded-xs"
-              />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="company-activity">
-            <p className="text-greyscale-text-body mt-4">Company activity content here.</p>
-          </TabsContent>
-        </Tabs>
+        <p className="text-sm text-greyscale-text-caption mt-12">
+          Run <code className="bg-greyscale-surface-default px-2 py-1 rounded text-sm">npm run storybook</code> to explore all components.
+        </p>
       </main>
     </div>
   )
