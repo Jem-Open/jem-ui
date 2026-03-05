@@ -18,16 +18,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-
-      - name: Debug environment
-        run: |
-          echo "npm version: $(npm --version)"
-          echo "node version: $(node --version)"
-          echo "ACTIONS_ID_TOKEN_REQUEST_URL set: ${{ env.ACTIONS_ID_TOKEN_REQUEST_URL != '' }}"
-          cat .npmrc || echo "no .npmrc"
-          cat ~/.npmrc || echo "no ~/.npmrc"
-          npm config list
+          registry-url: 'https://registry.npmjs.org'
 
       - run: npm ci
+
       - run: npm run build:lib
-      - run: npm publish --access public
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ''
