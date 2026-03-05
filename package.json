@@ -1,6 +1,6 @@
 {
   "name": "@jem-open/jem-ui",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "JEM Design System - React component library with Tailwind CSS",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
