@@ -18,9 +18,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Update npm
         run: npm install -g npm@latest
+
+      - name: Remove token from npmrc
+        run: sed -i '/NODE_AUTH_TOKEN/d' $NPM_CONFIG_USERCONFIG
 
       - run: npm ci
 
