@@ -32,6 +32,11 @@ jobs:
       - name: Build library
         run: npm run build:lib
 
+      - name: Set package public
+        run: npm access set status=public @jem-open/jem-ui
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Publish to npm
         run: npm publish --access public
         env:
