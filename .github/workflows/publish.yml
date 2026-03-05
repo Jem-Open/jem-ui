@@ -23,11 +23,15 @@ jobs:
       - name: Update npm
         run: npm install -g npm@latest
 
+      - name: Debug OIDC environment
+        run: |
+          echo "OIDC URL available: ${ACTIONS_ID_TOKEN_REQUEST_URL:+yes}"
+          echo "npm version: $(npm --version)"
+          echo "node version: $(node --version)"
+
       - run: npm ci
 
       - run: npm run build:lib
 
       - name: Publish to npm
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ''
+        run: unset NODE_AUTH_TOKEN && npm publish --provenance --access public
