@@ -91,6 +91,7 @@ export {
 } from "../components/feedback/dialog"
 export {
   Drawer,
+  DrawerBody,
   DrawerClose,
   DrawerContent,
   DrawerDescription,
