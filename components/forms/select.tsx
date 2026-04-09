@@ -2,13 +2,49 @@
 
 import * as React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
+import { Check, ChevronDownIcon, ChevronUpIcon, Search } from "lucide-react"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/feedback/popover"
 
 import { cn } from "@/lib/utils"
 
+interface SelectProps extends React.ComponentProps<typeof SelectPrimitive.Root> {
+  searchable?: boolean
+  options?: SearchableSelectOption[]
+  searchPlaceholder?: string
+  emptyMessage?: string
+  placeholder?: string
+  className?: string
+}
+
 function Select({
+  searchable = false,
+  options,
+  searchPlaceholder,
+  emptyMessage,
+  placeholder,
+  className,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Root>) {
+}: SelectProps) {
+  if (searchable) {
+    return (
+      <SearchableSelect
+        options={options ?? []}
+        value={props.value}
+        defaultValue={props.defaultValue}
+        onValueChange={props.onValueChange}
+        placeholder={placeholder}
+        searchPlaceholder={searchPlaceholder}
+        emptyMessage={emptyMessage}
+        disabled={props.disabled}
+        className={className}
+      />
+    )
+  }
+
   return <SelectPrimitive.Root data-slot="select" {...props} />
 }
 
@@ -205,6 +241,152 @@ function SelectField({
   )
 }
 
+// ─── SearchableSelect ───────────────────────────────────────────────
+// A Popover-based select with a search input. Uses the same visual
+// styles as the standard Select but avoids Radix Select's keyboard
+// interception that prevents typing in an embedded input.
+
+export interface SearchableSelectOption {
+  value: string
+  label: string
+  disabled?: boolean
+}
+
+interface SearchableSelectProps {
+  options: SearchableSelectOption[]
+  value?: string
+  defaultValue?: string
+  onValueChange?: (value: string) => void
+  placeholder?: string
+  searchPlaceholder?: string
+  emptyMessage?: string
+  disabled?: boolean
+  className?: string
+}
+
+function SearchableSelect({
+  options,
+  value: controlledValue,
+  defaultValue,
+  onValueChange,
+  placeholder = "Select...",
+  searchPlaceholder = "Search...",
+  emptyMessage = "No results found.",
+  disabled = false,
+  className,
+}: SearchableSelectProps) {
+  const [open, setOpen] = React.useState(false)
+  const [search, setSearch] = React.useState("")
+  const [internalValue, setInternalValue] = React.useState(defaultValue ?? "")
+  const inputRef = React.useRef<HTMLInputElement>(null)
+
+  const value = controlledValue ?? internalValue
+  const selectedOption = options.find((opt) => opt.value === value)
+
+  const filtered = React.useMemo(() => {
+    if (!search) return options
+    const lower = search.toLowerCase()
+    return options.filter((opt) => opt.label.toLowerCase().includes(lower))
+  }, [options, search])
+
+  function selectOption(optionValue: string) {
+    if (controlledValue === undefined) setInternalValue(optionValue)
+    onValueChange?.(optionValue)
+    setOpen(false)
+  }
+
+  return (
+    <Popover
+      open={open}
+      onOpenChange={(o) => {
+        setOpen(o)
+        if (o) setSearch("")
+      }}
+    >
+      <PopoverTrigger asChild disabled={disabled}>
+        <button
+          type="button"
+          role="combobox"
+          aria-expanded={open}
+          data-slot="select-trigger"
+          data-state={open ? "open" : "closed"}
+          className={cn(
+            "flex h-[46px] w-full items-center justify-between gap-2 rounded-lg border border-[--greyscale-border-default] bg-white px-4 py-3 text-sm font-semibold text-[--greyscale-text-body] transition-all outline-none",
+            "focus:border-[--greyscale-border-darker] data-[state=open]:border-[--greyscale-border-darker]",
+            "disabled:cursor-not-allowed disabled:opacity-50",
+            !selectedOption && "font-normal text-[--greyscale-text-disabled]",
+            className
+          )}
+        >
+          <span className="truncate">
+            {selectedOption ? selectedOption.label : placeholder}
+          </span>
+          <ChevronDownIcon className="size-4 shrink-0 text-[--greyscale-text-caption]" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        className="w-[var(--radix-popover-trigger-width)] p-0"
+        onOpenAutoFocus={(e) => {
+          e.preventDefault()
+          requestAnimationFrame(() => inputRef.current?.focus())
+        }}
+      >
+        <div data-slot="select-content">
+          <div className="flex items-center gap-2 border-b border-[--greyscale-border-default] px-3">
+            <Search className="size-4 shrink-0 text-[--greyscale-text-caption]" />
+            <input
+              ref={inputRef}
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={searchPlaceholder}
+              className="h-[42px] flex-1 bg-transparent text-sm text-[--greyscale-text-body] placeholder:text-[--greyscale-text-disabled] outline-none"
+            />
+          </div>
+          <div
+            role="listbox"
+            className="max-h-[200px] overflow-y-auto px-2 py-2 flex flex-col gap-1"
+          >
+            {filtered.length === 0 ? (
+              <div className="px-2 py-4 text-center text-sm text-[--greyscale-text-caption]">
+                {emptyMessage}
+              </div>
+            ) : (
+              filtered.map((option) => {
+                const isSelected = option.value === value
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="option"
+                    aria-selected={isSelected}
+                    data-slot="select-item"
+                    disabled={option.disabled}
+                    onClick={() => selectOption(option.value)}
+                    className={cn(
+                      "relative flex h-[38px] w-full cursor-default items-center rounded-md p-2 text-sm text-[--greyscale-text-caption] outline-none select-none transition-colors text-left",
+                      "hover:bg-[--pink-50] hover:text-[--greyscale-text-body] hover:font-semibold",
+                      "disabled:pointer-events-none disabled:opacity-50",
+                      isSelected &&
+                        "bg-[--pink-50] text-[--greyscale-text-body] font-semibold"
+                    )}
+                  >
+                    <span className="flex-1 truncate">{option.label}</span>
+                    {isSelected && (
+                      <Check className="size-4 shrink-0 text-[--greyscale-text-body]" />
+                    )}
+                  </button>
+                )
+              })
+            )}
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}
+
 export {
   Select,
   SelectContent,
@@ -217,4 +399,5 @@ export {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
+  SearchableSelect,
 }

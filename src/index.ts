@@ -17,7 +17,9 @@ export {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
+  SearchableSelect,
 } from "../components/forms/select"
+export type { SearchableSelectOption } from "../components/forms/select"
 export { Switch } from "../components/forms/switch"
 export { Textarea } from "../components/forms/textarea"
 export { Upload } from "../components/forms/upload"

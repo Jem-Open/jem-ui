@@ -21,6 +21,21 @@ const meta: Meta<typeof Select> = {
 export default meta;
 type Story = StoryObj<typeof Select>;
 
+const countries = [
+  { value: "au", label: "Australia" },
+  { value: "br", label: "Brazil" },
+  { value: "ca", label: "Canada" },
+  { value: "de", label: "Germany" },
+  { value: "fr", label: "France" },
+  { value: "in", label: "India" },
+  { value: "jp", label: "Japan" },
+  { value: "mx", label: "Mexico" },
+  { value: "ng", label: "Nigeria" },
+  { value: "gb", label: "United Kingdom" },
+  { value: "us", label: "United States" },
+  { value: "za", label: "South Africa" },
+];
+
 // Complete Showcase
 export const CompleteShowcase: Story = {
   render: () => (
@@ -140,6 +155,24 @@ export const CompleteShowcase: Story = {
         </div>
       </div>
 
+      {/* Searchable */}
+      <div>
+        <h3
+          className="font-semibold text-lg mb-4"
+          style={{ color: "var(--greyscale-text-title)" }}
+        >
+          Searchable
+        </h3>
+        <div className="w-[256px]">
+          <Select
+            searchable
+            options={countries}
+            placeholder="Select a country"
+            searchPlaceholder="Search countries..."
+          />
+        </div>
+      </div>
+
       {/* Disabled */}
       <div>
         <h3
@@ -219,6 +252,20 @@ export const Disabled: Story = {
           <SelectItem value="option3">Option 3</SelectItem>
         </SelectContent>
       </Select>
+    </div>
+  ),
+};
+
+// Searchable
+export const Searchable: Story = {
+  render: () => (
+    <div className="w-[256px]">
+      <Select
+        searchable
+        options={countries}
+        placeholder="Select a country"
+        searchPlaceholder="Search countries..."
+      />
     </div>
   ),
 };
