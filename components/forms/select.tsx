@@ -279,6 +279,7 @@ function SearchableSelect({
   const [search, setSearch] = React.useState("")
   const [internalValue, setInternalValue] = React.useState(defaultValue ?? "")
   const inputRef = React.useRef<HTMLInputElement>(null)
+  const listboxId = React.useId()
 
   const value = controlledValue ?? internalValue
   const selectedOption = options.find((opt) => opt.value === value)
@@ -307,6 +308,7 @@ function SearchableSelect({
         <button
           type="button"
           role="combobox"
+          aria-controls={listboxId}
           aria-expanded={open}
           data-slot="select-trigger"
           data-state={open ? "open" : "closed"}
@@ -346,6 +348,7 @@ function SearchableSelect({
           </div>
           <div
             role="listbox"
+            id={listboxId}
             className="max-h-[200px] overflow-y-auto px-2 py-2 flex flex-col gap-1"
           >
             {filtered.length === 0 ? (
