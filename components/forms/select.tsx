@@ -145,7 +145,7 @@ function SelectItem({
       data-slot="select-item"
       className={cn(
         "relative flex h-[38px] w-full cursor-default items-center rounded-md p-2 text-sm text-[--greyscale-text-caption] outline-none select-none transition-colors",
-        "focus:bg-[--pink-50] focus:text-[--greyscale-text-body] focus:font-semibold",
+        "focus:bg-[--pink-50] focus:text-[--greyscale-text-body]",
         "data-[state=checked]:bg-[--pink-50] data-[state=checked]:text-[--greyscale-text-body] data-[state=checked]:font-semibold",
         "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className
@@ -369,7 +369,7 @@ function SearchableSelect({
                     onClick={() => selectOption(option.value)}
                     className={cn(
                       "relative flex h-[38px] w-full cursor-default items-center rounded-md p-2 text-sm text-[--greyscale-text-caption] outline-none select-none transition-colors text-left",
-                      "hover:bg-[--pink-50] hover:text-[--greyscale-text-body] hover:font-semibold",
+                      "hover:bg-[--pink-50] hover:text-[--greyscale-text-body]",
                       "disabled:pointer-events-none disabled:opacity-50",
                       isSelected &&
                         "bg-[--pink-50] text-[--greyscale-text-body] font-semibold"
