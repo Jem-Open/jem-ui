@@ -30,6 +30,7 @@ import {
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
+  DropdownMenuSelectSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/feedback/dropdown-menu"
 import { Calendar } from "@/components/forms/calendar"
@@ -466,14 +467,9 @@ const triggerLabel =
     </DropdownMenuRadioGroup>
     <DropdownMenuSeparator />
     <DropdownMenuSub>
-      <DropdownMenuSubTrigger
-        className={cn(
-          value === "custom" &&
-            "bg-[--pink-50] text-[--greyscale-text-body] font-semibold"
-        )}
-      >
+      <DropdownMenuSelectSubTrigger active={value === "custom"}>
         Custom Range
-      </DropdownMenuSubTrigger>
+      </DropdownMenuSelectSubTrigger>
       <DropdownMenuSubContent className="p-3 w-auto">
         <Calendar
           mode="range"
@@ -518,14 +514,9 @@ const triggerLabel =
                   </DropdownMenuRadioGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuSub>
-                    <DropdownMenuSubTrigger
-                      className={cn(
-                        customPeriod === "custom" &&
-                          "bg-[--pink-50] text-[--greyscale-text-body] font-semibold"
-                      )}
-                    >
+                    <DropdownMenuSelectSubTrigger active={customPeriod === "custom"}>
                       Custom Range
-                    </DropdownMenuSubTrigger>
+                    </DropdownMenuSelectSubTrigger>
                     <DropdownMenuSubContent className="p-3 w-auto">
                       <Calendar
                         mode="range"
@@ -835,14 +826,9 @@ export const WithCalendarSubMenu: Story = {
           </DropdownMenuRadioGroup>
           <DropdownMenuSeparator />
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger
-              className={cn(
-                value === "custom" &&
-                  "bg-[--pink-50] text-[--greyscale-text-body] font-semibold"
-              )}
-            >
+            <DropdownMenuSelectSubTrigger active={value === "custom"}>
               Custom Range
-            </DropdownMenuSubTrigger>
+            </DropdownMenuSelectSubTrigger>
             <DropdownMenuSubContent className="p-3 w-auto">
               <Calendar
                 mode="range"

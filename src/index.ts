@@ -122,6 +122,7 @@ export {
   DropdownMenuTrigger,
   DropdownMenuSelectTrigger,
   DropdownMenuSelectItem,
+  DropdownMenuSelectSubTrigger,
 } from "../components/feedback/dropdown-menu"
 export { EmptyState } from "../components/feedback/empty-state"
 export { Popover, PopoverContent, PopoverTrigger } from "../components/feedback/popover"
