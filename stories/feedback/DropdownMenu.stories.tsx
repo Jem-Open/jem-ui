@@ -252,7 +252,7 @@ const options = [
   <DropdownMenuSelectTrigger placeholder="Select period">
     {options.find((o) => o.value === value)?.label}
   </DropdownMenuSelectTrigger>
-  <DropdownMenuContent align="start">
+  <DropdownMenuContent align="start" fullWidth>
     <DropdownMenuRadioGroup value={value} onValueChange={setValue}>
       {options.map((o) => (
         <DropdownMenuSelectItem key={o.value} value={o.value}>
@@ -267,7 +267,7 @@ const options = [
             <DropdownMenuSelectTrigger placeholder="Select period">
               {periodOptions.find((o) => o.value === period)?.label}
             </DropdownMenuSelectTrigger>
-            <DropdownMenuContent align="start">
+            <DropdownMenuContent align="start" fullWidth>
               <DropdownMenuRadioGroup value={period} onValueChange={setPeriod}>
                 {periodOptions.map((o) => (
                   <DropdownMenuSelectItem key={o.value} value={o.value}>
@@ -295,7 +295,7 @@ const selected = options.find((o) => o.value === value)
   <DropdownMenuSelectTrigger placeholder="Select range">
     {selected?.displayLabel}
   </DropdownMenuSelectTrigger>
-  <DropdownMenuContent align="start">
+  <DropdownMenuContent align="start" fullWidth>
     <DropdownMenuRadioGroup value={value} onValueChange={setValue}>
       {options.map((o) => (
         <DropdownMenuSelectItem key={o.value} value={o.value}>
@@ -310,7 +310,7 @@ const selected = options.find((o) => o.value === value)
             <DropdownMenuSelectTrigger placeholder="Select range">
               {selectedShortLabel}
             </DropdownMenuSelectTrigger>
-            <DropdownMenuContent align="start">
+            <DropdownMenuContent align="start" fullWidth>
               <DropdownMenuRadioGroup value={shortPeriod} onValueChange={setShortPeriod}>
                 {shortLabelOptions.map((o) => (
                   <DropdownMenuSelectItem key={o.value} value={o.value}>
@@ -337,7 +337,7 @@ const selected = options.find((o) => o.value === value)
   <DropdownMenuSelectTrigger placeholder="Select period">
     {options.find((o) => o.value === value)?.label}
   </DropdownMenuSelectTrigger>
-  <DropdownMenuContent align="start">
+  <DropdownMenuContent align="start" fullWidth>
     <DropdownMenuRadioGroup value={value} onValueChange={setValue}>
       {options.map((o) => (
         <DropdownMenuSelectItem key={o.value} value={o.value} disabled={o.disabled}>
@@ -388,7 +388,7 @@ const selected = options.find((o) => o.value === value)
   <DropdownMenuSelectTrigger placeholder="Select period">
     {options.find((o) => o.value === value)?.label}
   </DropdownMenuSelectTrigger>
-  <DropdownMenuContent align="start">
+  <DropdownMenuContent align="start" fullWidth>
     <DropdownMenuRadioGroup value={value} onValueChange={setValue}>
       {options.map((o) => (
         <DropdownMenuSelectItem key={o.value} value={o.value}>
@@ -454,7 +454,7 @@ const triggerLabel =
   <DropdownMenuSelectTrigger placeholder="Select period">
     {triggerLabel}
   </DropdownMenuSelectTrigger>
-  <DropdownMenuContent align="start">
+  <DropdownMenuContent align="start" fullWidth>
     <DropdownMenuRadioGroup
       value={value === "custom" ? "" : value}
       onValueChange={(v) => { setValue(v); setDateRange(undefined) }}
@@ -744,7 +744,7 @@ export const SingleSelect: Story = {
         <DropdownMenuSelectTrigger placeholder="Select period">
           {options.find((o) => o.value === value)?.label}
         </DropdownMenuSelectTrigger>
-        <DropdownMenuContent align="start">
+        <DropdownMenuContent align="start" fullWidth>
           <DropdownMenuRadioGroup value={value} onValueChange={setValue}>
             {options.map((o) => (
               <DropdownMenuSelectItem key={o.value} value={o.value}>
@@ -772,7 +772,7 @@ export const WithDisplayLabel: Story = {
         <DropdownMenuSelectTrigger placeholder="Select range">
           {selected?.displayLabel}
         </DropdownMenuSelectTrigger>
-        <DropdownMenuContent align="start">
+        <DropdownMenuContent align="start" fullWidth>
           <DropdownMenuRadioGroup value={value} onValueChange={setValue}>
             {options.map((o) => (
               <DropdownMenuSelectItem key={o.value} value={o.value}>
@@ -813,7 +813,7 @@ export const WithCalendarSubMenu: Story = {
         <DropdownMenuSelectTrigger placeholder="Select period">
           {triggerLabel}
         </DropdownMenuSelectTrigger>
-        <DropdownMenuContent align="start">
+        <DropdownMenuContent align="start" fullWidth>
           <DropdownMenuRadioGroup
             value={value === "custom" ? "" : value}
             onValueChange={(v) => { setValue(v); setDateRange(undefined) }}
