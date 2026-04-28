@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
-import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react"
+import { CheckIcon, ChevronDownIcon, ChevronRightIcon, CircleIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -237,6 +237,69 @@ function DropdownMenuSubTrigger({
   )
 }
 
+/**
+ * A styled trigger that matches the Select / DatePicker input appearance.
+ * Use inside `<DropdownMenu>` in place of a raw `<DropdownMenuTrigger>`.
+ * Pass `placeholder` to show placeholder text when no value is selected
+ * (i.e. when `children` is null / undefined / false / empty string).
+ */
+function DropdownMenuSelectTrigger({
+  className,
+  children,
+  placeholder,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger> & {
+  placeholder?: string
+}) {
+  const isEmpty = children == null || children === false || children === ""
+  return (
+    <DropdownMenuPrimitive.Trigger
+      data-slot="dropdown-menu-select-trigger"
+      className={cn(
+        "flex h-[46px] min-w-[160px] items-center justify-between gap-2 rounded-lg border border-[--greyscale-border-default] bg-white px-4 py-3 text-sm transition-all outline-none",
+        "hover:border-[--greyscale-border-darker] data-[state=open]:border-[--greyscale-border-darker]",
+        "disabled:cursor-not-allowed disabled:opacity-50",
+        isEmpty
+          ? "font-normal text-[--greyscale-text-disabled]"
+          : "font-semibold text-[--greyscale-text-body]",
+        className
+      )}
+      {...props}
+    >
+      <span className="truncate">{isEmpty ? placeholder : children}</span>
+      <ChevronDownIcon className="size-4 shrink-0 text-[--greyscale-text-caption]" />
+    </DropdownMenuPrimitive.Trigger>
+  )
+}
+
+/**
+ * A single-select list item that uses a pink background to mark the selected
+ * state instead of the default radio dot. Must be used inside
+ * `<DropdownMenuRadioGroup>`.
+ */
+function DropdownMenuSelectItem({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.RadioItem>) {
+  return (
+    <DropdownMenuPrimitive.RadioItem
+      data-slot="dropdown-menu-select-item"
+      className={cn(
+        "relative flex cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-sm text-greyscale-text-body outline-hidden select-none transition-colors",
+        "focus:bg-[--pink-50] focus:text-[--greyscale-text-body]",
+        "data-[state=checked]:bg-[--pink-50] data-[state=checked]:text-[--greyscale-text-body] data-[state=checked]:font-semibold",
+        "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </DropdownMenuPrimitive.RadioItem>
+  )
+}
+
 function DropdownMenuSubContent({
   className,
   ...props
@@ -258,6 +321,7 @@ export {
   DropdownMenu,
   DropdownMenuPortal,
   DropdownMenuTrigger,
+  DropdownMenuSelectTrigger,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuLabel,
@@ -265,6 +329,7 @@ export {
   DropdownMenuCheckboxItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuSelectItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuSub,
