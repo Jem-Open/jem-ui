@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
-import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react"
+import { CheckIcon, ChevronDownIcon, ChevronRightIcon, CircleIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -34,8 +34,11 @@ function DropdownMenuTrigger({
 function DropdownMenuContent({
   className,
   sideOffset = 4,
+  matchTriggerWidth = true,
   ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Content>) {
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Content> & {
+  matchTriggerWidth?: boolean
+}) {
   return (
     <DropdownMenuPrimitive.Portal>
       <DropdownMenuPrimitive.Content
@@ -44,6 +47,7 @@ function DropdownMenuContent({
         className={cn(
           "z-50 max-h-(--radix-dropdown-menu-content-available-height) min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-lg border border-greyscale-border bg-white p-1 shadow-md",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+          matchTriggerWidth && "w-[var(--radix-dropdown-menu-trigger-width)]",
           className
         )}
         {...props}
@@ -75,7 +79,7 @@ function DropdownMenuItem({
       data-inset={inset}
       data-variant={variant}
       className={cn(
-        "relative flex cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-sm text-greyscale-text-body outline-hidden select-none transition-colors",
+        "relative flex cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-sm text-greyscale-text-body outline-none select-none transition-colors",
         "focus:bg-neutral-50 focus:text-greyscale-text-title",
         "data-[variant=destructive]:text-red-600 data-[variant=destructive]:focus:bg-red-50 data-[variant=destructive]:focus:text-red-600",
         "[&_svg:not([class*='text-'])]:text-greyscale-text-caption [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
@@ -97,7 +101,7 @@ function DropdownMenuCheckboxItem({
     <DropdownMenuPrimitive.CheckboxItem
       data-slot="dropdown-menu-checkbox-item"
       className={cn(
-        "relative flex cursor-default items-center gap-2 rounded-md py-1.5 pr-2 pl-8 text-sm text-greyscale-text-body outline-hidden select-none transition-colors",
+        "relative flex cursor-default items-center gap-2 rounded-md py-1.5 pr-2 pl-8 text-sm text-greyscale-text-body outline-none select-none transition-colors",
         "focus:bg-neutral-50 focus:text-greyscale-text-title",
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
@@ -136,7 +140,7 @@ function DropdownMenuRadioItem({
     <DropdownMenuPrimitive.RadioItem
       data-slot="dropdown-menu-radio-item"
       className={cn(
-        "relative flex cursor-default items-center gap-2 rounded-md py-1.5 pr-2 pl-8 text-sm text-greyscale-text-body outline-hidden select-none transition-colors",
+        "relative flex cursor-default items-center gap-2 rounded-md py-1.5 pr-2 pl-8 text-sm text-greyscale-text-body outline-none select-none transition-colors",
         "focus:bg-neutral-50 focus:text-greyscale-text-title",
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
@@ -222,7 +226,7 @@ function DropdownMenuSubTrigger({
       data-slot="dropdown-menu-sub-trigger"
       data-inset={inset}
       className={cn(
-        "flex cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-sm text-greyscale-text-body outline-hidden select-none transition-colors",
+        "flex cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-sm text-greyscale-text-body outline-none select-none transition-colors",
         "focus:bg-neutral-50 focus:text-greyscale-text-title",
         "data-[state=open]:bg-neutral-50 data-[state=open]:text-greyscale-text-title",
         "[&_svg:not([class*='text-'])]:text-greyscale-text-caption [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
@@ -234,6 +238,98 @@ function DropdownMenuSubTrigger({
       {children}
       <ChevronRightIcon className="ml-auto size-4" />
     </DropdownMenuPrimitive.SubTrigger>
+  )
+}
+
+/**
+ * A styled trigger that matches the Select / DatePicker input appearance.
+ * Use inside `<DropdownMenu>` in place of a raw `<DropdownMenuTrigger>`.
+ * Pass `placeholder` to show placeholder text when no value is selected
+ * (i.e. when `children` is null / undefined / false / empty string).
+ */
+function DropdownMenuSelectTrigger({
+  className,
+  children,
+  placeholder,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger> & {
+  placeholder?: string
+}) {
+  const isEmpty = children == null || children === false || children === ""
+  return (
+    <DropdownMenuPrimitive.Trigger
+      data-slot="dropdown-menu-select-trigger"
+      className={cn(
+        "flex h-[46px] min-w-[160px] items-center justify-between gap-2 rounded-lg border border-[--greyscale-border-default] bg-white px-4 py-3 text-sm transition-all outline-none",
+        "hover:border-[--greyscale-border-darker] data-[state=open]:border-[--greyscale-border-darker]",
+        "disabled:cursor-not-allowed disabled:opacity-50",
+        isEmpty
+          ? "font-normal text-[--greyscale-text-disabled]"
+          : "font-semibold text-[--greyscale-text-body]",
+        className
+      )}
+      {...props}
+    >
+      <span className="truncate">{isEmpty ? placeholder : children}</span>
+      <ChevronDownIcon className="size-4 shrink-0 text-[--greyscale-text-caption]" />
+    </DropdownMenuPrimitive.Trigger>
+  )
+}
+
+/**
+ * A single-select list item that uses a pink background to mark the selected
+ * state instead of the default radio dot. Must be used inside
+ * `<DropdownMenuRadioGroup>`.
+ */
+function DropdownMenuSelectItem({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.RadioItem>) {
+  return (
+    <DropdownMenuPrimitive.RadioItem
+      data-slot="dropdown-menu-select-item"
+      className={cn(
+        "relative flex cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-sm text-greyscale-text-body outline-none select-none transition-colors",
+        "focus:bg-[--pink-50] focus:text-[--greyscale-text-body]",
+        "data-[state=checked]:bg-[--pink-50] data-[state=checked]:text-[--greyscale-text-body] data-[state=checked]:font-semibold",
+        "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </DropdownMenuPrimitive.RadioItem>
+  )
+}
+
+/**
+ * A select-style sub-menu trigger with pink hover and open states.
+ * Use in place of DropdownMenuSubTrigger inside a select-style dropdown.
+ * Pass `active` when this option is the currently selected value.
+ */
+function DropdownMenuSelectSubTrigger({
+  className,
+  active,
+  children,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.SubTrigger> & {
+  active?: boolean
+}) {
+  return (
+    <DropdownMenuSubTrigger
+      data-slot="dropdown-menu-select-sub-trigger"
+      className={cn(
+        "hover:bg-[--pink-50] hover:text-[--greyscale-text-body]",
+        "data-[state=open]:bg-[--pink-50] data-[state=open]:text-[--greyscale-text-body]",
+        active && "bg-[--pink-50] text-[--greyscale-text-body] font-semibold",
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </DropdownMenuSubTrigger>
   )
 }
 
@@ -258,6 +354,7 @@ export {
   DropdownMenu,
   DropdownMenuPortal,
   DropdownMenuTrigger,
+  DropdownMenuSelectTrigger,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuLabel,
@@ -265,9 +362,11 @@ export {
   DropdownMenuCheckboxItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuSelectItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuSub,
   DropdownMenuSubTrigger,
+  DropdownMenuSelectSubTrigger,
   DropdownMenuSubContent,
 }
