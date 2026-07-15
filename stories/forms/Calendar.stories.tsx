@@ -210,3 +210,31 @@ export const Disabled: Story = {
     </div>
   ),
 };
+
+// Constrained range — a "period" of two single pickers where the end can't precede the start.
+// `disabledDates` deactivates the out-of-range days in each calendar so an invalid range can't be
+// picked in the first place (rather than being rejected on submit).
+export const ConstrainedRange: Story = {
+  render: () => {
+    const [start, setStart] = React.useState<Date>();
+    const [end, setEnd] = React.useState<Date>();
+    return (
+      <div className="flex w-[280px] flex-col gap-4">
+        <DatePicker
+          date={start}
+          onDateChange={setStart}
+          label="Period start"
+          // The start can't sit after a chosen end.
+          disabledDates={end ? { after: end } : undefined}
+        />
+        <DatePicker
+          date={end}
+          onDateChange={setEnd}
+          label="Period end"
+          // The end can't precede a chosen start — earlier days are greyed out.
+          disabledDates={start ? { before: start } : undefined}
+        />
+      </div>
+    );
+  },
+};

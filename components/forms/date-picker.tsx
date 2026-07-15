@@ -3,7 +3,7 @@
 import * as React from "react"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
-import { type DateRange } from "react-day-picker"
+import { type DateRange, type Matcher } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
 import { Calendar } from "@/components/forms/calendar"
@@ -19,6 +19,13 @@ interface DatePickerProps {
   placeholder?: string
   className?: string
   disabled?: boolean
+  /**
+   * Days to deactivate within the calendar (a react-day-picker `Matcher`), e.g. `{ before: min }`
+   * or `{ after: max }`. Use this to constrain one end of a date range so it cannot cross the other
+   * (a "period end" that can't precede the "period start"). Note: `disabled` (above) is the separate
+   * whole-field boolean; `disabledDates` only greys out individual days.
+   */
+  disabledDates?: Matcher | Matcher[]
   label?: string
 }
 
@@ -28,6 +35,7 @@ function DatePicker({
   placeholder = "Select date",
   className,
   disabled,
+  disabledDates,
   label,
 }: DatePickerProps) {
   return (
@@ -57,6 +65,7 @@ function DatePicker({
             mode="single"
             selected={date}
             onSelect={onDateChange}
+            disabled={disabledDates}
             className="border-0 p-0"
           />
         </PopoverContent>
@@ -71,6 +80,8 @@ interface DateRangePickerProps {
   placeholder?: string
   className?: string
   disabled?: boolean
+  /** Days to deactivate within the calendar (a react-day-picker `Matcher`), e.g. `{ before: today }`. */
+  disabledDates?: Matcher | Matcher[]
   label?: string
 }
 
@@ -80,6 +91,7 @@ function DateRangePicker({
   placeholder = "Select date range",
   className,
   disabled,
+  disabledDates,
   label,
 }: DateRangePickerProps) {
   return (
@@ -119,6 +131,7 @@ function DateRangePicker({
             mode="range"
             selected={dateRange}
             onSelect={onDateRangeChange}
+            disabled={disabledDates}
             numberOfMonths={2}
             className="border-0 p-0"
           />
