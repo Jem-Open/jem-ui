@@ -84,3 +84,23 @@ test("server helper export is present and dependency-safe", async () => {
     )
   }
 })
+
+test("0.4.1 release metadata runs the RSC gate in CI", async () => {
+  const packageJson = JSON.parse(await read("package.json"))
+  assert.equal(packageJson.version, "0.4.1")
+  assert.equal(
+    packageJson.scripts.prepublishOnly,
+    "npm run build:lib && npm run test:boundaries",
+  )
+
+  for (const workflow of [
+    ".github/workflows/pr-build.yml",
+    ".github/workflows/publish.yml",
+  ]) {
+    assert.match(await read(workflow), /npm run verify:rsc/)
+  }
+
+  const changelog = await read("CHANGELOG.md")
+  assert.match(changelog, /## \[0\.4\.1\] - 2026-07-19/)
+  assert.match(changelog, /Next\.js 16/)
+})
