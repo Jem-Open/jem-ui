@@ -4,13 +4,10 @@ import { sharedOptions } from "./tsup.shared"
 
 export default defineConfig({
   ...sharedOptions,
-  name: "client",
+  name: "non-client",
   entry: {
-    index: "src/index.ts",
+    "tailwind-preset": "src/tailwind-preset.ts",
   },
-  banner: {
-    js: '"use client";',
-  },
-  clean: true,
-  treeshake: false,
+  clean: false,
+  treeshake: true,
 })

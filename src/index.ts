@@ -1,3 +1,5 @@
+"use client";
+
 // Forms
 export { Button, IconButton, buttonVariants, iconButtonVariants } from "../components/forms/button"
 export { Calendar } from "../components/forms/calendar"
