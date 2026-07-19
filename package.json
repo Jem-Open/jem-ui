@@ -16,6 +16,16 @@
         "default": "./dist/index.js"
       }
     },
+    "./server": {
+      "import": {
+        "types": "./dist/server.d.mts",
+        "default": "./dist/server.mjs"
+      },
+      "require": {
+        "types": "./dist/server.d.ts",
+        "default": "./dist/server.js"
+      }
+    },
     "./tailwind-preset": {
       "import": {
         "types": "./dist/tailwind-preset.d.mts",
