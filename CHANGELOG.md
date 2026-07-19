@@ -2,6 +2,12 @@
 
 All notable changes to `@jem-open/jem-ui` are documented here.
 
+## [0.4.2] - 2026-07-19
+
+### Fixed
+
+- Made the release smoke gate parse npm 12's package-keyed `npm pack --json` output while preserving npm 11 array compatibility and validating malformed results.
+
 ## [0.4.1] - 2026-07-19
 
 ### Added
@@ -19,4 +25,5 @@ All notable changes to `@jem-open/jem-ui` are documented here.
 
 - Documented the RSC serialization contract and corrected dependency packaging guidance.
 
+[0.4.2]: https://github.com/Jem-Open/jem-ui/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/Jem-Open/jem-ui/compare/v0.4.0...v0.4.1

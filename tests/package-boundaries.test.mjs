@@ -85,9 +85,13 @@ test("server helper export is present and dependency-safe", async () => {
   }
 })
 
-test("0.4.1 release metadata runs the RSC gate in CI", async () => {
+test("0.4.2 release metadata runs the RSC gate in CI", async () => {
   const packageJson = JSON.parse(await read("package.json"))
-  assert.equal(packageJson.version, "0.4.1")
+  assert.equal(packageJson.version, "0.4.2")
+  assert.equal(
+    packageJson.scripts["test:boundaries"],
+    "node --test tests/package-boundaries.test.mjs tests/npm-pack-output.test.mjs",
+  )
   assert.equal(
     packageJson.scripts.prepublishOnly,
     "npm run build:lib && npm run test:boundaries",
@@ -101,6 +105,8 @@ test("0.4.1 release metadata runs the RSC gate in CI", async () => {
   }
 
   const changelog = await read("CHANGELOG.md")
+  assert.match(changelog, /## \[0\.4\.2\] - 2026-07-19/)
+  assert.match(changelog, /npm 12/)
   assert.match(changelog, /## \[0\.4\.1\] - 2026-07-19/)
   assert.match(changelog, /Next\.js 16/)
 })
