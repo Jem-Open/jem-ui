@@ -276,14 +276,16 @@ try {
   }
 
   run(["ci", "--ignore-scripts", "--no-audit", "--no-fund"], { cwd: appRoot })
+
+  // Saving the package into the temporary manifest prevents Next.js's
+  // automatic TypeScript dependency install from pruning the package.
   run(
     [
       "install",
-      "--no-save",
+      "--save-exact",
       "--ignore-scripts",
       "--no-audit",
       "--no-fund",
-      "--package-lock=false",
       packageSpec,
     ],
     { cwd: appRoot },
