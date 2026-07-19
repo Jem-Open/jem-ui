@@ -24,7 +24,8 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run build:lib
+      - name: Verify Next.js 16 RSC compatibility
+        run: npm run verify:rsc
 
       - name: Publish to npm
         run: npm publish --provenance --access public

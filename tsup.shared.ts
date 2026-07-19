@@ -1,0 +1,42 @@
+import type { Options } from "tsup"
+
+export const sharedOptions = {
+  format: ["cjs", "esm"],
+  dts: {
+    compilerOptions: {
+      incremental: false,
+    },
+  },
+  tsconfig: "tsconfig.build.json",
+  splitting: false,
+  sourcemap: true,
+  external: [
+    "react",
+    "react-dom",
+    "tailwindcss",
+    "@radix-ui/react-accordion",
+    "@radix-ui/react-avatar",
+    "@radix-ui/react-checkbox",
+    "@radix-ui/react-dialog",
+    "@radix-ui/react-dropdown-menu",
+    "@radix-ui/react-label",
+    "@radix-ui/react-popover",
+    "@radix-ui/react-progress",
+    "@radix-ui/react-radio-group",
+    "@radix-ui/react-select",
+    "@radix-ui/react-slot",
+    "@radix-ui/react-switch",
+    "@radix-ui/react-tabs",
+    "@radix-ui/react-tooltip",
+    "@tanstack/react-table",
+    "class-variance-authority",
+    "clsx",
+    "date-fns",
+    "lucide-react",
+    "react-day-picker",
+    "sonner",
+    "tailwind-merge",
+    "vaul",
+  ],
+  minify: false,
+} satisfies Options

@@ -18,7 +18,7 @@ The following peer dependencies are required:
 npm install react@"^18.0.0 || ^19.0.0" react-dom@"^18.0.0 || ^19.0.0" tailwindcss@"^3.4.0"
 ```
 
-All other dependencies (Radix UI components, Lucide icons, etc.) are bundled with the package, so you don't need to install them separately.
+All other dependencies (Radix UI components, Lucide icons, and related runtime packages) are installed automatically as regular package dependencies. They are externalized from the Jem UI build rather than copied into a consumer bundle.
 
 ## Integration
 
@@ -69,6 +69,32 @@ export default function App() {
   )
 }
 ```
+
+## Next.js App Router and React Server Components
+
+The package root is a client boundary, so Server Components can import and render Jem UI components directly:
+
+```tsx
+import { Button, Table, Tooltip } from "@jem-open/jem-ui"
+
+export default function Page() {
+  return <Button>Continue</Button>
+}
+```
+
+Props passed from a Server Component to Jem UI must be serializable. Put non-serializable callbacks or component constructors, such as a Lucide icon component function, behind your own Client Component boundary.
+
+Callable class helpers used during server rendering come from the server-safe subpath:
+
+```tsx
+import { buttonVariants, cn } from "@jem-open/jem-ui/server"
+
+export default function Page() {
+  return <main className={cn("p-4", buttonVariants({ variant: "primary" }))} />
+}
+```
+
+Root imports of these helpers remain supported inside Client Components. Server Components should use `/server` so they do not attempt to call through a client reference.
 
 ## Contributing
 
@@ -125,7 +151,7 @@ Quality checks (linting, type checking) will run automatically on your PR.
 After your PR is approved and merged to `main`, create a release to publish the changes:
 
 1. Navigate to [https://github.com/Jem-Open/jem-ui/releases/new](https://github.com/Jem-Open/jem-ui/releases/new)
-2. Create a new tag (e.g., `v0.2.1`) and click "Create new tag on publish"
+2. Create a new tag (e.g., `v0.4.1`) and click "Create new tag on publish"
 3. Click "Generate release notes" for an automatic changelog
 4. Review and publish the release
 
