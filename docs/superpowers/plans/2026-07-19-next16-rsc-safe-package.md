@@ -12,6 +12,7 @@
 
 - Target package version is exactly `0.4.1`; the release tag is exactly `v0.4.1`.
 - The regression fixture uses exactly Next.js `16.2.10`, React `19.2.7`, and React DOM `19.2.7`.
+- The fixture toolchain matches the upgraded Hub lock with TypeScript `5.9.3`, `@types/node` `22.19.21`, `@types/react` `19.2.17`, and `@types/react-dom` `19.2.3`.
 - `dist/index.mjs` and `dist/index.js` must begin with the exact executable directive `"use client";`.
 - `next build` in the fixture must use Next.js 16's default Turbopack path and must never pass `--webpack`.
 - The existing root component and helper exports remain source-compatible for Client Components.
@@ -159,6 +160,12 @@ Create `tests/fixtures/next16-rsc/package.json`:
     "next": "16.2.10",
     "react": "19.2.7",
     "react-dom": "19.2.7"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.21",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "typescript": "5.9.3"
   }
 }
 ```
