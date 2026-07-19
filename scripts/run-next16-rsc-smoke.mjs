@@ -3,6 +3,7 @@ import { cp, mkdtemp, readFile, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
+import { parseNpmPackFilename } from "./parse-npm-pack-output.mjs"
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..")
 const fixtureRoot = resolve(repoRoot, "tests/fixtures/next16-rsc")
@@ -31,7 +32,7 @@ try {
       ["pack", "--json", "--ignore-scripts", "--pack-destination", temporaryRoot],
       { encoding: "utf8" },
     )
-    const [{ filename }] = JSON.parse(packOutput)
+    const filename = parseNpmPackFilename(packOutput)
     packageSpec = join(temporaryRoot, filename)
   }
 
