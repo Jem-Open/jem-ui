@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-19
 
-**Status:** Design approved; written specification awaiting review
+**Status:** Approved
 
 **Target release:** `@jem-open/jem-ui@0.4.1`
 
