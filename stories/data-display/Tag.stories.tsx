@@ -1,7 +1,12 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect } from "storybook/test";
 import { Info, FileText, ArrowUpFromLine } from "lucide-react";
 import { Tag, DismissibleTag, CountTag } from "@/components/data-display/tag";
+import {
+  formatMeasurement,
+  measureContrast,
+} from "@/stories/test/contrast";
 
 const meta: Meta<typeof Tag> = {
   title: "Data Display/Tag",
@@ -237,4 +242,128 @@ export const Dismissible: Story = {
       </DismissibleTag>
     </div>
   ),
+};
+
+const contrastTagVariants = [
+  "default",
+  "success",
+  "processing",
+  "pending",
+  "failed",
+  "drafted",
+  "outline",
+  "outline-navy",
+  "neutral",
+  "pink",
+  "pink-text",
+  "lime",
+  "purple",
+] as const;
+
+export const ContrastMatrix: Story = {
+  render: () => (
+    <div className="w-[720px] rounded-xl bg-white p-6">
+      <div className="grid grid-cols-2 gap-4">
+        {contrastTagVariants.map((variant) => (
+          <div key={variant} className="rounded-lg border border-greyscale-border p-3">
+            <Tag
+              variant={variant}
+              icon={<Info aria-hidden="true" />}
+              data-tag-contrast={variant}
+            >
+              {variant}
+            </Tag>
+            <output
+              data-tag-contrast-output={variant}
+              className="mt-2 block text-xs text-greyscale-text-body"
+            >
+              Not measured
+            </output>
+          </div>
+        ))}
+      </div>
+      <div
+        className="sr-only"
+        style={{ backgroundColor: "rgba(255, 0, 0, 0.5)" }}
+      >
+        <span
+          data-contrast-alpha-fixture
+          style={{ color: "rgba(0, 0, 0, 0.5)" }}
+        >
+          Alpha compositing fixture
+        </span>
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const failures: string[] = [];
+    const tags = Array.from(
+      canvasElement.querySelectorAll<HTMLElement>("[data-tag-contrast]"),
+    );
+
+    await expect(tags).toHaveLength(contrastTagVariants.length);
+
+    const alphaFixture = canvasElement.querySelector<HTMLElement>(
+      "[data-contrast-alpha-fixture]",
+    );
+    if (!alphaFixture) {
+      throw new Error("Missing alpha-compositing contrast fixture");
+    }
+    const alphaMeasurement = measureContrast(alphaFixture);
+    await expect(alphaMeasurement.foreground).toBe("rgb(128, 64, 64)");
+    await expect(alphaMeasurement.background).toBe("rgb(255, 128, 128)");
+    await expect(alphaMeasurement.ratio).toBeCloseTo(3.18, 2);
+
+    for (const variant of contrastTagVariants) {
+      const tag = canvasElement.querySelector<HTMLElement>(
+        `[data-tag-contrast="${variant}"]`,
+      );
+      const output = canvasElement.querySelector<HTMLOutputElement>(
+        `[data-tag-contrast-output="${variant}"]`,
+      );
+      if (!tag || !output) {
+        throw new Error(`Missing tag contrast fixture for ${variant}`);
+      }
+
+      const icon = tag.querySelector<SVGElement>("svg");
+      if (!icon) {
+        throw new Error(`Missing currentColor icon for ${variant}`);
+      }
+
+      const textMeasurement = measureContrast(tag);
+      const iconMeasurement = measureContrast(icon, icon, "stroke");
+      const tagColor = getComputedStyle(tag).color;
+      const iconColor = getComputedStyle(icon).color;
+      const iconStroke = getComputedStyle(icon).stroke;
+
+      output.textContent =
+        `text ${formatMeasurement(textMeasurement)}; ` +
+        `icon ${formatMeasurement(iconMeasurement)}`;
+
+      if (textMeasurement.ratio < 4.5) {
+        failures.push(
+          `${variant}/text: ${formatMeasurement(textMeasurement)}`,
+        );
+      }
+      if (iconMeasurement.ratio < 4.5) {
+        failures.push(
+          `${variant}/icon: ${formatMeasurement(iconMeasurement)}`,
+        );
+      }
+      if (
+        icon.getAttribute("stroke") !== "currentColor" ||
+        iconColor !== tagColor ||
+        iconStroke !== tagColor
+      ) {
+        failures.push(
+          `${variant}/icon-currentColor: tag ${tagColor}; icon color ${iconColor}; icon stroke ${iconStroke}`,
+        );
+      }
+    }
+
+    await expect(
+      failures,
+      `Tag foreground/background pairs below 4.5:1 or detached from currentColor:\n${failures.join("\n")}`,
+    ).toEqual([]);
+  },
 };

@@ -3,6 +3,11 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, fn, userEvent, within } from "storybook/test";
 import { Mail, Plus } from "lucide-react";
 import { Button, IconButton } from "@/components/forms/button";
+import {
+  formatMeasurement,
+  measureContrast,
+  waitForVisualState,
+} from "@/stories/test/contrast";
 
 const defaultTypeOnSubmit = fn();
 const explicitSubmitOnSubmit = fn();
@@ -508,6 +513,158 @@ export const AllStates: Story = {
       ))}
     </div>
   ),
+};
+
+const contrastButtonVariants = [
+  "default",
+  "primary",
+  "secondary",
+  "destructive",
+  "approve",
+  "outline",
+  "subtle",
+  "ghost",
+  "link",
+] as const;
+
+const contrastButtonStates = [
+  "normal",
+  "hover",
+  "active",
+  "focus-visible",
+] as const;
+
+type ContrastButtonState = (typeof contrastButtonStates)[number];
+
+function contrastOutput(
+  canvasElement: HTMLElement,
+  variant: (typeof contrastButtonVariants)[number],
+  state: ContrastButtonState,
+): HTMLElement {
+  const output = canvasElement.querySelector<HTMLElement>(
+    `[data-button-contrast-output="${variant}-${state}"]`,
+  );
+  if (!output) {
+    throw new Error(`Missing contrast output for ${variant}/${state}`);
+  }
+  return output;
+}
+
+export const ContrastMatrix: Story = {
+  render: () => (
+    <div className="w-[920px] rounded-xl bg-white p-6 text-greyscale-text-title">
+      <div className="grid grid-cols-[140px_repeat(4,minmax(0,1fr))] gap-3">
+        <strong>Variant</strong>
+        {contrastButtonStates.map((state) => (
+          <strong key={state} className="capitalize">{state}</strong>
+        ))}
+        {contrastButtonVariants.map((variant) => (
+          <React.Fragment key={variant}>
+            <span className="font-semibold capitalize">{variant}</span>
+            {contrastButtonStates.map((state) => (
+              <div key={state} className="min-w-0">
+                <span
+                  tabIndex={0}
+                  data-focus-before={`${variant}-${state}`}
+                  className="sr-only"
+                >
+                  Focus before {variant} {state}
+                </span>
+                <Button
+                  variant={variant}
+                  leftIcon={<Mail aria-hidden="true" />}
+                  data-button-contrast={`${variant}-${state}`}
+                >
+                  {variant}
+                </Button>
+                <output
+                  data-button-contrast-output={`${variant}-${state}`}
+                  className="mt-1 block text-[10px] leading-tight text-greyscale-text-body"
+                >
+                  Not measured
+                </output>
+              </div>
+            ))}
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    if (!Reflect.has(window, "__vitest_browser_runner__")) {
+      return;
+    }
+
+    const failures: string[] = [];
+    const {
+      page,
+      userEvent: browserUserEvent,
+    } = await import("@vitest/browser/context");
+
+    for (const variant of contrastButtonVariants) {
+      for (const state of contrastButtonStates) {
+        const button = canvasElement.querySelector<HTMLButtonElement>(
+          `[data-button-contrast="${variant}-${state}"]`,
+        );
+        if (!button) {
+          throw new Error(`Missing contrast button for ${variant}/${state}`);
+        }
+        const locator = page.elementLocator(button);
+
+        if (state === "normal") {
+          await locator.unhover();
+          button.blur();
+        } else if (state === "hover") {
+          await locator.hover();
+          await expect(button.matches(":hover")).toBe(true);
+        } else if (state === "active") {
+          const focusBefore = canvasElement.querySelector<HTMLElement>(
+            `[data-focus-before="${variant}-${state}"]`,
+          );
+          if (!focusBefore) {
+            throw new Error(`Missing focus sentinel for ${variant}/${state}`);
+          }
+          focusBefore.focus();
+          await browserUserEvent.tab();
+          await expect(button).toHaveFocus();
+          await browserUserEvent.keyboard("{Space>}");
+          await expect(button.matches(":active")).toBe(true);
+        } else {
+          await locator.unhover();
+          button.blur();
+          const focusBefore = canvasElement.querySelector<HTMLElement>(
+            `[data-focus-before="${variant}-${state}"]`,
+          );
+          if (!focusBefore) {
+            throw new Error(`Missing focus sentinel for ${variant}/${state}`);
+          }
+          focusBefore.focus();
+          await browserUserEvent.tab();
+          await expect(button).toHaveFocus();
+          await expect(button.matches(":focus-visible")).toBe(true);
+        }
+
+        await waitForVisualState(button);
+        const measurement = measureContrast(button);
+        contrastOutput(canvasElement, variant, state).textContent =
+          formatMeasurement(measurement);
+        if (measurement.ratio < 4.5) {
+          failures.push(
+            `${variant}/${state}: ${formatMeasurement(measurement)}`,
+          );
+        }
+
+        if (state === "active") {
+          await browserUserEvent.keyboard("{/Space}");
+        }
+      }
+    }
+
+    await expect(
+      failures,
+      `Button foreground/background pairs below 4.5:1:\n${failures.join("\n")}`,
+    ).toEqual([]);
+  },
 };
 
 // Icon Buttons
