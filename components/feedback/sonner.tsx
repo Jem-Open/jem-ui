@@ -26,7 +26,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
           cancelButton:
             "group-[.toast]:bg-white group-[.toast]:text-greyscale-text-title group-[.toast]:border group-[.toast]:border-greyscale-border group-[.toast]:rounded-full group-[.toast]:px-4 group-[.toast]:py-2 group-[.toast]:text-sm group-[.toast]:font-semibold group-[.toast]:hover:bg-secondary-pink-300",
           closeButton:
-            "!absolute !right-3 !top-3 !left-auto !transform-none !border-none !bg-transparent !p-0 !h-auto !w-auto",
+            "!absolute !right-1 !top-1 !left-auto !transform-none !border-none !bg-transparent !p-0 !size-11",
           success: "group-[.toaster]:text-green-600 [&_[data-title]]:text-green-600",
           error: "group-[.toaster]:text-red-600 [&_[data-title]]:text-red-600",
           info: "group-[.toaster]:text-blue-600 [&_[data-title]]:text-blue-600",

@@ -47,6 +47,12 @@ function Upload({
   const isUploading = state === "uploading"
   const isUploaded = state === "uploaded"
 
+  React.useEffect(() => {
+    if (isDefault) return
+
+    setSelectedFiles([])
+  }, [isDefault])
+
   const selectedFileName = fileName ?? selectedFiles[0]?.name
   const displayTitle = title || (isUploaded ? "File uploaded" : "Upload file")
   const displayDescription = description || (
@@ -101,7 +107,7 @@ function Upload({
         ref={inputRef}
         data-testid="upload-input"
         type="file"
-        className="sr-only"
+        className="hidden"
         accept={accept}
         multiple={multiple}
         disabled={disabled}
@@ -181,7 +187,11 @@ function Upload({
                   size="medium"
                   type="button"
                   disabled={disabled}
-                  onClick={onRemoveFile}
+                  onClick={() => {
+                    setSelectedFiles([])
+                    if (inputRef.current) inputRef.current.value = ""
+                    onRemoveFile?.()
+                  }}
                 >
                   Remove File
                 </Button>

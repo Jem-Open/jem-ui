@@ -7,14 +7,24 @@ import { DatePicker, DateRangePicker } from "@/components/forms/date-picker";
 
 const dateChanged = fn();
 const rangeChanged = fn();
-const rangeNow = new Date();
-const rangeStart = new Date(rangeNow.getFullYear(), rangeNow.getMonth(), 10);
-const rangeEnd = new Date(rangeNow.getFullYear(), rangeNow.getMonth(), 12);
+const rangeStart = new Date(2026, 0, 10);
+const rangeEnd = new Date(2026, 0, 12);
+const sameDay = new Date(2026, 0, 16);
 
 function dateKey(date: Date | undefined) {
   return date
     ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
     : "";
+}
+
+function activeCalendarDay(date: Date) {
+  const key = dateKey(date);
+  const day = Array.from(
+    document.body.querySelectorAll<HTMLButtonElement>(`[data-slot="calendar"] button[data-day="${key}"]`)
+  ).find((candidate) => !candidate.closest(".rdp-outside"));
+
+  if (!day) throw new Error(`Expected active calendar day ${key}`);
+  return day;
 }
 
 const meta: Meta<typeof Calendar> = {
@@ -183,7 +193,7 @@ export const WithLabel: Story = {
 // Date Range Picker
 export const RangePicker: Story = {
   render: () => {
-    const [dateRange, setDateRange] = React.useState<DateRange>();
+    const [dateRange, setDateRange] = React.useState<DateRange | undefined>();
     return (
       <div className="w-[380px]">
         <DateRangePicker dateRange={dateRange} onDateRangeChange={setDateRange} />
@@ -263,6 +273,7 @@ export const AccessibleControlledDatePicker: Story = {
     );
   },
   play: async ({ canvasElement }) => {
+    dateChanged.mockClear();
     const canvas = within(canvasElement);
     const trigger = canvas.getByRole("button", { name: /Pay date/ });
     const label = canvas.getByText("Pay date");
@@ -271,14 +282,14 @@ export const AccessibleControlledDatePicker: Story = {
     await expect(trigger).toHaveAttribute("type", "button");
     await expect(trigger).toHaveTextContent("15 January 2026");
     await userEvent.click(trigger);
-    const day = await within(document.body).findByTestId("day-2026-01-16");
+    const day = activeCalendarDay(new Date(2026, 0, 16));
     day.focus();
     await userEvent.keyboard("{Enter}");
     await expect(canvas.getByRole("status")).toHaveTextContent("2026-01-16");
     await expect(dateChanged).toHaveBeenCalledWith(new Date(2026, 0, 16));
     await expect(trigger).toHaveFocus();
     await userEvent.keyboard("{Enter}");
-    await within(document.body).findByTestId("day-2026-01-16");
+    await expect(activeCalendarDay(new Date(2026, 0, 16))).toBeVisible();
     await userEvent.keyboard("{Escape}");
     await expect(trigger).toHaveFocus();
   },
@@ -289,7 +300,7 @@ export const AccessibleControlledDateRangePicker: Story = {
     const [dateRange, setDateRange] = React.useState<DateRange | undefined>();
     return (
       <div className="w-[380px]">
-        <DateRangePicker label="Pay period" dateRange={dateRange} onDateRangeChange={(next) => { rangeChanged(next); setDateRange(next); }} />
+        <DateRangePicker defaultMonth={rangeStart} label="Pay period" dateRange={dateRange} onDateRangeChange={(next) => { rangeChanged(next); setDateRange(next); }} />
         <output aria-live="polite">
           {dateKey(dateRange?.from)} {dateKey(dateRange?.to)}
         </output>
@@ -297,6 +308,7 @@ export const AccessibleControlledDateRangePicker: Story = {
     );
   },
   play: async ({ canvasElement }) => {
+    rangeChanged.mockClear();
     const canvas = within(canvasElement);
     const trigger = canvas.getByRole("button", { name: /Pay period/ });
     const label = canvas.getByText("Pay period");
@@ -305,9 +317,116 @@ export const AccessibleControlledDateRangePicker: Story = {
     await expect(trigger).toHaveAttribute("type", "button");
     trigger.focus();
     await userEvent.keyboard("{Enter}");
-    await userEvent.click(within(document.body).getByTestId(`day-${dateKey(rangeStart)}`));
-    await userEvent.click(within(document.body).getByTestId(`day-${dateKey(rangeEnd)}`));
+    await userEvent.click(activeCalendarDay(rangeStart));
+    await userEvent.click(activeCalendarDay(rangeEnd));
     await expect(canvas.getByRole("status")).toHaveTextContent(`${dateKey(rangeStart)} ${dateKey(rangeEnd)}`);
     await expect(rangeChanged).toHaveBeenLastCalledWith({ from: rangeStart, to: rangeEnd });
+  },
+};
+
+export const DateTriggersRenderNavyFocusRing: Story = {
+  render: () => (
+    <div className="flex w-[380px] flex-col gap-4">
+      <DatePicker label="Single date" date={new Date(2026, 0, 15)} />
+      <DateRangePicker label="Date range" />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const single = canvas.getByRole("button", { name: /Single date/ });
+    const range = canvas.getByRole("button", { name: /Date range/ });
+
+    for (const trigger of [single, range]) {
+      await userEvent.tab();
+      await expect(trigger).toHaveFocus();
+      await expect(getComputedStyle(trigger).getPropertyValue("--tw-ring-color").trim()).toBe("#384d5c");
+      const boxShadow = getComputedStyle(trigger).boxShadow;
+      await expect(boxShadow).not.toBe("none");
+    }
+  },
+};
+
+export const SameDayRangeCompletesOnSecondKeyboardActivation: Story = {
+  render: () => {
+    const [dateRange, setDateRange] = React.useState<DateRange>();
+    return (
+      <div className="w-[380px]">
+        <DateRangePicker defaultMonth={sameDay} label="Same day range" dateRange={dateRange} onDateRangeChange={setDateRange} />
+        <output aria-live="polite">{dateKey(dateRange?.from)} {dateKey(dateRange?.to)}</output>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole("button", { name: /Same day range/ });
+
+    trigger.focus();
+    await userEvent.keyboard("{Enter}");
+    const day = activeCalendarDay(sameDay);
+    day.focus();
+    await userEvent.keyboard("{Enter}");
+    await expect(trigger).toHaveAttribute("aria-expanded", "true");
+    day.focus();
+    await userEvent.keyboard("{Enter}");
+    await expect(canvas.getByRole("status")).toHaveTextContent(`${dateKey(sameDay)} ${dateKey(sameDay)}`);
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    await expect(trigger).toHaveFocus();
+  },
+};
+
+export const MultiDayRangeCompletesOnSecondKeyboardActivation: Story = {
+  render: () => {
+    const [dateRange, setDateRange] = React.useState<DateRange>();
+    return (
+      <div className="w-[380px]">
+        <DateRangePicker defaultMonth={rangeStart} label="Multi day range" dateRange={dateRange} onDateRangeChange={setDateRange} />
+        <output aria-live="polite">{dateKey(dateRange?.from)} {dateKey(dateRange?.to)}</output>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole("button", { name: /Multi day range/ });
+
+    trigger.focus();
+    await userEvent.keyboard("{Enter}");
+    activeCalendarDay(rangeEnd).focus();
+    await userEvent.keyboard("{Enter}");
+    await expect(trigger).toHaveAttribute("aria-expanded", "true");
+    activeCalendarDay(rangeStart).focus();
+    await userEvent.keyboard("{Enter}");
+    await expect(canvas.getByRole("status")).toHaveTextContent(`${dateKey(rangeStart)} ${dateKey(rangeEnd)}`);
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    await expect(trigger).toHaveFocus();
+  },
+};
+
+export const RangeEscapeResetsTheSelectionPhase: Story = {
+  render: () => {
+    const [dateRange, setDateRange] = React.useState<DateRange | undefined>({ from: rangeStart, to: rangeEnd });
+    return (
+      <div className="w-[380px]">
+        <DateRangePicker defaultMonth={rangeStart} label="Resettable range" dateRange={dateRange} onDateRangeChange={setDateRange} />
+        <output aria-live="polite">{dateKey(dateRange?.from)} {dateKey(dateRange?.to)}</output>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole("button", { name: /Resettable range/ });
+
+    trigger.focus();
+    await userEvent.keyboard("{Enter}");
+    await userEvent.keyboard("{Escape}");
+    await expect(trigger).toHaveFocus();
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    await userEvent.keyboard("{Enter}");
+    activeCalendarDay(sameDay).focus();
+    await userEvent.keyboard("{Enter}");
+    await expect(trigger).toHaveAttribute("aria-expanded", "true");
+    activeCalendarDay(sameDay).focus();
+    await userEvent.keyboard("{Enter}");
+    await expect(canvas.getByRole("status")).toHaveTextContent(`${dateKey(sameDay)} ${dateKey(sameDay)}`);
+    await expect(trigger).toHaveFocus();
   },
 };

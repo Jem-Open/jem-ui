@@ -302,14 +302,76 @@ export const FocusVisibleControlsHaveContrast: Story = {
     await userEvent.tab();
     await expect(input).toHaveFocus();
     await expect(input.className).toContain("focus-visible:ring-2");
-    await expect(input.className).toContain("focus-visible:ring-[--primary-navy-700]");
+    await expect(input.className).toContain("focus-visible:ring-primary-navy-700");
     await userEvent.tab();
     await expect(textarea).toHaveFocus();
     await expect(textarea.className).toContain("focus-visible:ring-2");
-    await expect(textarea.className).toContain("focus-visible:ring-[--primary-navy-700]");
+    await expect(textarea.className).toContain("focus-visible:ring-primary-navy-700");
     await userEvent.tab();
     await expect(select).toHaveFocus();
     await expect(select.className).toContain("focus-visible:ring-2");
-    await expect(select.className).toContain("focus-visible:ring-[--primary-navy-700]");
+    await expect(select.className).toContain("focus-visible:ring-primary-navy-700");
+  },
+};
+
+export const FocusVisibleControlsRenderNavyRing: Story = {
+  render: () => (
+    <div className="flex w-[320px] flex-col gap-4">
+      <Input aria-label="Ring input" />
+      <Textarea aria-label="Ring textarea" />
+      <Select>
+        <SelectTrigger aria-label="Ring select"><SelectValue placeholder="Select a country" /></SelectTrigger>
+        <SelectContent><SelectItem value="za">South Africa</SelectItem></SelectContent>
+      </Select>
+      <Select
+        searchable
+        options={[{ value: "za", label: "South Africa" }]}
+        placeholder="Search countries"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(getComputedStyle(document.documentElement).getPropertyValue("--navy-700").trim()).toBe("#384d5c");
+    const input = canvas.getByRole("textbox", { name: "Ring input" });
+    const textarea = canvas.getByRole("textbox", { name: "Ring textarea" });
+    const select = canvas.getByRole("combobox", { name: "Ring select" });
+    const searchable = canvas.getAllByRole("combobox")[1];
+
+    for (const [name, control] of [["input", input], ["textarea", textarea], ["select", select], ["searchable select", searchable]] as const) {
+      await userEvent.tab();
+      await expect(control).toHaveFocus();
+      await expect(getComputedStyle(control).getPropertyValue("--tw-ring-color").trim(), `${name} should set the focus ring token`).toBe("#384d5c");
+      const boxShadow = getComputedStyle(control).boxShadow;
+      await expect(boxShadow).not.toBe("none");
+    }
+  },
+};
+
+export const GeneratedInputFieldIdPreservesCallerAria: Story = {
+  render: () => (
+    <div className="w-[320px]">
+      <p id="external-hint">An existing caller hint.</p>
+      <InputField
+        label="Generated id field"
+        description="A generated description."
+        helperText="A generated helper."
+        aria-describedby="external-hint"
+        aria-invalid="false"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("textbox", { name: "Generated id field" });
+    const id = input.id;
+
+    await expect(id).toMatch(/^input-/);
+    await expect(canvas.getByText("Generated id field")).toHaveAttribute("for", id);
+    await expect(input).toHaveAttribute(
+      "aria-describedby",
+      `external-hint ${id}-description ${id}-helper`
+    );
+    await expect(input).toHaveAttribute("aria-invalid", "false");
   },
 };

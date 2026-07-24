@@ -254,5 +254,7 @@ export const CloseControlHasNoNestedInteractive: Story = {
     const close = within(document.body).getByRole("button", { name: /close/i });
 
     await expect(close.querySelector("button, a, input, select, textarea, [role='button'], [role='link']")).toBeNull();
+    await expect(close.getBoundingClientRect().width).toBeGreaterThanOrEqual(44);
+    await expect(close.getBoundingClientRect().height).toBeGreaterThanOrEqual(44);
   },
 };

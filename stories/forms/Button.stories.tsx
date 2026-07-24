@@ -6,6 +6,10 @@ import { Button, IconButton } from "@/components/forms/button";
 
 const defaultTypeOnSubmit = fn();
 const explicitSubmitOnSubmit = fn();
+const disabledAsChildClick = fn();
+const loadingAsChildClick = fn();
+const enabledAsChildClick = fn();
+const enabledAsChildCapture = fn();
 
 const meta: Meta<typeof Button> = {
   title: "Forms/Button",
@@ -345,6 +349,68 @@ export const AsChildLoadingPreservesContent: Story = {
     const link = within(canvasElement).getByRole("link", { name: "Save changes" });
     await expect(link.querySelector("svg")).toBeInTheDocument();
     await expect(link).not.toHaveAttribute("type");
+  },
+};
+
+export const AsChildUnavailableLinksAreInert: Story = {
+  render: () => {
+    disabledAsChildClick.mockClear();
+    loadingAsChildClick.mockClear();
+    enabledAsChildClick.mockClear();
+    enabledAsChildCapture.mockClear();
+    return (
+      <div className="flex flex-col gap-4">
+        <Button asChild disabled>
+          <a href="#disabled-link" onClick={disabledAsChildClick}>Disabled link</a>
+        </Button>
+        <Button asChild loading>
+          <a href="#loading-link" onClick={loadingAsChildClick}>Loading link</a>
+        </Button>
+        <Button asChild>
+          <a
+            href="#enabled-link"
+            onClick={(event) => {
+              enabledAsChildClick(event.defaultPrevented);
+              event.preventDefault();
+            }}
+            onClickCapture={enabledAsChildCapture}
+          >
+            Enabled link
+          </a>
+        </Button>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const disabledLink = canvas.getByRole("link", { name: "Disabled link" });
+    const loadingLink = canvas.getByRole("link", { name: "Loading link" });
+    const enabledLink = canvas.getByRole("link", { name: "Enabled link" });
+    const originalHash = window.location.hash;
+
+    await expect(disabledLink).not.toHaveAttribute("disabled");
+    await expect(disabledLink).toHaveAttribute("aria-disabled", "true");
+    await expect(loadingLink).not.toHaveAttribute("disabled");
+    await expect(loadingLink).toHaveAttribute("aria-disabled", "true");
+    await expect(loadingLink).toHaveAttribute("aria-busy", "true");
+    disabledLink.focus();
+    await userEvent.keyboard("{Tab}");
+    await expect(loadingLink).toHaveFocus();
+    await userEvent.keyboard("{Tab}");
+    await expect(enabledLink).toHaveFocus();
+    await userEvent.click(disabledLink);
+    disabledLink.focus();
+    await userEvent.keyboard("{Enter}");
+    await userEvent.click(loadingLink);
+    loadingLink.focus();
+    await userEvent.keyboard("{Enter}");
+    await expect(disabledAsChildClick).not.toHaveBeenCalled();
+    await expect(loadingAsChildClick).not.toHaveBeenCalled();
+    await expect(window.location.hash).toBe(originalHash);
+
+    await userEvent.click(enabledLink);
+    await expect(enabledAsChildClick).toHaveBeenCalledWith(false);
+    await expect(enabledAsChildCapture).toHaveBeenCalledTimes(1);
   },
 };
 
