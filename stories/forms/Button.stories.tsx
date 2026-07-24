@@ -10,6 +10,9 @@ const disabledAsChildClick = fn();
 const loadingAsChildClick = fn();
 const enabledAsChildClick = fn();
 const enabledAsChildCapture = fn();
+const nativeButtonClick = fn();
+const nativeButtonClickCapture = fn();
+const nativeButtonKeyCapture = fn();
 
 const meta: Meta<typeof Button> = {
   title: "Forms/Button",
@@ -411,6 +414,36 @@ export const AsChildUnavailableLinksAreInert: Story = {
     await userEvent.click(enabledLink);
     await expect(enabledAsChildClick).toHaveBeenCalledWith(false);
     await expect(enabledAsChildCapture).toHaveBeenCalledTimes(1);
+  },
+};
+
+export const NativeCaptureHandlersArePreserved: Story = {
+  render: () => {
+    nativeButtonClick.mockClear();
+    nativeButtonClickCapture.mockClear();
+    nativeButtonKeyCapture.mockClear();
+
+    return (
+      <Button
+        onClick={nativeButtonClick}
+        onClickCapture={nativeButtonClickCapture}
+        onKeyDownCapture={nativeButtonKeyCapture}
+      >
+        Native capture button
+      </Button>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const button = within(canvasElement).getByRole("button", { name: "Native capture button" });
+
+    await userEvent.click(button);
+    await expect(nativeButtonClickCapture).toHaveBeenCalledTimes(1);
+    await expect(nativeButtonClick).toHaveBeenCalledTimes(1);
+    button.focus();
+    await userEvent.keyboard("{Enter}");
+    await expect(nativeButtonKeyCapture).toHaveBeenCalledTimes(1);
+    await expect(nativeButtonClickCapture).toHaveBeenCalledTimes(2);
+    await expect(nativeButtonClick).toHaveBeenCalledTimes(2);
   },
 };
 

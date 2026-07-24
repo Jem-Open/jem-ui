@@ -247,6 +247,24 @@ function UploadLifecycleDemo() {
   );
 }
 
+const uploadedCommitText = fn();
+
+function DirectUploadTransitionDemo() {
+  const [state, setState] = React.useState<"default" | "uploaded">("default");
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
+
+  React.useLayoutEffect(() => {
+    if (state === "uploaded") uploadedCommitText(wrapperRef.current?.textContent ?? "");
+  }, [state]);
+
+  return (
+    <div ref={wrapperRef} className="flex w-[520px] flex-col gap-4">
+      <Upload state={state} />
+      <button type="button" onClick={() => setState("uploaded")}>Commit upload</button>
+    </div>
+  );
+}
+
 export const SelectionStatusDoesNotLeakAcrossLifecycle: Story = {
   render: () => <UploadLifecycleDemo />,
   play: async ({ canvasElement }) => {
@@ -262,6 +280,26 @@ export const SelectionStatusDoesNotLeakAcrossLifecycle: Story = {
     await userEvent.click(canvas.getByRole("button", { name: "Show uploaded" }));
     await expect(canvas.queryByText(/Selected resume.pdf/)).toBeNull();
     await userEvent.click(canvas.getByRole("button", { name: "Remove File" }));
+    await expect(canvas.queryByRole("status")).toBeNull();
+  },
+};
+
+export const DirectUploadTransitionDoesNotCommitTemporarySelection: Story = {
+  render: () => {
+    uploadedCommitText.mockClear();
+    return <DirectUploadTransitionDemo />;
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByTestId("upload-input");
+    const file = new File(["resume"], "resume.pdf", { type: "application/pdf" });
+
+    await userEvent.upload(input, file);
+    await expect(canvas.getByRole("status")).toHaveTextContent("Selected resume.pdf");
+    await userEvent.click(canvas.getByRole("button", { name: "Commit upload" }));
+    await expect(uploadedCommitText).toHaveBeenLastCalledWith(expect.stringContaining("You have attached file"));
+    await expect(uploadedCommitText).not.toHaveBeenLastCalledWith(expect.stringContaining("resume.pdf"));
+    await expect(uploadedCommitText).not.toHaveBeenLastCalledWith(expect.stringContaining("Selected resume.pdf"));
     await expect(canvas.queryByRole("status")).toBeNull();
   },
 };

@@ -352,11 +352,14 @@ export const GeneratedInputFieldIdPreservesCallerAria: Story = {
   render: () => (
     <div className="w-[320px]">
       <p id="external-hint">An existing caller hint.</p>
+      <p id="external-error">An existing caller error.</p>
       <InputField
         label="Generated id field"
         description="A generated description."
         helperText="A generated helper."
+        error
         aria-describedby="external-hint"
+        aria-errormessage="external-error"
         aria-invalid="false"
       />
     </div>
@@ -372,6 +375,7 @@ export const GeneratedInputFieldIdPreservesCallerAria: Story = {
       "aria-describedby",
       `external-hint ${id}-description ${id}-helper`
     );
-    await expect(input).toHaveAttribute("aria-invalid", "false");
+    await expect(input).toHaveAttribute("aria-errormessage", "external-error");
+    await expect(input).toHaveAttribute("aria-invalid", "true");
   },
 };

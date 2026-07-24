@@ -78,7 +78,12 @@ function Button({
               if (!blockUnavailableInteraction(event)) onKeyDownCapture?.(event as React.KeyboardEvent<HTMLButtonElement>)
             },
           }
-        : { disabled: unavailable, type: type ?? "button" })}
+        : {
+            disabled: unavailable,
+            type: type ?? "button",
+            onClickCapture,
+            onKeyDownCapture,
+          })}
       className={cn(
         buttonVariants({ variant, size }),
         loading && "bg-primary-navy-500 text-white hover:bg-primary-navy-500 active:bg-primary-navy-500",

@@ -403,30 +403,41 @@ export const MultiDayRangeCompletesOnSecondKeyboardActivation: Story = {
 
 export const RangeEscapeResetsTheSelectionPhase: Story = {
   render: () => {
-    const [dateRange, setDateRange] = React.useState<DateRange | undefined>({ from: rangeStart, to: rangeEnd });
+    const [dateRange, setDateRange] = React.useState<DateRange | undefined>();
     return (
       <div className="w-[380px]">
-        <DateRangePicker defaultMonth={rangeStart} label="Resettable range" dateRange={dateRange} onDateRangeChange={setDateRange} />
+        <DateRangePicker
+          defaultMonth={rangeStart}
+          label="Resettable range"
+          dateRange={dateRange}
+          onDateRangeChange={(next) => {
+            rangeChanged(next);
+            setDateRange(next);
+          }}
+        />
         <output aria-live="polite">{dateKey(dateRange?.from)} {dateKey(dateRange?.to)}</output>
       </div>
     );
   },
   play: async ({ canvasElement }) => {
+    rangeChanged.mockClear();
     const canvas = within(canvasElement);
     const trigger = canvas.getByRole("button", { name: /Resettable range/ });
 
     trigger.focus();
     await userEvent.keyboard("{Enter}");
+    activeCalendarDay(rangeStart).focus();
+    await userEvent.keyboard("{Enter}");
+    await expect(rangeChanged).toHaveBeenLastCalledWith({ from: rangeStart, to: undefined });
+    await expect(trigger).toHaveAttribute("aria-expanded", "true");
     await userEvent.keyboard("{Escape}");
     await expect(trigger).toHaveFocus();
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
     await userEvent.keyboard("{Enter}");
-    activeCalendarDay(sameDay).focus();
+    activeCalendarDay(rangeEnd).focus();
     await userEvent.keyboard("{Enter}");
+    await expect(rangeChanged).toHaveBeenLastCalledWith({ from: rangeEnd, to: undefined });
     await expect(trigger).toHaveAttribute("aria-expanded", "true");
-    activeCalendarDay(sameDay).focus();
-    await userEvent.keyboard("{Enter}");
-    await expect(canvas.getByRole("status")).toHaveTextContent(`${dateKey(sameDay)} ${dateKey(sameDay)}`);
-    await expect(trigger).toHaveFocus();
+    await expect(canvas.getByRole("status")).toHaveTextContent(dateKey(rangeEnd));
   },
 };

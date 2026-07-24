@@ -53,7 +53,7 @@ function Upload({
     setSelectedFiles([])
   }, [isDefault])
 
-  const selectedFileName = fileName ?? selectedFiles[0]?.name
+  const selectedFileName = fileName ?? (isDefault ? selectedFiles[0]?.name : undefined)
   const displayTitle = title || (isUploaded ? "File uploaded" : "Upload file")
   const displayDescription = description || (
     isUploaded
@@ -154,7 +154,7 @@ function Upload({
               </p>
             </>
           )}
-          {!isUploading && selectedFiles.length > 0 && (
+          {isDefault && selectedFiles.length > 0 && (
             <p role="status" className="text-sm text-greyscale-text-caption">
               Selected {selectedFiles.map((file) => file.name).join(", ")}
             </p>
