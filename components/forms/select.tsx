@@ -70,7 +70,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       className={cn(
         "flex h-[46px] w-full items-center justify-between gap-2 rounded-lg border border-[--greyscale-border-default] bg-white px-4 py-3 text-sm font-semibold text-[--greyscale-text-body] transition-all outline-none",
-        "focus:border-[--greyscale-border-darker] data-[state=open]:border-[--greyscale-border-darker] data-[state=open]:rounded-lg",
+        "focus:border-[--greyscale-border-darker] focus-visible:ring-2 focus-visible:ring-[--primary-navy-700] focus-visible:ring-offset-2 data-[state=open]:border-[--greyscale-border-darker] data-[state=open]:rounded-lg",
         "data-[placeholder]:text-[--greyscale-text-disabled] data-[placeholder]:font-normal",
         "disabled:cursor-not-allowed disabled:opacity-50",
         "[&_svg]:pointer-events-none [&_svg]:shrink-0",
@@ -314,7 +314,7 @@ function SearchableSelect({
           data-state={open ? "open" : "closed"}
           className={cn(
             "flex h-[46px] w-full items-center justify-between gap-2 rounded-lg border border-[--greyscale-border-default] bg-white px-4 py-3 text-sm font-semibold text-[--greyscale-text-body] transition-all outline-none",
-            "focus:border-[--greyscale-border-darker] data-[state=open]:border-[--greyscale-border-darker]",
+            "focus:border-[--greyscale-border-darker] focus-visible:ring-2 focus-visible:ring-[--primary-navy-700] focus-visible:ring-offset-2 data-[state=open]:border-[--greyscale-border-darker]",
             "disabled:cursor-not-allowed disabled:opacity-50",
             !selectedOption && "font-normal text-[--greyscale-text-disabled]",
             className

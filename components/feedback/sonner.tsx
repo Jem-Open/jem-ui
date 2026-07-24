@@ -9,7 +9,6 @@ import {
   X,
 } from "lucide-react"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
-import { IconButton } from "@/components/forms/button"
 
 const Toaster = ({ ...props }: ToasterProps) => {
   return (
@@ -40,7 +39,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
         info: <Bell className="size-5 text-blue-600" />,
         warning: <TriangleAlert className="size-5 text-yellow-600" />,
         loading: <Loader2Icon className="size-5 animate-spin text-greyscale-text-caption" />,
-        close: <IconButton size="small" shape="square" className="!bg-primary-navy-50 !border-primary-navy-50" icon={<X className="size-4" />} />,
+        close: <X aria-hidden="true" className="size-4" />,
       }}
       style={
         {

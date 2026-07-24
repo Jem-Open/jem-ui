@@ -1,6 +1,10 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, fn, userEvent, within } from "storybook/test";
 import { Upload } from "@/components/forms/upload";
+
+const selectedNativeFiles = fn();
+const selectedMatchingFiles = fn();
 
 const meta: Meta<typeof Upload> = {
   title: "Forms/Upload",
@@ -118,4 +122,67 @@ export const CustomContent: Story = {
       />
     </div>
   ),
+};
+
+export const SelectsNativeFiles: Story = {
+  render: () => {
+    selectedNativeFiles.mockClear();
+    return <Upload onFilesSelected={selectedNativeFiles} />;
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const file = new File(["resume"], "resume.pdf", { type: "application/pdf" });
+    const input = canvas.getByTestId("upload-input");
+
+    await userEvent.upload(input, file);
+    await expect(canvas.getByRole("status")).toHaveTextContent("Selected resume.pdf");
+    await expect(selectedNativeFiles).toHaveBeenCalledWith([file]);
+  },
+};
+
+export const RespectsAcceptAndMultiple: Story = {
+  render: () => <Upload accept="application/pdf" multiple disabled />,
+  play: async ({ canvasElement }) => {
+    const input = within(canvasElement).getByTestId("upload-input");
+    await expect(input).toHaveAttribute("accept", "application/pdf");
+    await expect(input).toHaveAttribute("multiple");
+    await expect(input).toBeDisabled();
+  },
+};
+
+export const DropMatchesFileSelection: Story = {
+  render: () => {
+    selectedMatchingFiles.mockClear();
+    return <Upload accept="application/pdf" multiple onFilesSelected={selectedMatchingFiles} />;
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const file = new File(["document"], "document.pdf", { type: "application/pdf" });
+    const rejectedFile = new File(["image"], "image.png", { type: "image/png" });
+    const input = canvas.getByTestId("upload-input");
+    const dropzone = canvas.getByTestId("upload-dropzone");
+    const transfer = new DataTransfer();
+    transfer.items.add(file);
+    transfer.items.add(rejectedFile);
+
+    await userEvent.upload(input, [file, rejectedFile]);
+    dropzone.dispatchEvent(new DragEvent("drop", { bubbles: true, dataTransfer: transfer }));
+    await expect(canvas.getByRole("status")).toHaveTextContent("Selected document.pdf");
+    await expect(selectedMatchingFiles).toHaveBeenNthCalledWith(1, [file]);
+    await expect(selectedMatchingFiles).toHaveBeenNthCalledWith(2, [file]);
+  },
+};
+
+export const AnnouncesProgressAndError: Story = {
+  render: () => (
+    <div className="flex w-[520px] flex-col gap-4">
+      <Upload state="uploading" fileName="payslips.csv" progress={44} />
+      <Upload error="The selected file could not be uploaded." />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("status")).toHaveTextContent("Uploading payslips.csv: 44%");
+    await expect(canvas.getByRole("alert")).toHaveTextContent("The selected file could not be uploaded.");
+  },
 };

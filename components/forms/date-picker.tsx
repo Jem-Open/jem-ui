@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { format } from "date-fns"
+import { enZA } from "date-fns/locale"
 import { CalendarIcon } from "lucide-react"
 import { type DateRange, type Matcher } from "react-day-picker"
 
@@ -27,6 +28,7 @@ interface DatePickerProps {
    */
   disabledDates?: Matcher | Matcher[]
   label?: string
+  id?: string
 }
 
 function DatePicker({
@@ -37,26 +39,33 @@ function DatePicker({
   disabled,
   disabledDates,
   label,
+  id: suppliedId,
 }: DatePickerProps) {
+  const generatedId = React.useId()
+  const id = suppliedId ?? `date-picker-${generatedId}`
+  const [open, setOpen] = React.useState(false)
+
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       {label && (
-        <label className="text-sm font-semibold text-[--greyscale-text-title]">
+        <label htmlFor={id} className="text-sm font-semibold text-[--greyscale-text-title]">
           {label}
         </label>
       )}
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <button
+            id={id}
+            type="button"
             disabled={disabled}
             className={cn(
               "flex h-[46px] w-full items-center justify-between gap-2 rounded-lg border border-[--greyscale-border-default] bg-white px-4 py-3 text-sm font-semibold text-[--greyscale-text-body] transition-all outline-none",
-              "focus:border-[--greyscale-border-darker]",
+              "focus:border-[--greyscale-border-darker] focus-visible:ring-2 focus-visible:ring-[--primary-navy-700] focus-visible:ring-offset-2",
               "disabled:cursor-not-allowed disabled:opacity-50",
               !date && "font-normal text-[--greyscale-text-disabled]"
             )}
           >
-            {date ? format(date, "PPP") : placeholder}
+            {date ? format(date, "PPP", { locale: enZA }) : placeholder}
             <CalendarIcon className="size-4 text-[--greyscale-text-caption]" />
           </button>
         </PopoverTrigger>
@@ -64,8 +73,13 @@ function DatePicker({
           <Calendar
             mode="single"
             selected={date}
-            onSelect={onDateChange}
+            defaultMonth={date}
+            onSelect={(nextDate) => {
+              onDateChange?.(nextDate)
+              setOpen(false)
+            }}
             disabled={disabledDates}
+            locale={enZA}
             className="border-0 p-0"
           />
         </PopoverContent>
@@ -83,6 +97,7 @@ interface DateRangePickerProps {
   /** Days to deactivate within the calendar (a react-day-picker `Matcher`), e.g. `{ before: today }`. */
   disabledDates?: Matcher | Matcher[]
   label?: string
+  id?: string
 }
 
 function DateRangePicker({
@@ -93,21 +108,28 @@ function DateRangePicker({
   disabled,
   disabledDates,
   label,
+  id: suppliedId,
 }: DateRangePickerProps) {
+  const generatedId = React.useId()
+  const id = suppliedId ?? `date-range-picker-${generatedId}`
+  const [open, setOpen] = React.useState(false)
+
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       {label && (
-        <label className="text-sm font-semibold text-[--greyscale-text-title]">
+        <label htmlFor={id} className="text-sm font-semibold text-[--greyscale-text-title]">
           {label}
         </label>
       )}
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <button
+            id={id}
+            type="button"
             disabled={disabled}
             className={cn(
               "flex h-[46px] w-full items-center justify-between gap-2 rounded-lg border border-[--greyscale-border-default] bg-white px-4 py-3 text-sm font-semibold text-[--greyscale-text-body] transition-all outline-none",
-              "focus:border-[--greyscale-border-darker]",
+              "focus:border-[--greyscale-border-darker] focus-visible:ring-2 focus-visible:ring-[--primary-navy-700] focus-visible:ring-offset-2",
               "disabled:cursor-not-allowed disabled:opacity-50",
               !dateRange?.from && "font-normal text-[--greyscale-text-disabled]"
             )}
@@ -115,10 +137,10 @@ function DateRangePicker({
             {dateRange?.from ? (
               dateRange.to ? (
                 <>
-                  {format(dateRange.from, "LLL dd, y")} - {format(dateRange.to, "LLL dd, y")}
+                  {format(dateRange.from, "dd LLL y", { locale: enZA })} - {format(dateRange.to, "dd LLL y", { locale: enZA })}
                 </>
               ) : (
-                format(dateRange.from, "LLL dd, y")
+                format(dateRange.from, "dd LLL y", { locale: enZA })
               )
             ) : (
               placeholder
@@ -130,8 +152,15 @@ function DateRangePicker({
           <Calendar
             mode="range"
             selected={dateRange}
-            onSelect={onDateRangeChange}
+            defaultMonth={dateRange?.from}
+            onSelect={(nextRange) => {
+              onDateRangeChange?.(nextRange)
+              if (nextRange?.from && nextRange.to && nextRange.from.getTime() !== nextRange.to.getTime()) {
+                setOpen(false)
+              }
+            }}
             disabled={disabledDates}
+            locale={enZA}
             numberOfMonths={2}
             className="border-0 p-0"
           />

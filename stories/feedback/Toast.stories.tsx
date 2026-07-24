@@ -1,9 +1,12 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, fn, userEvent, within } from "storybook/test";
 import { toast } from "sonner";
 import { Bell } from "lucide-react";
 import { Toaster } from "@/components/feedback/sonner";
 import { Button } from "@/components/forms/button";
+
+const showClosableToast = fn();
 
 const DefaultIcon = <Bell className="size-5 text-greyscale-text-title" />;
 
@@ -237,3 +240,19 @@ export const Loading: Story = {
   ),
 };
 
+export const CloseControlHasNoNestedInteractive: Story = {
+  render: () => {
+    showClosableToast.mockClear();
+    return (
+      <Button onClick={() => { showClosableToast(); toast("Closable toast"); }}>Show closable toast</Button>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: "Show closable toast" }));
+    await expect(showClosableToast).toHaveBeenCalledTimes(1);
+    const close = within(document.body).getByRole("button", { name: /close/i });
+
+    await expect(close.querySelector("button, a, input, select, textarea, [role='button'], [role='link']")).toBeNull();
+  },
+};

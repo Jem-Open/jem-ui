@@ -59,6 +59,8 @@
     "lint": "eslint",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
+    "test:components": "vitest run --project=storybook",
+    "typecheck": "tsc --noEmit",
     "chromatic": "chromatic --exit-zero-on-changes"
   },
   "peerDependencies": {

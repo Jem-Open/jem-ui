@@ -1,6 +1,11 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, fn, userEvent, within } from "storybook/test";
 import { Input, InputField, SearchInput } from "@/components/forms/input";
+import { Textarea } from "@/components/forms/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/forms/select";
+
+const associatedInputChange = fn();
 import { Button } from "@/components/forms/button";
 import { Paperclip } from "lucide-react";
 
@@ -241,4 +246,70 @@ export const Search: Story = {
       <SearchInput placeholder="Search" />
     </div>
   ),
+};
+
+export const AssociatedInputField: Story = {
+  render: () => {
+    associatedInputChange.mockClear();
+    return (
+      <div className="w-[320px]">
+        <InputField
+          id="company-name"
+          label="Company name"
+          description="The legal entity that employs your team."
+          helperText="This field is required."
+          error
+          onChange={associatedInputChange}
+        />
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("textbox", { name: "Company name" });
+    const label = canvas.getByText("Company name");
+    const description = canvas.getByText("The legal entity that employs your team.");
+    const helper = canvas.getByText("This field is required.");
+
+    await expect(label).toHaveAttribute("for", "company-name");
+    await expect(description).toHaveAttribute("id", "company-name-description");
+    await expect(helper).toHaveAttribute("id", "company-name-helper");
+    await expect(input).toHaveAttribute("aria-describedby", "company-name-description company-name-helper");
+    await expect(input).toHaveAttribute("aria-errormessage", "company-name-helper");
+    await expect(input).toHaveAttribute("aria-invalid", "true");
+    await userEvent.type(input, "Jem");
+    await expect(associatedInputChange).toHaveBeenCalled();
+  },
+};
+
+export const FocusVisibleControlsHaveContrast: Story = {
+  render: () => (
+    <div className="flex w-[320px] flex-col gap-4">
+      <Input aria-label="Name" />
+      <Textarea aria-label="Notes" />
+      <Select>
+        <SelectTrigger aria-label="Country"><SelectValue placeholder="Country" /></SelectTrigger>
+        <SelectContent><SelectItem value="za">South Africa</SelectItem></SelectContent>
+      </Select>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("textbox", { name: "Name" });
+    const textarea = canvas.getByRole("textbox", { name: "Notes" });
+    const select = canvas.getByRole("combobox", { name: "Country" });
+
+    await userEvent.tab();
+    await expect(input).toHaveFocus();
+    await expect(input.className).toContain("focus-visible:ring-2");
+    await expect(input.className).toContain("focus-visible:ring-[--primary-navy-700]");
+    await userEvent.tab();
+    await expect(textarea).toHaveFocus();
+    await expect(textarea.className).toContain("focus-visible:ring-2");
+    await expect(textarea.className).toContain("focus-visible:ring-[--primary-navy-700]");
+    await userEvent.tab();
+    await expect(select).toHaveFocus();
+    await expect(select.className).toContain("focus-visible:ring-2");
+    await expect(select.className).toContain("focus-visible:ring-[--primary-navy-700]");
+  },
 };

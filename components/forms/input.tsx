@@ -12,7 +12,7 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
       data-slot="input"
       className={cn(
         "h-[46px] w-full rounded-lg border border-[--greyscale-border-default] bg-white px-4 py-3 text-sm text-[--greyscale-text-body] placeholder:text-sm placeholder:text-[--greyscale-text-disabled] outline-none transition-all",
-        "focus:border-[--greyscale-border-darker]",
+        "focus:border-[--greyscale-border-darker] focus-visible:ring-2 focus-visible:ring-[--primary-navy-700] focus-visible:ring-offset-2",
         "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
         className
       )}
@@ -38,20 +38,30 @@ function InputField({
   error,
   icon,
   button,
+  id: suppliedId,
+  "aria-describedby": ariaDescribedBy,
+  "aria-errormessage": ariaErrorMessage,
+  "aria-invalid": ariaInvalid,
   ...props
 }: InputFieldProps) {
+  const generatedId = React.useId()
+  const id = suppliedId ?? `input-${generatedId}`
+  const descriptionId = description ? `${id}-description` : undefined
+  const helperTextId = helperText ? `${id}-helper` : undefined
+  const describedBy = [ariaDescribedBy, descriptionId, helperTextId].filter(Boolean).join(" ") || undefined
+
   return (
     <div className={cn("flex flex-col gap-sm", className)}>
       {/* Label + Description group */}
       {(label || description) && (
         <div className="flex flex-col gap-xxxs">
           {label && (
-            <label className="text-sm font-semibold text-[--greyscale-text-title]">
+            <label htmlFor={id} className="text-sm font-semibold text-[--greyscale-text-title]">
               {label}
             </label>
           )}
-          {description && (
-            <p className="text-sm font-normal text-[--greyscale-text-body]">
+          {description && descriptionId && (
+            <p id={descriptionId} className="text-sm font-normal text-[--greyscale-text-body]">
               {description}
             </p>
           )}
@@ -63,6 +73,10 @@ function InputField({
           <div className="relative flex-1">
             <Input
               className={icon ? "pr-10" : ""}
+              id={id}
+              aria-describedby={describedBy}
+              aria-errormessage={error ? ariaErrorMessage ?? helperTextId : ariaErrorMessage}
+              aria-invalid={error ? true : ariaInvalid}
               {...props}
             />
             {icon && (
@@ -73,8 +87,9 @@ function InputField({
           </div>
           {button}
         </div>
-        {helperText && (
+        {helperText && helperTextId && (
           <p
+            id={helperTextId}
             className={cn(
               "text-sm",
               error

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
+import { Slot, Slottable } from "@radix-ui/react-slot"
 import type { VariantProps } from "class-variance-authority"
 import { Loader2 } from "lucide-react"
 
@@ -27,9 +27,24 @@ function Button({
   loading = false,
   children,
   disabled,
+  type,
   ...props
 }: ButtonProps) {
   const Comp = asChild ? Slot : "button"
+  const content = asChild
+    ? loading
+      ? [
+          <Loader2 key="loader" className="animate-spin" />,
+          <Slottable key="children">{children}</Slottable>,
+        ]
+      : [
+          leftIcon,
+          <Slottable key="children">{children}</Slottable>,
+          rightIcon,
+        ]
+    : loading
+      ? <><Loader2 className="animate-spin" />{children}</>
+      : <>{leftIcon}{children}{rightIcon}</>
 
   return (
     <Comp
@@ -37,6 +52,7 @@ function Button({
       data-variant={variant}
       data-size={size}
       disabled={disabled || loading}
+      {...(!asChild && { type: type ?? "button" })}
       className={cn(
         buttonVariants({ variant, size }),
         loading && "bg-primary-navy-500 text-white hover:bg-primary-navy-500 active:bg-primary-navy-500",
@@ -44,18 +60,7 @@ function Button({
       )}
       {...props}
     >
-      {loading ? (
-        <>
-          <Loader2 className="animate-spin" />
-          {children}
-        </>
-      ) : (
-        <>
-          {leftIcon}
-          {children}
-          {rightIcon}
-        </>
-      )}
+      {content}
     </Comp>
   )
 }
@@ -72,6 +77,7 @@ function IconButton({
   shape = "square",
   icon,
   children,
+  type,
   ...props
 }: IconButtonProps) {
   return (
@@ -79,6 +85,7 @@ function IconButton({
       data-slot="icon-button"
       data-size={size}
       data-shape={shape}
+      type={type ?? "button"}
       className={cn(iconButtonVariants({ size, shape, className }))}
       {...props}
     >

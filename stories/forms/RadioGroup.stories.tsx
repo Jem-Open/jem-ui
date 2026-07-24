@@ -1,11 +1,14 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, fn, userEvent, within } from "storybook/test";
 import {
   RadioGroup,
   RadioGroupItem,
   RadioGroupItemWithLabel,
   RadioGroupCard,
 } from "@/components/forms/radio-group";
+
+const radioValueChange = fn();
 
 const meta: Meta<typeof RadioGroup> = {
   title: "Forms/RadioGroup",
@@ -216,4 +219,35 @@ export const CardVariant: Story = {
       />
     </RadioGroup>
   ),
+};
+
+export const AssociatedRadioLabels: Story = {
+  render: () => {
+    radioValueChange.mockClear();
+    return (
+      <RadioGroup className="w-[320px]" onValueChange={radioValueChange}>
+        <RadioGroupItemWithLabel id="weekly" value="weekly" label="Weekly" />
+        <RadioGroupItemWithLabel id="monthly" value="monthly" label="Monthly" disabled />
+        <RadioGroupCard value="annual" label="Annual" />
+      </RadioGroup>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const weekly = canvas.getByRole("radio", { name: "Weekly" });
+    const weeklyLabel = canvas.getByText("Weekly");
+    const monthly = canvas.getByRole("radio", { name: "Monthly" });
+    const annual = canvas.getByRole("radio", { name: "Annual" });
+
+    await expect(weeklyLabel).toHaveAttribute("for", "weekly");
+    await expect(weeklyLabel.getBoundingClientRect().height).toBeGreaterThanOrEqual(44);
+    await userEvent.click(weeklyLabel);
+    await expect(weekly).toHaveAttribute("aria-checked", "true");
+    await expect(radioValueChange).toHaveBeenCalledWith("weekly");
+    await userEvent.click(canvas.getByText("Monthly"));
+    await expect(monthly).toHaveAttribute("aria-checked", "false");
+    await expect(annual.getBoundingClientRect().height).toBeGreaterThanOrEqual(44);
+    await userEvent.click(annual);
+    await expect(annual).toHaveAttribute("aria-checked", "true");
+  },
 };

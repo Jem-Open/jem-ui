@@ -1,7 +1,11 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, fn, userEvent, within } from "storybook/test";
 import { Mail, Plus } from "lucide-react";
 import { Button, IconButton } from "@/components/forms/button";
+
+const defaultTypeOnSubmit = fn();
+const explicitSubmitOnSubmit = fn();
 
 const meta: Meta<typeof Button> = {
   title: "Forms/Button",
@@ -279,6 +283,68 @@ export const Loading: Story = {
   args: {
     children: "Loading",
     loading: true,
+  },
+};
+
+export const DefaultTypeIsButton: Story = {
+  render: () => {
+    defaultTypeOnSubmit.mockClear();
+    return (
+      <form onSubmit={(event) => { event.preventDefault(); defaultTypeOnSubmit(); }}>
+        <Button>Safe action</Button>
+      </form>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole("button", { name: "Safe action" });
+
+    await expect(button).toHaveAttribute("type", "button");
+    await userEvent.click(button);
+    await expect(defaultTypeOnSubmit).not.toHaveBeenCalled();
+  },
+};
+
+export const ExplicitSubmitTypeIsPreserved: Story = {
+  render: () => {
+    explicitSubmitOnSubmit.mockClear();
+    return (
+      <form onSubmit={(event) => { event.preventDefault(); explicitSubmitOnSubmit(); }}>
+        <Button type="submit">Submit form</Button>
+      </form>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const button = within(canvasElement).getByRole("button", { name: "Submit form" });
+
+    await expect(button).toHaveAttribute("type", "submit");
+    await userEvent.click(button);
+    await expect(explicitSubmitOnSubmit).toHaveBeenCalledTimes(1);
+  },
+};
+
+export const AsChildDoesNotInjectButtonType: Story = {
+  render: () => (
+    <Button asChild>
+      <a href="#details">Read details</a>
+    </Button>
+  ),
+  play: async ({ canvasElement }) => {
+    const link = within(canvasElement).getByRole("link", { name: "Read details" });
+    await expect(link).not.toHaveAttribute("type");
+  },
+};
+
+export const AsChildLoadingPreservesContent: Story = {
+  render: () => (
+    <Button asChild loading>
+      <a href="#saving">Save changes</a>
+    </Button>
+  ),
+  play: async ({ canvasElement }) => {
+    const link = within(canvasElement).getByRole("link", { name: "Save changes" });
+    await expect(link.querySelector("svg")).toBeInTheDocument();
+    await expect(link).not.toHaveAttribute("type");
   },
 };
 
