@@ -9,7 +9,6 @@ import {
   X,
 } from "lucide-react"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
-import { IconButton } from "@/components/forms/button"
 
 const Toaster = ({ ...props }: ToasterProps) => {
   return (
@@ -27,7 +26,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
           cancelButton:
             "group-[.toast]:bg-white group-[.toast]:text-greyscale-text-title group-[.toast]:border group-[.toast]:border-greyscale-border group-[.toast]:rounded-full group-[.toast]:px-4 group-[.toast]:py-2 group-[.toast]:text-sm group-[.toast]:font-semibold group-[.toast]:hover:bg-secondary-pink-300",
           closeButton:
-            "!absolute !right-3 !top-3 !left-auto !transform-none !border-none !bg-transparent !p-0 !h-auto !w-auto",
+            "!absolute !right-1 !top-1 !left-auto !transform-none !border-none !bg-transparent !p-0 !size-11",
           success: "group-[.toaster]:text-green-600 [&_[data-title]]:text-green-600",
           error: "group-[.toaster]:text-red-600 [&_[data-title]]:text-red-600",
           info: "group-[.toaster]:text-blue-600 [&_[data-title]]:text-blue-600",
@@ -40,7 +39,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
         info: <Bell className="size-5 text-blue-600" />,
         warning: <TriangleAlert className="size-5 text-yellow-600" />,
         loading: <Loader2Icon className="size-5 animate-spin text-greyscale-text-caption" />,
-        close: <IconButton size="small" shape="square" className="!bg-primary-navy-50 !border-primary-navy-50" icon={<X className="size-4" />} />,
+        close: <X aria-hidden="true" className="size-4" />,
       }}
       style={
         {

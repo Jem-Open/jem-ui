@@ -38,14 +38,19 @@ function CheckboxWithLabel({
   label: string
   description?: string
 }) {
+  const { id: suppliedId, ...checkboxProps } = props
+  const generatedId = React.useId()
+  const id = suppliedId ?? `checkbox-${generatedId}`
+
   return (
-    <div className={cn("flex gap-3 items-center", className)}>
-      <Checkbox {...props} className={description ? "mt-0.5 self-start" : ""} />
+    <div className={cn("flex min-h-11 gap-3 items-center", className)}>
+      <Checkbox id={id} {...checkboxProps} className={description ? "mt-0.5 self-start" : ""} />
       <div className="flex flex-col gap-2">
         <label
+          htmlFor={id}
           className={cn(
-            "text-sm font-semibold leading-none text-[--greyscale-text-title] cursor-pointer",
-            props.disabled && "text-[--greyscale-text-disabled] cursor-not-allowed"
+            "flex min-h-11 items-center text-sm font-semibold leading-none text-[--greyscale-text-title] cursor-pointer",
+            checkboxProps.disabled && "text-[--greyscale-text-disabled] cursor-not-allowed"
           )}
         >
           {label}
@@ -71,7 +76,7 @@ function CheckboxCard({
     <CheckboxPrimitive.Root
       data-slot="checkbox-card"
       className={cn(
-        "group flex gap-3 items-start p-3 rounded-lg border transition-colors cursor-pointer text-left",
+        "group flex min-h-11 gap-3 items-start p-3 rounded-lg border transition-colors cursor-pointer text-left",
         "bg-white border-[--navy-200] hover:bg-[--navy-50]",
         "data-[state=checked]:bg-[--pink-50] data-[state=checked]:border-[--pink-700] data-[state=checked]:hover:bg-[--pink-50]",
         "disabled:cursor-not-allowed disabled:opacity-50",

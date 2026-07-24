@@ -1,7 +1,18 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, fn, userEvent, within } from "storybook/test";
 import { Mail, Plus } from "lucide-react";
 import { Button, IconButton } from "@/components/forms/button";
+
+const defaultTypeOnSubmit = fn();
+const explicitSubmitOnSubmit = fn();
+const disabledAsChildClick = fn();
+const loadingAsChildClick = fn();
+const enabledAsChildClick = fn();
+const enabledAsChildCapture = fn();
+const nativeButtonClick = fn();
+const nativeButtonClickCapture = fn();
+const nativeButtonKeyCapture = fn();
 
 const meta: Meta<typeof Button> = {
   title: "Forms/Button",
@@ -279,6 +290,160 @@ export const Loading: Story = {
   args: {
     children: "Loading",
     loading: true,
+  },
+};
+
+export const DefaultTypeIsButton: Story = {
+  render: () => {
+    defaultTypeOnSubmit.mockClear();
+    return (
+      <form onSubmit={(event) => { event.preventDefault(); defaultTypeOnSubmit(); }}>
+        <Button>Safe action</Button>
+      </form>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole("button", { name: "Safe action" });
+
+    await expect(button).toHaveAttribute("type", "button");
+    await userEvent.click(button);
+    await expect(defaultTypeOnSubmit).not.toHaveBeenCalled();
+  },
+};
+
+export const ExplicitSubmitTypeIsPreserved: Story = {
+  render: () => {
+    explicitSubmitOnSubmit.mockClear();
+    return (
+      <form onSubmit={(event) => { event.preventDefault(); explicitSubmitOnSubmit(); }}>
+        <Button type="submit">Submit form</Button>
+      </form>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const button = within(canvasElement).getByRole("button", { name: "Submit form" });
+
+    await expect(button).toHaveAttribute("type", "submit");
+    await userEvent.click(button);
+    await expect(explicitSubmitOnSubmit).toHaveBeenCalledTimes(1);
+  },
+};
+
+export const AsChildDoesNotInjectButtonType: Story = {
+  render: () => (
+    <Button asChild>
+      <a href="#details">Read details</a>
+    </Button>
+  ),
+  play: async ({ canvasElement }) => {
+    const link = within(canvasElement).getByRole("link", { name: "Read details" });
+    await expect(link).not.toHaveAttribute("type");
+  },
+};
+
+export const AsChildLoadingPreservesContent: Story = {
+  render: () => (
+    <Button asChild loading>
+      <a href="#saving">Save changes</a>
+    </Button>
+  ),
+  play: async ({ canvasElement }) => {
+    const link = within(canvasElement).getByRole("link", { name: "Save changes" });
+    await expect(link.querySelector("svg")).toBeInTheDocument();
+    await expect(link).not.toHaveAttribute("type");
+  },
+};
+
+export const AsChildUnavailableLinksAreInert: Story = {
+  render: () => {
+    disabledAsChildClick.mockClear();
+    loadingAsChildClick.mockClear();
+    enabledAsChildClick.mockClear();
+    enabledAsChildCapture.mockClear();
+    return (
+      <div className="flex flex-col gap-4">
+        <Button asChild disabled>
+          <a href="#disabled-link" onClick={disabledAsChildClick}>Disabled link</a>
+        </Button>
+        <Button asChild loading>
+          <a href="#loading-link" onClick={loadingAsChildClick}>Loading link</a>
+        </Button>
+        <Button asChild>
+          <a
+            href="#enabled-link"
+            onClick={(event) => {
+              enabledAsChildClick(event.defaultPrevented);
+              event.preventDefault();
+            }}
+            onClickCapture={enabledAsChildCapture}
+          >
+            Enabled link
+          </a>
+        </Button>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const disabledLink = canvas.getByRole("link", { name: "Disabled link" });
+    const loadingLink = canvas.getByRole("link", { name: "Loading link" });
+    const enabledLink = canvas.getByRole("link", { name: "Enabled link" });
+    const originalHash = window.location.hash;
+
+    await expect(disabledLink).not.toHaveAttribute("disabled");
+    await expect(disabledLink).toHaveAttribute("aria-disabled", "true");
+    await expect(loadingLink).not.toHaveAttribute("disabled");
+    await expect(loadingLink).toHaveAttribute("aria-disabled", "true");
+    await expect(loadingLink).toHaveAttribute("aria-busy", "true");
+    disabledLink.focus();
+    await userEvent.keyboard("{Tab}");
+    await expect(loadingLink).toHaveFocus();
+    await userEvent.keyboard("{Tab}");
+    await expect(enabledLink).toHaveFocus();
+    await userEvent.click(disabledLink);
+    disabledLink.focus();
+    await userEvent.keyboard("{Enter}");
+    await userEvent.click(loadingLink);
+    loadingLink.focus();
+    await userEvent.keyboard("{Enter}");
+    await expect(disabledAsChildClick).not.toHaveBeenCalled();
+    await expect(loadingAsChildClick).not.toHaveBeenCalled();
+    await expect(window.location.hash).toBe(originalHash);
+
+    await userEvent.click(enabledLink);
+    await expect(enabledAsChildClick).toHaveBeenCalledWith(false);
+    await expect(enabledAsChildCapture).toHaveBeenCalledTimes(1);
+  },
+};
+
+export const NativeCaptureHandlersArePreserved: Story = {
+  render: () => {
+    nativeButtonClick.mockClear();
+    nativeButtonClickCapture.mockClear();
+    nativeButtonKeyCapture.mockClear();
+
+    return (
+      <Button
+        onClick={nativeButtonClick}
+        onClickCapture={nativeButtonClickCapture}
+        onKeyDownCapture={nativeButtonKeyCapture}
+      >
+        Native capture button
+      </Button>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const button = within(canvasElement).getByRole("button", { name: "Native capture button" });
+
+    await userEvent.click(button);
+    await expect(nativeButtonClickCapture).toHaveBeenCalledTimes(1);
+    await expect(nativeButtonClick).toHaveBeenCalledTimes(1);
+    button.focus();
+    await userEvent.keyboard("{Enter}");
+    await expect(nativeButtonKeyCapture).toHaveBeenCalledTimes(1);
+    await expect(nativeButtonClickCapture).toHaveBeenCalledTimes(2);
+    await expect(nativeButtonClick).toHaveBeenCalledTimes(2);
   },
 };
 

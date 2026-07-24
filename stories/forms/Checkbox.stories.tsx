@@ -1,10 +1,13 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, fn, userEvent, within } from "storybook/test";
 import {
   Checkbox,
   CheckboxWithLabel,
   CheckboxCard,
 } from "@/components/forms/checkbox";
+
+const checkboxChange = fn();
 
 const meta: Meta<typeof Checkbox> = {
   title: "Forms/Checkbox",
@@ -157,6 +160,37 @@ export const Disabled: Story = {
       <CheckboxWithLabel label="Accept terms and conditions" disabled defaultChecked />
     </div>
   ),
+};
+
+export const AssociatedCheckboxLabel: Story = {
+  render: () => {
+    checkboxChange.mockClear();
+    return (
+      <div className="flex w-[320px] flex-col gap-4">
+        <CheckboxWithLabel id="terms" label="Accept the terms" onCheckedChange={checkboxChange} />
+        <CheckboxWithLabel id="disabled-terms" label="Disabled terms" disabled />
+        <CheckboxCard value="updates" label="Receive updates" />
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const checkbox = canvas.getByRole("checkbox", { name: "Accept the terms" });
+    const label = canvas.getByText("Accept the terms");
+    const disabled = canvas.getByRole("checkbox", { name: "Disabled terms" });
+    const card = canvas.getByRole("checkbox", { name: "Receive updates" });
+
+    await expect(label).toHaveAttribute("for", "terms");
+    await expect(label.getBoundingClientRect().height).toBeGreaterThanOrEqual(44);
+    await userEvent.click(label);
+    await expect(checkbox).toHaveAttribute("aria-checked", "true");
+    await expect(checkboxChange).toHaveBeenCalledWith(true);
+    await userEvent.click(canvas.getByText("Disabled terms"));
+    await expect(disabled).toHaveAttribute("aria-checked", "false");
+    await expect(card.getBoundingClientRect().height).toBeGreaterThanOrEqual(44);
+    await userEvent.click(card);
+    await expect(card).toHaveAttribute("aria-checked", "true");
+  },
 };
 
 // Card Variant
