@@ -10,7 +10,7 @@ const buttonVariants = cva(
         secondary: "bg-secondary-pink-900 text-primary-navy-900 hover:bg-neutral-cream active:bg-neutral-cream disabled:bg-greyscale-surface-disabled disabled:text-greyscale-text-disabled",
         destructive: "bg-red-700 text-white hover:bg-red-800 active:bg-red-800 focus-visible:ring-red-600 disabled:bg-greyscale-surface-disabled disabled:text-greyscale-text-disabled",
         approve: "bg-green-700 text-white hover:bg-green-800 active:bg-green-800 focus-visible:ring-green-600 disabled:bg-greyscale-surface-disabled disabled:text-greyscale-text-disabled",
-        outline: "border border-greyscale-border bg-white text-greyscale-text-title hover:bg-secondary-pink-300 hover:border-secondary-pink-300 active:bg-secondary-pink-200 active:border-secondary-pink-200 active:text-primary-navy-600 disabled:bg-greyscale-surface-disabled disabled:text-greyscale-text-disabled disabled:border-transparent",
+        outline: "border border-greyscale-border bg-white text-greyscale-text-title hover:bg-secondary-pink-300 hover:border-secondary-pink-300 active:bg-secondary-pink-200 active:border-secondary-pink-200 active:text-primary-navy-900 disabled:bg-greyscale-surface-disabled disabled:text-greyscale-text-disabled disabled:border-transparent",
         subtle: "bg-neutral-cream text-primary-navy-900 hover:bg-secondary-pink-50 active:bg-secondary-pink-50 disabled:bg-greyscale-surface-disabled disabled:text-greyscale-text-disabled",
         ghost: "text-greyscale-text-title hover:bg-neutral-50",
         link: "text-primary-navy-900 underline-offset-4 hover:underline hover:text-primary-navy-700",
