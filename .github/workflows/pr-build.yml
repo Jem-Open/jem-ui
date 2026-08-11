@@ -9,6 +9,11 @@ jobs:
     name: Build Library
     runs-on: ubuntu-latest
 
+    # Job-level, deliberately: a step's own `env` is NOT in scope for that step's `if`, so guarding on
+    # a step-level env var would make the condition always false and skip Chromatic silently forever.
+    env:
+      CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,3 +44,14 @@ jobs:
 
       - name: Build Storybook
         run: npm run build-storybook
+
+      # Publishes the Storybook for this PR so a change can be reviewed before it reaches a consumer.
+      # The design system is mid-restyle, so this deliberately PUBLISHES rather than GATES: `npm run
+      # chromatic` carries --exit-zero-on-changes, and failing every PR that intentionally changes a
+      # pixel would train people to ignore it. Turn that into a gate once the restyle settles.
+      #
+      # Skipped rather than failed when CHROMATIC_PROJECT_TOKEN is absent, so a fork PR (which cannot
+      # read secrets) still gets a green build instead of a confusing red one.
+      - name: Publish Storybook to Chromatic
+        if: ${{ env.CHROMATIC_PROJECT_TOKEN != '' }}
+        run: npm run chromatic
