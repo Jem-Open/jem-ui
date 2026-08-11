@@ -15,6 +15,13 @@
   --pink-700: #ff8799;
   --pink-800: #ff788c;
   --pink-900: #ff697f;
+  /* Shades DARKER than the brand pink, from the Jem 2.0 colour page (Figma Pink-500/600).
+     The ramp above is a tint ramp that stops at the brand colour, which left nothing to hover or
+     press to — `hover:bg-secondary-pink-900` resolved to the same colour it started from. White text
+     on -1000 measures 5.13:1 and passes WCAG AA; on -950 it is 3.76:1, so -950 is for large text or
+     non-text surfaces only. */
+  --pink-950: #e1506b;
+  --pink-1000: #c43759;
 
   /* Colour Primitives - Navy */
   --navy-50: #fafbfb;
@@ -27,6 +34,8 @@
   --navy-700: #384d5c;
   --navy-800: #1f3747;
   --navy-900: #062133;
+  /* Darker than the previous ramp end, for layered dark surfaces (Figma Navy-300). */
+  --navy-950: #051d2e;
 
   /* Colour Primitives - Lime */
   --lime-50: #f7ffe7;
@@ -65,6 +74,8 @@
   --violet-900: #441b87;
 
   /* Colour Primitives - Blue */
+  /* Lighter than the previous ramp start, for the faintest informational tint (Figma Blue-100). */
+  --blue-25: #f0f5ff;
   --blue-50: #edf4fb;
   --blue-100: #d2e6fb;
   --blue-200: #acd6fd;

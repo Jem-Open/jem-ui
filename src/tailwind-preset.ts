@@ -16,6 +16,7 @@ const jemPreset: Partial<Config> = {
           700: "var(--navy-700)",
           800: "var(--navy-800)",
           900: "var(--navy-900)",
+          950: "var(--navy-950)",
         },
         /* Colour Primitives - Secondary Pink */
         "secondary-pink": {
@@ -29,6 +30,8 @@ const jemPreset: Partial<Config> = {
           700: "var(--pink-700)",
           800: "var(--pink-800)",
           900: "var(--pink-900)",
+          950: "var(--pink-950)",
+          1000: "var(--pink-1000)",
         },
         lime: {
           50: "var(--lime-50)",
@@ -67,6 +70,7 @@ const jemPreset: Partial<Config> = {
           900: "var(--violet-900)",
         },
         blue: {
+          25: "var(--blue-25)",
           50: "var(--blue-50)",
           100: "var(--blue-100)",
           200: "var(--blue-200)",
