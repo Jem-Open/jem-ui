@@ -17,6 +17,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          # Chromatic finds its baseline by walking git history to the last build it published on an
+          # ancestor commit. actions/checkout defaults to fetch-depth: 1 — a single-commit clone with
+          # no ancestry — so Chromatic cannot locate a baseline and treats every story as brand new.
+          # The result is not a failure but something worse: a green build whose diff says "217
+          # changes" on a PR that touched one token, which is indistinguishable from a real
+          # regression and trains people to click Approve. 0 fetches full history.
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
