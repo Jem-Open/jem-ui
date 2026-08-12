@@ -2,6 +2,12 @@
 
 All notable changes to `@jem-open/jem-ui` are documented here.
 
+## [0.4.4] - 2026-08-12
+
+### Fixed
+
+- Restored the semantic colour to five `Tag` tones that 0.4.3 rendered in near-black. Making them accessible had moved `success`, `pending`, `failed`, `pink` and `lime` to `text-primary-navy-900`, which passes contrast but discards the meaning the colour carries — a status tag is colour-coded on purpose. Each now uses the darker step of its own hue instead: `green-700` (5.35:1), `yellow-700` (5.40:1), `red-700` (5.59:1), `secondary-pink-1000` (4.70:1) and `lime-700` (5.81:1), all against their own tint and all clearing AA. `pink` is the case the new `--pink-1000` was added for: nothing in the pink ramp was darker than the brand pink, which is why navy was reached for.
+
 ## [0.4.3] - 2026-08-12
 
 ### Fixed
