@@ -186,7 +186,7 @@ const semanticColors = {
     borderLighter: "#ff9a9d",
     borderSubtle: "#fdf0f1",
     borderDarker: "#ee0626",
-    textLabel: "#ee0626",
+    textLabel: "#c20f1e",
   },
   warning: {
     surfaceDefault: "#ff601f",
@@ -197,7 +197,7 @@ const semanticColors = {
     borderLighter: "#ffaf6e",
     borderSubtle: "#fff5e8",
     borderDarker: "#f94a23",
-    textLabel: "#f94a23",
+    textLabel: "#9f5419",
   },
   success: {
     surfaceDefault: "#00be5c",
@@ -208,7 +208,7 @@ const semanticColors = {
     borderLighter: "#59eea4",
     borderSubtle: "#e9fdf2",
     borderDarker: "#009b48",
-    textLabel: "#009b48",
+    textLabel: "#1b7f47",
   },
 };
 
@@ -227,7 +227,7 @@ const greyscaleTokens = {
     title: "#062133",
     subtitle: "#1f3747",
     body: "#384d5c",
-    caption: "#6a7a85",
+    caption: "#697983",
     negative: "#fbfbfb",
     disabled: "#cdd3d6",
   },

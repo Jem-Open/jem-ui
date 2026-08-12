@@ -190,3 +190,83 @@ export const FigmaNameMapping: Story = {
     );
   },
 };
+
+/**
+ * The `*-text-label` tokens and `--greyscale-text-caption` exist to colour TEXT, so each one has to
+ * clear WCAG AA's 4.5:1 against the surfaces it actually sits on. Until v0.4.3 none of them did:
+ * error 4.03:1 on its own tint, warning 3.23:1, success 3.42:1, caption 4.43:1 on plain white.
+ *
+ * That is not an abstract failure. jem-hub worked around it by hardcoding Tailwind literals at the
+ * call site, and when a slice there mechanically adopted these tokens it dropped ~32 sites below AA
+ * in one commit — which is what prompted the re-value.
+ *
+ * Ratios are computed live from the CSS variables rather than written down, so this page cannot go
+ * stale the way a hardcoded table does.
+ */
+export const SemanticTextContrast: Story = {
+  name: "Text tokens & contrast",
+  render: () => {
+    const rows: { token: string; label: string; surface: string; surfaceName: string }[] = [
+      { token: "--error-text-label", label: "Payroll failed to submit", surface: "--error-surface-subtle", surfaceName: "error tint" },
+      { token: "--warning-text-label", label: "3 shifts need attention", surface: "--warning-surface-subtle", surfaceName: "warning tint" },
+      { token: "--success-text-label", label: "Settings saved", surface: "--success-surface-subtle", surfaceName: "success tint" },
+      { token: "--greyscale-text-caption", label: "Last synced 4 minutes ago", surface: "--neutral-white", surfaceName: "white" },
+    ];
+
+    const read = (name: string) =>
+      getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+    const luminance = (hex: string) => {
+      const h = hex.replace("#", "");
+      const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+      const channel = (v: number) => {
+        const c = v / 255;
+        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+      };
+      const [r, g, b] = [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16));
+      return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+    };
+
+    const ratio = (a: string, b: string) => {
+      const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+      return (hi + 0.05) / (lo + 0.05);
+    };
+
+    return (
+      <div className="flex max-w-3xl flex-col gap-4 p-6">
+        <p className="text-sm text-greyscale-text-body">
+          Each token shown on white and on the surface it pairs with. AA needs <strong>4.5:1</strong> for
+          normal-size text, which is what all of these are used for.
+        </p>
+        {rows.map(({ token, label, surface, surfaceName }) => {
+          const fg = read(token);
+          const bg = read(surface) || "#ffffff";
+          const onWhite = ratio(fg, "#ffffff");
+          const onTint = ratio(fg, bg);
+          return (
+            <div key={token} className="flex flex-col gap-2 rounded-lg border border-greyscale-border p-4">
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <code className="text-sm font-semibold text-greyscale-text-title">{token}</code>
+                <code className="text-xs text-greyscale-text-caption">{fg}</code>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <div className="min-w-56 flex-1 rounded-md border border-greyscale-border bg-neutral-white p-3">
+                  <span className="text-sm font-medium" style={{ color: fg }}>{label}</span>
+                  <div className="mt-1 text-xs text-greyscale-text-caption">
+                    {onWhite.toFixed(2)}:1 on white {onWhite >= 4.5 ? "✓" : "✗"}
+                  </div>
+                </div>
+                <div className="min-w-56 flex-1 rounded-md border border-greyscale-border p-3" style={{ backgroundColor: bg }}>
+                  <span className="text-sm font-medium" style={{ color: fg }}>{label}</span>
+                  <div className="mt-1 text-xs" style={{ color: read("--greyscale-text-body") }}>
+                    {onTint.toFixed(2)}:1 on {surfaceName} {onTint >= 4.5 ? "✓" : "✗"}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  },
+};
