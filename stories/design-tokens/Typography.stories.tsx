@@ -190,7 +190,7 @@ const TypographyShowcase = () => {
             marginBottom: "32px",
           }}
         >
-          Manrope
+          Inter
         </p>
         <p
           style={{

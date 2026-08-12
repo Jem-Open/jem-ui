@@ -33,6 +33,14 @@
  * something the product never displays.
  */
 @font-face {
+  font-family: "Inter";
+  src: url("./fonts/Inter-Variable-latin.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "Satoshi";
   src: url("./fonts/Satoshi-Variable.woff2") format("woff2-variations");
   font-weight: 300 900;
@@ -40,6 +48,49 @@
   font-display: swap;
 }
 
+/**
+ * Inter — the body face, self-hosted for the same reason as Satoshi: Storybook never renders
+ * app/layout.tsx, so next/font does not reach it and the body face fell back to system-ui, showing a
+ * pairing the product does not use.
+ *
+ * A Google Fonts @import was tried first and FAILED — the face registered and then errored, leaving
+ * the fallback in place while looking loaded. Measured: the specimen was 573.2px wide either way,
+ * exactly the system stack. Self-hosting removes the network from the question entirely.
+ *
+ * This is the latin variable subset next/font already downloads for jem-hub, so it is the same file
+ * the product serves rather than a second copy of Inter from somewhere else.
+ */
+
+/* Point the body token at whichever Inter is available — next/font's hashed family in the local app,
+   the Google-served one in Storybook. Falls through to the token's own stack if neither loads. */
+:root {
+  --font-family-body:
+    var(--font-inter, "Inter"), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  /* The display face on headings, matching the product. This repo's stylesheet never carried these,
+     so a raw <h1> in a story rendered in the BODY face while the same markup in jem-hub rendered in
+     Satoshi — Storybook showing something the product does not. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-family-heading);
+  }
+
+  /* The page description — the sentence directly under a page title — belongs to the header unit, so
+     it takes the display face too, as do the big figures on a card (see the `Figure` component,
+     which sets `font-heading` itself). `h1 + p` matches structurally because a page header is an
+     <h1> followed immediately by its description; a description wrapped in its own <div>, or written
+     as a <span>, needs `font-heading` explicitly. */
+  h1 + p {
+    font-family: var(--font-family-heading);
+  }
+}

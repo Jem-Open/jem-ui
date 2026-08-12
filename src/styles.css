@@ -22,6 +22,12 @@
      non-text surfaces only. */
   --pink-950: #e1506b;
   --pink-1000: #c43759;
+  /* The muted rose the product's Beta pill uses. It was a literal (#b03a52) at the call site with a
+     comment saying the ramp topped out too bright for it — true even after --pink-1000, which is
+     21/255 away and reads cooler and more saturated. It extends the ramp rather than sitting outside
+     it: lightness continues down (49.2% → 45.9%), saturation down (56.2% → 50.4%), hue steady in the
+     345–351° band the whole dark end occupies. 5.29:1 on --red-50 against --pink-1000's 4.68:1. */
+  --pink-1100: #b03a52;
 
   /* Colour Primitives - Navy */
   --navy-50: #fafbfb;

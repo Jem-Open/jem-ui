@@ -55,7 +55,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
             fontSize: "18px",
             fontWeight: 600,
             color: "var(--greyscale-text-title, #062133)",
-            fontFamily: "var(--font-family-body, Manrope, sans-serif)",
+            fontFamily: "var(--font-family-body)",
           }}
         >
           {name}
@@ -65,7 +65,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
             margin: "8px 0 0",
             fontSize: "12px",
             color: "var(--greyscale-text-caption, #6a7a85)",
-            fontFamily: "var(--font-family-body, Manrope, sans-serif)",
+            fontFamily: "var(--font-family-body)",
           }}
         >
           {description}
@@ -121,7 +121,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
         fontSize: "14px",
         color: "var(--greyscale-text-caption, #6a7a85)",
         margin: "0 0 32px",
-        fontFamily: "var(--font-family-body, Manrope, sans-serif)",
+        fontFamily: "var(--font-family-body)",
       }}
     >
       {description}
@@ -590,7 +590,7 @@ export const OverviewPage: React.FC = () => {
         padding: "48px",
         maxWidth: "1600px",
         margin: "0 auto",
-        fontFamily: "var(--font-family-body, Manrope, sans-serif)",
+        fontFamily: "var(--font-family-body)",
       }}
     >
       {/* Header */}

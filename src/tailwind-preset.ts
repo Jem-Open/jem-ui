@@ -50,6 +50,7 @@ const jemPreset: Partial<Config> = {
           900: "var(--pink-900)",
           950: "var(--pink-950)",
           1000: "var(--pink-1000)",
+          1100: "var(--pink-1100)",
         },
         lime: {
           50: "var(--lime-50)",
