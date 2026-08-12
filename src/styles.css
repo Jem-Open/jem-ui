@@ -174,7 +174,9 @@
   --greyscale-text-title: #062133;
   --greyscale-text-body: #384d5c;
   --greyscale-text-subtitle: #1f3747;
-  --greyscale-text-caption: #6a7a85;
+  /* Was #6a7a85, which is 4.43:1 on white — below the 4.5:1 AA bar for normal text, at every one
+     of its ~1351 call sites in jem-hub. One step darker clears it and is imperceptible at caption size. */
+  --greyscale-text-caption: #697983;
   --greyscale-text-negative: #fbfbfb;
   --greyscale-text-disabled: #cdd3d6;
 
@@ -209,7 +211,10 @@
   --error-border-lighter: #ff9a9d;
   --error-border-subtle: #fdf0f1;
   --error-border-darker: #ee0626;
-  --error-text-label: #ee0626;
+  /* A *-text-label token exists to colour TEXT, so it must clear 4.5:1 on the surfaces it sits on.
+     Was #ee0626: 4.48:1 on white and 4.03:1 on --error-surface-subtle, failing both. Now --red-700,
+     which is already what jem-hub's lib/tones.ts renders critical text as (6.21:1 / 5.59:1). */
+  --error-text-label: #c20f1e;
 
   /* Semantic Colours - Warning */
   --warning-surface-default: #ff601f;
@@ -220,7 +225,10 @@
   --warning-border-lighter: #ffaf6e;
   --warning-border-subtle: #fff5e8;
   --warning-border-darker: #f94a23;
-  --warning-text-label: #f94a23;
+  /* Was #f94a23: 3.48:1 on white, 3.23:1 on --warning-surface-subtle — the worst of the three.
+     Now --yellow-700, matching lib/tones.ts's warning text (5.59:1 / 5.19:1). Deliberately a burnt
+     amber rather than the old red-orange: no orange light enough to read as orange passes AA here. */
+  --warning-text-label: #9f5419;
 
   /* Semantic Colours - Success */
   --success-surface-default: #00be5c;
@@ -231,7 +239,10 @@
   --success-border-lighter: #59eea4;
   --success-border-subtle: #e9fdf2;
   --success-border-darker: #009b48;
-  --success-text-label: #009b48;
+  /* Was #009b48: 3.63:1 on white, 3.42:1 on --success-surface-subtle. Now #1b7f47 (5.03:1 / 4.74:1),
+     the value jem-hub already uses as its success green via --brand-green-dark. NOT --green-700
+     (#00773a), which scores better but would leave the app with two different greens for success. */
+  --success-text-label: #1b7f47;
 
   /* Spacing */
   --spacing-none: 0px;

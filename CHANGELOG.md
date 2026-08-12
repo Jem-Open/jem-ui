@@ -2,6 +2,17 @@
 
 All notable changes to `@jem-open/jem-ui` are documented here.
 
+## [0.4.3] - 2026-08-12
+
+### Fixed
+
+- Re-valued the four tokens that exist to colour text but could not meet WCAG AA as text. `--error-text-label` #ee0626 → #c20f1e, `--warning-text-label` #f94a23 → #9f5419, `--success-text-label` #009b48 → #1b7f47, and `--greyscale-text-caption` #6a7a85 → #697983. Every one now clears 4.5:1 on white and on the surface it pairs with; previously they scored 4.03:1, 3.23:1, 3.42:1 and 4.43:1 respectively. The three semantic values match the steps jem-hub's `lib/tones.ts` already renders these tones as, so the library now agrees with the product rather than being worked around by it.
+
+### Added
+
+- Added `npm run test:tokens`, which computes the contrast of every text token against the surfaces it pairs with and fails below 4.5:1. A colour token cannot fail a type check, a lint rule or a render test, so nothing previously could have caught the above.
+- Added a **Text tokens & contrast** story that reads the CSS variables live and shows each token on white and on its own tint with the computed ratio, so the page cannot go stale the way a hardcoded table does.
+
 ## [0.4.2] - 2026-07-19
 
 ### Fixed
