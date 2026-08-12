@@ -6,6 +6,8 @@ All notable changes to `@jem-open/jem-ui` are documented here.
 
 ### Added
 
+- **`DataTable` paginates with `TablePager`.** Its `DataTablePagination` was a separate inline composition — a differently sized Select (`h-8 w-[70px]`), plain `Button`s instead of `IconButton`s, its own spacing — so the default table and a hand-built one paginated with visibly different controls. It is now a thin adapter from TanStack's state onto the one pager. `showFirstLast` and `showPageReadout` are on there, and its 10/20/30/40/50 size options kept, so nothing it could do before is lost.
+- `TablePager` gained optional `showFirstLast` (jump arrows, hidden below `lg`) and `showPageReadout` (`Page X of Y`), both off by default — they exist so `DataTable` could adopt it without a capability regression. Its size panel opens upward (`side="top"`), since a pager sits at the foot of its table.
 - **`TablePager`** — a `start–end of total` range, a rows-per-page control, and prev/next arrows. This is the pager most tables actually want and the one this library was missing: jem-hub arrived at exactly this composition independently and uses it in **42** tables, against **2** using numbered `Pagination`. Both controls keep a job — numbered links for a short browsable set where jumping to page 7 means something, this for the long list you step through, where the page number carries no information. Controlled-only by design: paging state stays with the consumer, because reading `?page` would put `next/navigation` inside a design system. Omit `onPageSizeChange` to hide the size control for a list whose size is fixed by its source, and it renders nothing at `count === 0`.
 
 ### Changed

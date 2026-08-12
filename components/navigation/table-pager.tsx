@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { IconButton } from "@/components/forms/button";
@@ -27,6 +27,18 @@ interface TablePagerProps extends Omit<React.ComponentProps<"div">, "children"> 
   pageSizeOptions?: readonly number[];
   /** Override the "Rows per page" label, e.g. for a non-tabular list. */
   rowsPerPageLabel?: string;
+  /**
+   * Add jump-to-first/last arrows, hidden below `lg` where the row has no width to spare. Off by
+   * default: for a list you step through, they are two more targets earning very little. Worth it
+   * for a client-side table where the whole set is already loaded and the last page is a real
+   * destination — which is why `DataTable` turns them on.
+   */
+  showFirstLast?: boolean;
+  /**
+   * Add a `Page X of Y` readout beside the range. Off by default, because the range already answers
+   * "where am I" more usefully; on where a page index is part of how people talk about the data.
+   */
+  showPageReadout?: boolean;
 }
 
 /**
@@ -55,6 +67,8 @@ function TablePager({
   onPageSizeChange,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
   rowsPerPageLabel = "Rows per page",
+  showFirstLast = false,
+  showPageReadout = false,
   className,
   ...props
 }: TablePagerProps) {
@@ -83,6 +97,11 @@ function TablePager({
         </span>{" "}
         of {count}
       </span>
+      {showPageReadout ? (
+        <span>
+          Page <span className="font-medium text-greyscale-text-title">{page}</span> of {pageCount}
+        </span>
+      ) : null}
 
       <div className="ml-auto flex items-center gap-sm">
         {onPageSizeChange ? (
@@ -97,7 +116,7 @@ function TablePager({
               <SelectTrigger aria-label={rowsPerPageLabel} className="h-9 w-[88px]">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent side="top">
                 {pageSizeOptions.map((option) => (
                   <SelectItem key={option} value={String(option)}>
                     {option}
@@ -108,6 +127,17 @@ function TablePager({
           </>
         ) : null}
 
+        {showFirstLast ? (
+          <IconButton
+            aria-label="First page"
+            shape="circle"
+            size="medium"
+            className="hidden lg:inline-flex"
+            disabled={page <= 1}
+            onClick={() => goToPage(1)}
+            icon={<ChevronsLeft className="size-4" aria-hidden />}
+          />
+        ) : null}
         <IconButton
           aria-label="Previous page"
           shape="circle"
@@ -124,6 +154,17 @@ function TablePager({
           onClick={() => goToPage(page + 1)}
           icon={<ChevronRight className="size-4" aria-hidden />}
         />
+        {showFirstLast ? (
+          <IconButton
+            aria-label="Last page"
+            shape="circle"
+            size="medium"
+            className="hidden lg:inline-flex"
+            disabled={page >= pageCount}
+            onClick={() => goToPage(pageCount)}
+            icon={<ChevronsRight className="size-4" aria-hidden />}
+          />
+        ) : null}
       </div>
     </div>
   );
