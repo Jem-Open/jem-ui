@@ -2,6 +2,22 @@
 
 All notable changes to `@jem-open/jem-ui` are documented here.
 
+## [0.6.0] - 2026-08-12
+
+### Added
+
+- **Absorbed the five components that existed only in `@jem2.0/ui`**: `Card` (with its header/title/description/content/footer parts and `cardVariants`), `Figure`, `Stat`, `AskAiLink` and `Stepper`. Every other component in that package was a duplicate of one already here. Each arrives with a story. `Card`, `Figure` and `Stat` carry no `"use client"` and no Radix import, so they are exported from `./server` as well — jem-hub imports `Figure` and `Stat` through that entry from 12 Server Components.
+- **Absorbed the 18 tokens that package owned and this one lacked**: the 15 `--brand-*` values, `--font-family-heading` / `--font-family-body`, and `--greyscale-border-subtle`. The brand palette is registered as a `brand` colour group and `greyscale.border.subtle` as a key, so `bg-brand-lavender`, `text-brand-green-dark` and `border-greyscale-border-subtle` all emit — verified against a compiled probe.
+
+### Fixed
+
+- **`font-heading` and `font-body` were emitting a rule pointing at an undefined variable.** The preset has always registered them against `--font-family-heading` / `--font-family-body`, but this package never defined those tokens — so a consumer got a `font-family: var(...)` that resolved to nothing, and only jem-hub escaped it because `@jem2.0/ui` supplied the values. Defining them here fixes the library standalone, including its own Storybook.
+- Raised the browser test timeout to 45s. The Button and Tag contrast matrices measure every variant in a real browser and were passing at 10s / failing at 15s depending on how many story files ran alongside — a timeout that moves with unrelated additions is a landmine rather than a signal.
+
+### Changed
+
+- `./server`'s dependency contract now permits `react/jsx-runtime`. The entry exports components now rather than only pure functions, and a Server Component's job is to return JSX; the import carries no client-only API. A bare `react` import would still be a failure, since that means a hook.
+
 ## [0.5.0] - 2026-08-12
 
 ### Changed

@@ -4,6 +4,24 @@ const jemPreset: Partial<Config> = {
   theme: {
     extend: {
       colors: {
+        brand: {
+          DEFAULT: "var(--brand-pink)",
+          pink: "var(--brand-pink)",
+          "pink-soft": "var(--brand-pink-soft)",
+          "pink-soft-2": "var(--brand-pink-soft-2)",
+          navy: "var(--brand-navy)",
+          "navy-2": "var(--brand-navy-2)",
+          "navy-3": "var(--brand-navy-3)",
+          cream: "var(--brand-cream)",
+          "cream-2": "var(--brand-cream-2)",
+          mint: "var(--brand-mint)",
+          "mint-2": "var(--brand-mint-2)",
+          lavender: "var(--brand-lavender)",
+          "lavender-2": "var(--brand-lavender-2)",
+          purple: "var(--brand-purple)",
+          "green-dark": "var(--brand-green-dark)",
+          amber: "var(--brand-amber)",
+        },
         /* Colour Primitives - Primary Navy */
         "primary-navy": {
           50: "var(--navy-50)",
@@ -167,6 +185,9 @@ const jemPreset: Partial<Config> = {
           },
           border: {
             DEFAULT: "var(--greyscale-border-default)",
+            // The lighter step jem-hub converted ~469 borders onto. It lived only in @jem2.0/ui,
+            // so without it here those borders lose their colour the moment that package is deleted.
+            subtle: "var(--greyscale-border-subtle)",
             disabled: "var(--greyscale-border-disabled)",
             darker: "var(--greyscale-border-darker)",
           },

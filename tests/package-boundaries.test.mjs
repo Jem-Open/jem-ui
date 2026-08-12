@@ -68,9 +68,22 @@ test("server helper export is present and dependency-safe", async () => {
     await access(resolve(repoRoot, relativePath))
   }
 
+  // The point of this list is that nothing CLIENT-ONLY reaches the server entry — a React hook, a
+  // Radix module, anything that calls createContext at evaluation time. It is not that the entry
+  // must be JSX-free.
+  //
+  // `react/jsx-runtime` is the JSX factory. A Server Component's whole job is to return JSX, so an
+  // entry that exports components necessarily imports it; it contains no client-only API. It appears
+  // here because Phase 3 of the 2.0 restyle moved Card, Figure and Stat into this entry — the three
+  // absorbed components with no "use client" and no Radix import — where previously the entry held
+  // only pure functions. jem-hub has been importing exactly these three from @jem2.0/ui's equivalent
+  // server entry across 12 Server Components, so the arrangement is already proven in production.
+  //
+  // Adding `react` itself (not `react/jsx-runtime`) WOULD be a red flag: it means a hook.
   const permittedDependencies = [
     "class-variance-authority",
     "clsx",
+    "react/jsx-runtime",
     "tailwind-merge",
   ].sort()
 
