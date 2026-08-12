@@ -20,11 +20,11 @@ function Tabs({
 }
 
 const tabsListVariants = cva(
-  "inline-flex w-fit items-center justify-center rounded-lg p-1.5 text-sm",
+  "inline-flex w-fit items-center justify-center rounded-full p-xxxs text-sm",
   {
     variants: {
       variant: {
-        default: "bg-[--pink-100] gap-0",
+        default: "bg-greyscale-surface-subtle gap-0",
         line: "bg-transparent gap-1 border-b border-[--greyscale-border-default] rounded-none p-0",
       },
     },
@@ -56,8 +56,8 @@ const tabsTriggerVariants = cva(
     variants: {
       variant: {
         default: [
-          "rounded-md font-normal text-[--navy-600]",
-          "data-[state=active]:bg-white data-[state=active]:font-semibold data-[state=active]:text-[--greyscale-text-title]",
+          "rounded-full px-md py-xs font-medium text-primary-navy-600",
+          "data-[state=active]:bg-brand-pink-soft data-[state=active]:font-semibold data-[state=active]:text-primary-navy-900",
         ],
         line: [
           "rounded-none border-b-2 border-transparent font-normal text-[--greyscale-text-caption] -mb-px",

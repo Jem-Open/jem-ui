@@ -2,6 +2,19 @@
 
 All notable changes to `@jem-open/jem-ui` are documented here.
 
+## [0.7.0] - 2026-08-12
+
+### Changed
+
+- **`Tabs` is the 2.0 segmented control.** The track is a `rounded-full` `--greyscale-surface-subtle` rail rather than a `rounded-lg` pink one, and the active tab is a `--brand-pink-soft` pill rather than a white one — the pink moves from the track to the selection. Promoted from jem-hub, which had built exactly this by hand in nine places because the library's tabs did not look like it. The `line` variant is unchanged.
+- **`Pagination` marks the current page with a soft filled pill** instead of an outlined circle, matching the active tab so "this is selected" reads the same in both controls. The shape did not change: `size="icon"` already inherited the base `rounded-full`, so the links were always circular — the outline was the dated part.
+- **`SearchInput` is a pill.** It was already filled and borderless; `rounded-lg` was the only thing left, which is why jem-hub's `SearchField` wrapper exists solely to override `[&_input]:!rounded-full` at 29 call sites. That wrapper can now be deleted.
+
+### Fixed
+
+- `SearchInput`'s placeholder was `--primary-navy-400`, which computes to **1.58:1** on its own `--primary-navy-100` fill — invisible. It is `--primary-navy-600` now (5.70:1), matching the Select placeholder fixed in 0.5.0.
+- The inactive tab label is `--primary-navy-600` (5.96:1 on the track). jem-hub's hand-rolled version used `--greyscale-text-caption`, which is 4.35:1 there and fails AA — so the library takes the app's design without taking its defect.
+
 ## [0.6.0] - 2026-08-12
 
 ### Added

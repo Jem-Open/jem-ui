@@ -139,7 +139,7 @@ function SearchInput({ className, value, onChange, onClear, ...props }: SearchIn
         value={inputValue}
         onChange={handleChange}
         className={cn(
-          "h-[46px] w-full rounded-lg border border-transparent bg-primary-navy-100 pl-12 pr-10 py-3 text-sm text-greyscale-text-title placeholder:text-sm placeholder:text-primary-navy-400 outline-none transition-all",
+          "h-[46px] w-full rounded-full border border-transparent bg-primary-navy-100 pl-12 pr-10 py-3 text-sm text-greyscale-text-title placeholder:text-sm placeholder:text-primary-navy-600 outline-none transition-all",
           "focus:border-greyscale-border-darker"
         )}
         {...props}
