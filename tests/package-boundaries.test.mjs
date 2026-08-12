@@ -85,9 +85,17 @@ test("server helper export is present and dependency-safe", async () => {
   }
 })
 
-test("0.4.2 release metadata runs the RSC gate in CI", async () => {
+test("release metadata runs the RSC gate in CI", async () => {
   const packageJson = JSON.parse(await read("package.json"))
-  assert.equal(packageJson.version, "0.4.2")
+  // Pinned to the CHANGELOG's newest entry rather than a literal: the literal made every release
+  // bump a test edit, and it failed the 0.4.3 bump for no reason other than being out of date.
+  // Version-and-changelog-agree is the invariant actually worth asserting here.
+  const newestDocumented = (await read("CHANGELOG.md")).match(/^## \[([^\]]+)\]/m)?.[1]
+  assert.equal(
+    packageJson.version,
+    newestDocumented,
+    "package.json version must match the newest CHANGELOG entry",
+  )
   assert.equal(
     packageJson.scripts["test:boundaries"],
     "node --test tests/package-boundaries.test.mjs tests/npm-pack-output.test.mjs",
