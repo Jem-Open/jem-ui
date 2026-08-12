@@ -22,6 +22,12 @@
      non-text surfaces only. */
   --pink-950: #e1506b;
   --pink-1000: #c43759;
+  /* The muted rose the product's Beta pill uses. It was a literal (#b03a52) at the call site with a
+     comment saying the ramp topped out too bright for it — true even after --pink-1000, which is
+     21/255 away and reads cooler and more saturated. It extends the ramp rather than sitting outside
+     it: lightness continues down (49.2% → 45.9%), saturation down (56.2% → 50.4%), hue steady in the
+     345–351° band the whole dark end occupies. 5.29:1 on --red-50 against --pink-1000's 4.68:1. */
+  --pink-1100: #b03a52;
 
   /* Colour Primitives - Navy */
   --navy-50: #fafbfb;
@@ -317,8 +323,29 @@
   --brand-purple: #6c5ce7;
 
   /* Typography families, likewise moved from @jem2.0/ui. */
-  --font-family-body: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-family-heading: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Satoshi is the brand DISPLAY face and Inter carries running text — the pairing the product
+     ships. These previously named Inter for headings and Manrope for body, which matched nothing:
+     jem-hub overrides both in its own globals.css to point at the next/font variables for Satoshi
+     and Inter, so the defaults here were dead weight that would mislead any other consumer.
+
+     A token can only NAME a family; loading it stays the consumer's job. jem-hub self-hosts Satoshi
+     (one variable file, 300–900 — it ships no static 600, and semibold is the hub's most-used
+     weight) and pulls Inter through next/font/google at build time, so neither is fetched from a
+     third party at runtime. This package deliberately does NOT redistribute either file. */
+  --font-family-heading:
+    "Satoshi", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-family-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Icon-chip outlines. A tinted tile carrying a glyph needs a soft rule of its OWN hue, and the
+     product got there with a literal hex at 30% over the fill — because Tailwind 3 computes alpha
+     only on a literal: `var(--x)/30` emits no rule at all, so a token could not be used. These are
+     those blends resolved, so the component references tokens and nothing has to be kept in step by
+     hand. The nearest ramp steps are 23–51/255 away (brighter and more saturated), which is why
+     they are not reused. */
+  --chip-border-critical: #eda2a9;
+  --chip-border-warning: #e2c58c;
+  --chip-border-info: #93b7ee;
+  --chip-border-success: #abd7bf;
 
   /* Elevation. Moved from @jem2.0/ui, which Phase 3 of the 2.0 restyle folds into this package —
      three of the 21 tokens it owns that this one lacked. The Select panel needs `shadow-popover`

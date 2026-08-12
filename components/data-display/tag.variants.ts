@@ -18,6 +18,17 @@ const tagVariants = cva(
         "pink-text": "bg-transparent text-primary-navy-900",
         lime: "bg-lime-50 text-lime-700",
         purple: "bg-purple-50 text-purple-600",
+        // Release-track tones, promoted from jem-hub's TrackTag — which existed only because these
+        // did not, wrapping `neutral` and overriding both its colours at the call site.
+        //
+        // `beta` uses --pink-1100, the muted rose added for exactly this: the app had it as an
+        // off-token literal (#b03a52) because the pink ramp topped out at the brand coral and the red
+        // ramp jumped to a fire-engine red. --pink-1000 was 21/255 away and read cooler, so the rose
+        // became a token of its own instead of an approximation. 5.29:1 on the fill.
+        beta: "bg-red-50 text-secondary-pink-1100",
+        // `waitlist` is the coming-soon treatment: soft blue with NAVY text rather than the bright
+        // text-blue-600 `processing` uses, so it reads as pending rather than active. 11.17:1.
+        waitlist: "bg-blue-50 text-primary-navy-800",
       },
     },
     defaultVariants: {

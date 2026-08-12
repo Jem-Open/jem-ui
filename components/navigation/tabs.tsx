@@ -20,12 +20,12 @@ function Tabs({
 }
 
 const tabsListVariants = cva(
-  "inline-flex w-fit items-center justify-center rounded-lg p-1.5 text-sm",
+  "inline-flex w-fit items-center justify-center rounded-full text-sm",
   {
     variants: {
       variant: {
-        default: "bg-[--pink-100] gap-0",
-        line: "bg-transparent gap-1 border-b border-[--greyscale-border-default] rounded-none p-0",
+        default: "bg-greyscale-surface-subtle gap-0 p-xxxs",
+        line: "items-stretch bg-transparent gap-1 border-b border-[--greyscale-border-default] rounded-none p-0",
       },
     },
     defaultVariants: {
@@ -56,12 +56,21 @@ const tabsTriggerVariants = cva(
     variants: {
       variant: {
         default: [
-          "rounded-md font-normal text-[--navy-600]",
-          "data-[state=active]:bg-white data-[state=active]:font-semibold data-[state=active]:text-[--greyscale-text-title]",
+          "rounded-full px-md py-xs font-medium text-primary-navy-600",
+          "data-[state=active]:bg-brand-pink-soft data-[state=active]:font-semibold data-[state=active]:text-primary-navy-900",
         ],
         line: [
-          "rounded-none border-b-2 border-transparent font-normal text-[--greyscale-text-caption] -mb-px",
-          "data-[state=active]:border-[--primary-surface-default] data-[state=active]:font-medium data-[state=active]:text-[--greyscale-text-title]",
+          // `self-stretch` is load-bearing: the list centres its items, so without it the trigger's
+          // box stops short of the list's bottom edge and any indicator pinned to the trigger floats
+          // ABOVE the rail with a visible gap. Setting it on the item beats the container's
+          // `items-center` regardless of how the two class strings merge.
+          "relative self-stretch rounded-none font-normal text-[--greyscale-text-caption]",
+          // Navy, matching the rail's own language rather than the segmented variant's pink pill —
+          // an underline reads as a continuation of the line it sits on. #062133 is 15.9:1 on white,
+          // far past the 3:1 a state indicator needs (WCAG 1.4.11).
+          "data-[state=active]:font-medium data-[state=active]:text-[--greyscale-text-title]",
+          // `-bottom-px` overlaps the list's 1px rail so the indicator sits ON it, not above it.
+          "data-[state=active]:after:absolute data-[state=active]:after:inset-x-0 data-[state=active]:after:-bottom-px data-[state=active]:after:h-0.5 data-[state=active]:after:bg-[--primary-surface-default]",
         ],
       },
     },

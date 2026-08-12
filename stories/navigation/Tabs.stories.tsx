@@ -295,3 +295,76 @@ export const WithDisabled: Story = {
     </Tabs>
   ),
 };
+
+/**
+ * The 2.0 segmented control, promoted from jem-hub — which had built this by hand in nine places
+ * because the library's tabs didn't look like it.
+ *
+ * What changed and why it needs seeing rather than reading: the track is a `rounded-full`
+ * `--greyscale-surface-subtle` rail instead of a `rounded-lg` pink one, and the ACTIVE tab is a
+ * `--brand-pink-soft` pill rather than a white one. The pink moved from the track to the selection,
+ * which inverts where the eye lands — the whole point of the restyle.
+ *
+ * Contrast, computed: active is navy-900 on brand-pink-soft at 13.77:1. Inactive is
+ * `--primary-navy-600` at 5.96:1 on the track — jem-hub's hand-rolled version used
+ * `--greyscale-text-caption`, which is 4.35:1 there and fails AA, so this is the library taking the
+ * app's design without taking its defect.
+ */
+export const SegmentedStates: Story = {
+  name: "Segmented states",
+  render: () => (
+    <div className="flex flex-col gap-8 p-2">
+      <div className="flex flex-col gap-2">
+        <span className="text-xs tracking-wide text-greyscale-text-caption uppercase">
+          Default — first tab active
+        </span>
+        <Tabs defaultValue="calendar">
+          <TabsList>
+            <TabsTrigger value="calendar">Calendar</TabsTrigger>
+            <TabsTrigger value="list">List</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-xs tracking-wide text-greyscale-text-caption uppercase">
+          Second tab active
+        </span>
+        <Tabs defaultValue="list">
+          <TabsList>
+            <TabsTrigger value="calendar">Calendar</TabsTrigger>
+            <TabsTrigger value="list">List</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-xs tracking-wide text-greyscale-text-caption uppercase">
+          More than two, with one disabled
+        </span>
+        <Tabs defaultValue="overview">
+          <TabsList>
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="history">History</TabsTrigger>
+            <TabsTrigger value="audit" disabled>
+              Audit
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-xs tracking-wide text-greyscale-text-caption uppercase">
+          `line` variant — unchanged, and must stay square
+        </span>
+        <Tabs defaultValue="one">
+          <TabsList variant="line">
+            <TabsTrigger variant="line" value="one">
+              Details
+            </TabsTrigger>
+            <TabsTrigger variant="line" value="two">
+              Activity
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+    </div>
+  ),
+};

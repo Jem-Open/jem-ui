@@ -19,16 +19,13 @@ import {
   ArrowDown,
   ArrowUp,
   ArrowUpDown,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
   EyeOff,
   Settings2,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/forms/button"
+import { TablePager } from "@/components/navigation/table-pager"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -47,13 +44,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/data-display/table"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/forms/select"
 
 // DataTable Column Header
 interface DataTableColumnHeaderProps<TData, TValue>
@@ -116,82 +106,42 @@ interface DataTablePaginationProps<TData> {
   showRowsSelected?: boolean
 }
 
+/**
+ * Thin adapter from TanStack's table state onto `TablePager`.
+ *
+ * This used to be its own inline composition — a differently sized Select (`h-8 w-[70px]`), plain
+ * `Button`s rather than `IconButton`s, and its own spacing — which meant the default table and a
+ * hand-built one paginated with visibly different controls. There is one pager now.
+ *
+ * `showFirstLast` and `showPageReadout` are on because this pager had both, and losing them in a
+ * consolidation would be a capability regression rather than a simplification. The page-size options
+ * stay this component's own (10/20/30/40/50), not `TablePager`'s default, for the same reason.
+ */
 function DataTablePagination<TData>({
   table,
   showRowsSelected = true,
 }: DataTablePaginationProps<TData>) {
+  const { pageIndex, pageSize } = table.getState().pagination
+
   return (
-    <div className="flex items-center justify-between px-2 py-4">
+    <div className="flex flex-wrap items-center gap-sm px-2 py-4">
       {showRowsSelected && (
-        <div className="flex-1 text-sm text-greyscale-text-caption">
+        <div className="text-sm text-greyscale-text-caption">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
       )}
-      <div className={cn("flex items-center", showRowsSelected ? "space-x-6 lg:space-x-8" : "w-full justify-between")}>
-        <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium text-greyscale-text-body">Rows per page</p>
-          <Select
-            value={`${table.getState().pagination.pageSize}`}
-            onValueChange={(value) => {
-              table.setPageSize(Number(value))
-            }}
-          >
-            <SelectTrigger className="h-8 w-[70px]">
-              <SelectValue placeholder={table.getState().pagination.pageSize} />
-            </SelectTrigger>
-            <SelectContent side="top">
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <SelectItem key={pageSize} value={`${pageSize}`}>
-                  {pageSize}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex w-[100px] items-center justify-center text-sm font-medium text-greyscale-text-body">
-          Page {table.getState().pagination.pageIndex + 1} of{" "}
-          {table.getPageCount()}
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            className="hidden h-8 w-8 p-0 lg:flex"
-            onClick={() => table.setPageIndex(0)}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <span className="sr-only">Go to first page</span>
-            <ChevronsLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            className="h-8 w-8 p-0"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <span className="sr-only">Go to previous page</span>
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            className="h-8 w-8 p-0"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            <span className="sr-only">Go to next page</span>
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            className="hidden h-8 w-8 p-0 lg:flex"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-            disabled={!table.getCanNextPage()}
-          >
-            <span className="sr-only">Go to last page</span>
-            <ChevronsRight className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
+      <TablePager
+        className="ml-auto w-full pt-0 sm:w-auto"
+        page={pageIndex + 1}
+        count={table.getFilteredRowModel().rows.length}
+        pageSize={pageSize}
+        pageSizeOptions={[10, 20, 30, 40, 50]}
+        onPageChange={(next) => table.setPageIndex(next - 1)}
+        onPageSizeChange={(next) => table.setPageSize(next)}
+        showFirstLast
+        showPageReadout
+      />
     </div>
   )
 }

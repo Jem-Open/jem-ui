@@ -274,3 +274,45 @@ export const WithEllipsis: Story = {
     </Pagination>
   ),
 };
+
+/**
+ * The 2.0 current-page marker: a soft filled pill rather than an outlined circle, matching the
+ * active tab in `TabsList` so "this is the selected one" reads the same in both controls.
+ *
+ * The shape did not change — `size="icon"` already inherits the base `rounded-full`, so the links
+ * were circular before. The outline was the dated part. navy-900 on `--brand-pink-soft` is 13.77:1.
+ */
+export const CurrentPageStates: Story = {
+  name: "Current page states",
+  render: () => (
+    <div className="flex flex-col gap-8">
+      {[1, 2, 3].map((current) => (
+        <div key={current} className="flex flex-col gap-2">
+          <span className="text-xs tracking-wide text-greyscale-text-caption uppercase">
+            Page {current} of 3
+          </span>
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious href="#" />
+              </PaginationItem>
+              {[1, 2, 3].map((page) => (
+                <PaginationItem key={page}>
+                  <PaginationLink href="#" isActive={page === current}>
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext href="#" />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      ))}
+    </div>
+  ),
+};

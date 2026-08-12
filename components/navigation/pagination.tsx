@@ -55,10 +55,14 @@ function PaginationLink({
       data-active={isActive}
       className={cn(
         buttonVariants({
-          variant: isActive ? "outline" : "ghost",
+          variant: "ghost",
           size,
         }),
-        isActive && "border-[--greyscale-border-default] text-[--greyscale-text-title]",
+        // 2.0 marks the current item with a soft filled pill rather than an outline, matching the
+        // active tab in TabsList. `size="icon"` already inherits the base rounded-full, so the
+        // page links were circular before this — the outline was the dated part, not the shape.
+        // navy-900 on brand-pink-soft is 13.77:1.
+        isActive && "bg-brand-pink-soft font-semibold text-primary-navy-900",
         className
       )}
       {...props}
