@@ -2,6 +2,19 @@
 
 All notable changes to `@jem-open/jem-ui` are documented here.
 
+## [0.5.0] - 2026-08-12
+
+### Changed
+
+- **Select is a pill by default.** The trigger is now `rounded-full`, borderless, filled with `--navy-100` and softly shadowed, deepening to `--navy-200` on hover and while open; the panel is `rounded-2xl`, borderless and separated by `shadow-popover`. This is the Jem 2.0 design, which jem-hub has been applying with `!important` overrides at every call site — the library now ships it, so those overrides can be deleted. Minor rather than patch: any consumer relying on the squared, bordered trigger will see it change.
+- Focus is now carried by the ring alone and the open state by the fill, because a borderless control cannot express either with a border.
+- The Select placeholder moved from `--greyscale-text-disabled` to `--primary-navy-600`. On the new fill the old value computes to 1.40:1 — invisible. The new one is 5.70:1 and still reads lighter than a selected value (8.14:1), so the distinction survives.
+
+### Added
+
+- Added the elevation tokens `--shadow-popover`, `--shadow-popover-strong` and `--shadow-card`, with `boxShadow` keys to match. Three of the tokens `@jem2.0/ui` owned and this package lacked; the borderless Select panel needs one, and a shadow class that emitted nothing would have left it with no edge at all.
+- Added a **Pill states** story covering rest, hover/open, focus-visible and disabled side by side, with the computed contrast for each. A borderless control communicates through fill, so its states cannot be judged from a resting screenshot.
+
 ## [0.4.4] - 2026-08-12
 
 ### Fixed

@@ -336,6 +336,12 @@ const jemPreset: Partial<Config> = {
       },
 
       /* Border Radius */
+      boxShadow: {
+        popover: "var(--shadow-popover)",
+        "popover-strong": "var(--shadow-popover-strong)",
+        card: "var(--shadow-card)",
+      },
+
       borderRadius: {
         none: "var(--radius-none)",
         xs: "var(--radius-xs)",

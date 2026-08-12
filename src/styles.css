@@ -297,6 +297,14 @@
   --line-height-100: 100px;
   --line-height-124: 124px;
 
+  /* Elevation. Moved from @jem2.0/ui, which Phase 3 of the 2.0 restyle folds into this package —
+     three of the 21 tokens it owns that this one lacked. The Select panel needs `shadow-popover`
+     to separate itself from the page now that it is borderless; before these existed, `border-0`
+     plus a shadow class that emitted nothing would have left the panel with no edge at all. */
+  --shadow-popover: 0 12px 32px rgba(6, 33, 51, 0.14);
+  --shadow-popover-strong: 0 12px 32px rgba(6, 33, 51, 0.22);
+  --shadow-card: 0 1px 2px rgba(6, 33, 51, 0.06), 0 12px 28px rgba(6, 33, 51, 0.1);
+
   /* Border Radius */
   --radius-none: 0px;
   --radius-xs: 2px;

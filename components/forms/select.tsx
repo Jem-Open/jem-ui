@@ -69,9 +69,9 @@ function SelectTrigger({
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
       className={cn(
-        "flex h-[46px] w-full items-center justify-between gap-2 rounded-lg border border-[--greyscale-border-default] bg-white px-4 py-3 text-sm font-semibold text-[--greyscale-text-body] transition-all outline-none",
-        "focus:border-[--greyscale-border-darker] focus-visible:ring-2 focus-visible:ring-primary-navy-700 focus-visible:ring-offset-2 data-[state=open]:border-[--greyscale-border-darker] data-[state=open]:rounded-lg",
-        "data-[placeholder]:text-[--greyscale-text-disabled] data-[placeholder]:font-normal",
+        "flex h-[46px] w-full items-center justify-between gap-2 rounded-full border-0 bg-primary-navy-100 px-4 py-3 text-sm font-semibold text-[--greyscale-text-body] shadow-sm transition-all outline-none hover:bg-primary-navy-200",
+        "focus-visible:ring-2 focus-visible:ring-primary-navy-700 focus-visible:ring-offset-2 data-[state=open]:bg-primary-navy-200",
+        "data-[placeholder]:text-primary-navy-600 data-[placeholder]:font-normal",
         "disabled:cursor-not-allowed disabled:opacity-50",
         "[&_svg]:pointer-events-none [&_svg]:shrink-0",
         className
@@ -97,7 +97,7 @@ function SelectContent({
       <SelectPrimitive.Content
         data-slot="select-content"
         className={cn(
-          "relative z-50 max-h-[--radix-select-content-available-height] min-w-[8rem] overflow-hidden rounded-lg border border-[--greyscale-border-default] bg-white shadow-md",
+          "relative z-50 max-h-[--radix-select-content-available-height] min-w-[8rem] overflow-hidden rounded-2xl border-0 bg-white shadow-popover",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
           position === "popper" &&
             "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
@@ -313,10 +313,10 @@ function SearchableSelect({
           data-slot="select-trigger"
           data-state={open ? "open" : "closed"}
           className={cn(
-            "flex h-[46px] w-full items-center justify-between gap-2 rounded-lg border border-[--greyscale-border-default] bg-white px-4 py-3 text-sm font-semibold text-[--greyscale-text-body] transition-all outline-none",
-            "focus:border-[--greyscale-border-darker] focus-visible:ring-2 focus-visible:ring-primary-navy-700 focus-visible:ring-offset-2 data-[state=open]:border-[--greyscale-border-darker]",
+            "flex h-[46px] w-full items-center justify-between gap-2 rounded-full border-0 bg-primary-navy-100 px-4 py-3 text-sm font-semibold text-[--greyscale-text-body] shadow-sm transition-all outline-none hover:bg-primary-navy-200",
+            "focus-visible:ring-2 focus-visible:ring-primary-navy-700 focus-visible:ring-offset-2 data-[state=open]:bg-primary-navy-200",
             "disabled:cursor-not-allowed disabled:opacity-50",
-            !selectedOption && "font-normal text-[--greyscale-text-disabled]",
+            !selectedOption && "font-normal text-primary-navy-600",
             className
           )}
         >
