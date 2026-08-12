@@ -294,3 +294,74 @@ export const WithLabelAndDescription: Story = {
     </div>
   ),
 };
+
+/**
+ * The pill is the 2.0 trigger, and its states are the whole point of the restyle — a borderless
+ * control communicates entirely through fill, so hover/open/focus have to be visible side by side
+ * rather than judged from a resting screenshot.
+ *
+ * The states, and what carries each one now that there is no border:
+ *   rest          --navy-100 fill + shadow-sm
+ *   hover / open  --navy-200 (the fill deepens; `data-[state=open]` reuses hover so an open control
+ *                 stays visibly active while the pointer is in the panel)
+ *   focus-visible a navy-700 ring with an offset — focus CANNOT be a border here
+ *   disabled      50% opacity, unchanged
+ *
+ * Contrast on the fill, computed: value text 8.14:1 on rest and 6.50:1 on hover. The placeholder is
+ * --primary-navy-600 at 5.70:1 — it was --greyscale-text-disabled, which is 1.40:1 on this fill and
+ * therefore invisible. It stays lighter than the selected value, so the distinction survives.
+ */
+export const PillStates: Story = {
+  name: "Pill states",
+  render: () => (
+    <div className="flex flex-col gap-6 p-2">
+      {[
+        { label: "Rest — placeholder", value: undefined, className: "" },
+        { label: "Rest — with a selection", value: "option1", className: "" },
+        { label: "Hover / open (forced)", value: "option1", className: "bg-primary-navy-200" },
+        {
+          label: "Focus-visible (forced)",
+          value: "option1",
+          className: "ring-2 ring-primary-navy-700 ring-offset-2",
+        },
+      ].map(({ label, value, className }) => (
+        <div key={label} className="flex flex-col gap-2">
+          <span className="text-xs font-semibold tracking-wide text-greyscale-text-caption uppercase">
+            {label}
+          </span>
+          <div className="w-[256px]">
+            <Select defaultValue={value}>
+              <SelectTrigger className={className}>
+                <SelectValue placeholder="Select Title" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="option1">Option 1</SelectItem>
+                <SelectItem value="option2">Option 2</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      ))}
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-semibold tracking-wide text-greyscale-text-caption uppercase">
+          Disabled
+        </span>
+        <div className="w-[256px]">
+          <Select disabled>
+            <SelectTrigger>
+              <SelectValue placeholder="Select Title" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="option1">Option 1</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <p className="max-w-prose text-sm text-greyscale-text-body">
+        The panel is `rounded-2xl`, borderless, and separated by `shadow-popover` — open one of the
+        triggers above to see it. Those elevation tokens moved here from `@jem2.0/ui` in this change;
+        without them a borderless panel would have had no edge at all.
+      </p>
+    </div>
+  ),
+};
