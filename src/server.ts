@@ -21,3 +21,4 @@ export {
 } from "../components/data-display/card"
 export { Figure, type FigureSize } from "../components/data-display/figure"
 export { Stat } from "../components/data-display/stat"
+export { IconChip, iconChipVariants, type IconChipProps } from "../components/data-display/icon-chip"

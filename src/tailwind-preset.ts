@@ -357,6 +357,13 @@ const jemPreset: Partial<Config> = {
       },
 
       /* Border Radius */
+      borderColor: {
+        "chip-critical": "var(--chip-border-critical)",
+        "chip-warning": "var(--chip-border-warning)",
+        "chip-info": "var(--chip-border-info)",
+        "chip-success": "var(--chip-border-success)",
+      },
+
       boxShadow: {
         popover: "var(--shadow-popover)",
         "popover-strong": "var(--shadow-popover-strong)",
