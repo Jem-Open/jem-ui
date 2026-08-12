@@ -170,6 +170,7 @@
   --greyscale-surface-disabled: #f3f3f3;
   --greyscale-border-default: #cecece;
   --greyscale-border-disabled: #f3f3f3;
+  --greyscale-border-subtle: #e2e2e2;
   --greyscale-border-darker: #9a9a9a;
   --greyscale-text-title: #062133;
   --greyscale-text-body: #384d5c;
@@ -296,6 +297,28 @@
   --line-height-84: 84px;
   --line-height-100: 100px;
   --line-height-124: 124px;
+
+  /* Brand palette. Moved from @jem2.0/ui — the app's own brand seam, which the 2.0 restyle
+     folds into this package so there is one library rather than two. */
+  --brand-amber: #e0a33c;
+  --brand-cream: #fff7ec;
+  --brand-cream-2: #fbedd7;
+  --brand-green-dark: #1b7f47;
+  --brand-lavender: #e1e9ff;
+  --brand-lavender-2: #eef2ff;
+  --brand-mint: #daffda;
+  --brand-mint-2: #a8e6b0;
+  --brand-navy: #062133;
+  --brand-navy-2: #1a3447;
+  --brand-navy-3: #4a6072;
+  --brand-pink: #ff697f;
+  --brand-pink-soft: #ffe4e9;
+  --brand-pink-soft-2: #ffeff3;
+  --brand-purple: #6c5ce7;
+
+  /* Typography families, likewise moved from @jem2.0/ui. */
+  --font-family-body: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-family-heading: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 
   /* Elevation. Moved from @jem2.0/ui, which Phase 3 of the 2.0 restyle folds into this package —
      three of the 21 tokens it owns that this one lacked. The Select panel needs `shadow-popover`

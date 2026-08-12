@@ -26,6 +26,22 @@ export { Switch } from "../components/forms/switch"
 export { Textarea } from "../components/forms/textarea"
 export { Upload } from "../components/forms/upload"
 
+// Absorbed from @jem2.0/ui (Phase 3 of the 2.0 restyle): the five components that existed there
+// and not here. Everything else in that package was a duplicate of a component above.
+export {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+  cardVariants,
+} from "../components/data-display/card"
+export { Figure, type FigureSize } from "../components/data-display/figure"
+export { Stat } from "../components/data-display/stat"
+export { AskAiLink } from "../components/navigation/ask-ai-link"
+export { Stepper } from "../components/navigation/stepper"
+
 // Navigation
 export {
   Accordion,

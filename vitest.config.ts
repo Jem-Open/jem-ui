@@ -21,6 +21,12 @@ export default defineConfig({
         ],
         test: {
           name: 'storybook',
+          // The Button and Tag contrast matrices measure every variant against its background in a
+          // real browser, which takes 7-12s each on its own and longer under parallel load. The
+          // default budget left them passing at 10s and failing at 15s depending on how many story
+          // files were running alongside — a timeout that moves with unrelated additions is a
+          // landmine, not a signal.
+          testTimeout: 45_000,
           browser: {
         enabled: true,
         headless: true,
