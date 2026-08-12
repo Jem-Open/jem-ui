@@ -20,11 +20,11 @@ function Tabs({
 }
 
 const tabsListVariants = cva(
-  "inline-flex w-fit items-center justify-center rounded-full p-xxxs text-sm",
+  "inline-flex w-fit items-center justify-center rounded-full text-sm",
   {
     variants: {
       variant: {
-        default: "bg-greyscale-surface-subtle gap-0",
+        default: "bg-greyscale-surface-subtle gap-0 p-xxxs",
         line: "items-stretch bg-transparent gap-1 border-b border-[--greyscale-border-default] rounded-none p-0",
       },
     },
@@ -60,16 +60,17 @@ const tabsTriggerVariants = cva(
           "data-[state=active]:bg-brand-pink-soft data-[state=active]:font-semibold data-[state=active]:text-primary-navy-900",
         ],
         line: [
-          "relative rounded-none font-normal text-[--greyscale-text-caption]",
-          // The active indicator is a bar pinned 1px BELOW the trigger, so it covers the list's 1px
-          // rail instead of floating above it. `after:-bottom-px` is what puts it ON the line.
-          //
-          // Pink, matching the segmented variant's active pill — but --pink-950, not the brand
-          // pink. A state indicator needs 3:1 (WCAG 1.4.11) and the brand pink is 2.77:1 on white;
-          // --pink-950 is 3.78:1. This is the case those darker steps were added for: the ramp had
-          // nothing below the brand pink, which is why this used navy before.
+          // `self-stretch` is load-bearing: the list centres its items, so without it the trigger's
+          // box stops short of the list's bottom edge and any indicator pinned to the trigger floats
+          // ABOVE the rail with a visible gap. Setting it on the item beats the container's
+          // `items-center` regardless of how the two class strings merge.
+          "relative self-stretch rounded-none font-normal text-[--greyscale-text-caption]",
+          // Navy, matching the rail's own language rather than the segmented variant's pink pill —
+          // an underline reads as a continuation of the line it sits on. #062133 is 15.9:1 on white,
+          // far past the 3:1 a state indicator needs (WCAG 1.4.11).
           "data-[state=active]:font-medium data-[state=active]:text-[--greyscale-text-title]",
-          "data-[state=active]:after:absolute data-[state=active]:after:inset-x-0 data-[state=active]:after:-bottom-px data-[state=active]:after:h-0.5 data-[state=active]:after:bg-secondary-pink-950",
+          // `-bottom-px` overlaps the list's 1px rail so the indicator sits ON it, not above it.
+          "data-[state=active]:after:absolute data-[state=active]:after:inset-x-0 data-[state=active]:after:-bottom-px data-[state=active]:after:h-0.5 data-[state=active]:after:bg-[--primary-surface-default]",
         ],
       },
     },
