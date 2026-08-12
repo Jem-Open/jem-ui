@@ -41,6 +41,7 @@ export { Figure, type FigureSize } from "../components/data-display/figure"
 export { Stat } from "../components/data-display/stat"
 export { AskAiLink } from "../components/navigation/ask-ai-link"
 export { Stepper } from "../components/navigation/stepper"
+export { TablePager, type TablePagerProps } from "../components/navigation/table-pager"
 
 // Navigation
 export {

@@ -4,6 +4,10 @@ All notable changes to `@jem-open/jem-ui` are documented here.
 
 ## [0.7.0] - 2026-08-12
 
+### Added
+
+- **`TablePager`** — a `start–end of total` range, a rows-per-page control, and prev/next arrows. This is the pager most tables actually want and the one this library was missing: jem-hub arrived at exactly this composition independently and uses it in **42** tables, against **2** using numbered `Pagination`. Both controls keep a job — numbered links for a short browsable set where jumping to page 7 means something, this for the long list you step through, where the page number carries no information. Controlled-only by design: paging state stays with the consumer, because reading `?page` would put `next/navigation` inside a design system. Omit `onPageSizeChange` to hide the size control for a list whose size is fixed by its source, and it renders nothing at `count === 0`.
+
 ### Changed
 
 - **`Tabs` is the 2.0 segmented control.** The track is a `rounded-full` `--greyscale-surface-subtle` rail rather than a `rounded-lg` pink one, and the active tab is a `--brand-pink-soft` pill rather than a white one — the pink moves from the track to the selection. Promoted from jem-hub, which had built exactly this by hand in nine places because the library's tabs did not look like it. The `line` variant is unchanged.
