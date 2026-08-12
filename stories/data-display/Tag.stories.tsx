@@ -367,3 +367,50 @@ export const ContrastMatrix: Story = {
     ).toEqual([]);
   },
 };
+
+/**
+ * Release-track tones, promoted from jem-hub's `TrackTag` — a wrapper that existed only because
+ * these did not, taking `variant="neutral"` for its geometry and replacing both of its colours at
+ * the call site. With these tones it can be deleted.
+ *
+ * `beta` uses `--pink-1000`. The app had an off-token literal (`#b03a52`) with a comment noting the
+ * pink ramp topped out at the brand coral and the red ramp jumped to a fire-engine red, so neither
+ * matched the muted rose it wanted — true until 0.4.3 added `--pink-1000`, which sits 21/255 from
+ * that literal and is a real token. 4.68:1 on the fill.
+ *
+ * `waitlist` is deliberately NOT `processing`'s bright `text-blue-600`: navy on soft blue reads as
+ * pending rather than active, which is the distinction the two states exist to make. 11.17:1.
+ */
+export const ReleaseTracks: Story = {
+  name: "Release tracks",
+  render: () => (
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center gap-3">
+        <Tag variant="beta" className="uppercase tracking-wide">
+          Beta
+        </Tag>
+        <Tag variant="waitlist" className="uppercase tracking-wide">
+          Waitlist
+        </Tag>
+        <span className="text-sm text-greyscale-text-caption">
+          as the product pages render them — uppercase, letter-spaced
+        </span>
+      </div>
+      <div className="flex items-center gap-3">
+        <Tag variant="beta">Beta</Tag>
+        <Tag variant="waitlist">Waitlist</Tag>
+        <span className="text-sm text-greyscale-text-caption">
+          plain, for comparison with the other tones
+        </span>
+      </div>
+      <div className="flex flex-wrap items-center gap-3 rounded-lg border border-greyscale-border p-4">
+        <Tag variant="processing">Processing</Tag>
+        <Tag variant="waitlist">Waitlist</Tag>
+        <span className="text-sm text-greyscale-text-body">
+          `processing` is bright blue and active; `waitlist` is navy on blue and pending. Side by
+          side is the only way to check that distinction survives.
+        </span>
+      </div>
+    </div>
+  ),
+};

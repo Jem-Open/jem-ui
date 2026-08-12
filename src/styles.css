@@ -317,8 +317,18 @@
   --brand-purple: #6c5ce7;
 
   /* Typography families, likewise moved from @jem2.0/ui. */
-  --font-family-body: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-family-heading: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Satoshi is the brand DISPLAY face and Inter carries running text — the pairing the product
+     ships. These previously named Inter for headings and Manrope for body, which matched nothing:
+     jem-hub overrides both in its own globals.css to point at the next/font variables for Satoshi
+     and Inter, so the defaults here were dead weight that would mislead any other consumer.
+
+     A token can only NAME a family; loading it stays the consumer's job. jem-hub self-hosts Satoshi
+     (one variable file, 300–900 — it ships no static 600, and semibold is the hub's most-used
+     weight) and pulls Inter through next/font/google at build time, so neither is fetched from a
+     third party at runtime. This package deliberately does NOT redistribute either file. */
+  --font-family-heading:
+    "Satoshi", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-family-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 
   /* Elevation. Moved from @jem2.0/ui, which Phase 3 of the 2.0 restyle folds into this package —
      three of the 21 tokens it owns that this one lacked. The Select panel needs `shadow-popover`
