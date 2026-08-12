@@ -25,7 +25,7 @@ const tabsListVariants = cva(
     variants: {
       variant: {
         default: "bg-greyscale-surface-subtle gap-0",
-        line: "bg-transparent gap-1 border-b border-[--greyscale-border-default] rounded-none p-0",
+        line: "items-stretch bg-transparent gap-1 border-b border-[--greyscale-border-default] rounded-none p-0",
       },
     },
     defaultVariants: {
@@ -60,8 +60,16 @@ const tabsTriggerVariants = cva(
           "data-[state=active]:bg-brand-pink-soft data-[state=active]:font-semibold data-[state=active]:text-primary-navy-900",
         ],
         line: [
-          "rounded-none border-b-2 border-transparent font-normal text-[--greyscale-text-caption] -mb-px",
-          "data-[state=active]:border-[--primary-surface-default] data-[state=active]:font-medium data-[state=active]:text-[--greyscale-text-title]",
+          "relative rounded-none font-normal text-[--greyscale-text-caption]",
+          // The active indicator is a bar pinned 1px BELOW the trigger, so it covers the list's 1px
+          // rail instead of floating above it. `after:-bottom-px` is what puts it ON the line.
+          //
+          // Pink, matching the segmented variant's active pill — but --pink-950, not the brand
+          // pink. A state indicator needs 3:1 (WCAG 1.4.11) and the brand pink is 2.77:1 on white;
+          // --pink-950 is 3.78:1. This is the case those darker steps were added for: the ramp had
+          // nothing below the brand pink, which is why this used navy before.
+          "data-[state=active]:font-medium data-[state=active]:text-[--greyscale-text-title]",
+          "data-[state=active]:after:absolute data-[state=active]:after:inset-x-0 data-[state=active]:after:-bottom-px data-[state=active]:after:h-0.5 data-[state=active]:after:bg-secondary-pink-950",
         ],
       },
     },
