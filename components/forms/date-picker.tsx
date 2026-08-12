@@ -29,6 +29,16 @@ interface DatePickerProps {
   disabledDates?: Matcher | Matcher[]
   /** The month to show before the user chooses a date. */
   defaultMonth?: Date
+  /**
+   * Control the popover's open state. Omit for the self-managed default.
+   *
+   * Needed by a form that opens the calendar from something other than the field itself — jem-hub's
+   * batch upload drives it from a surrounding row — and by @jem2.0/ui's DatePicker, which had these
+   * props before that package was absorbed. Without them the absorb would have silently dropped a
+   * capability a consumer already relied on.
+   */
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
   label?: string
   id?: string
 }
@@ -41,12 +51,19 @@ function DatePicker({
   disabled,
   disabledDates,
   defaultMonth,
+  open: openProp,
+  onOpenChange,
   label,
   id: suppliedId,
 }: DatePickerProps) {
   const generatedId = React.useId()
   const id = suppliedId ?? `date-picker-${generatedId}`
-  const [open, setOpen] = React.useState(false)
+  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false)
+  const open = openProp ?? uncontrolledOpen
+  const setOpen = (next: boolean) => {
+    if (openProp === undefined) setUncontrolledOpen(next)
+    onOpenChange?.(next)
+  }
 
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>

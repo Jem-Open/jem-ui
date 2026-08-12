@@ -2,6 +2,12 @@
 
 All notable changes to `@jem-open/jem-ui` are documented here.
 
+## [0.7.1] - 2026-08-12
+
+### Fixed
+
+- `DatePicker` accepts `open` / `onOpenChange` again. `@jem2.0/ui`'s version had them — for a form that opens the calendar from something other than the field itself — and 0.6.0 absorbed that package by matching components by NAME, not by API, so the props vanished. jem-hub's batch-upload form failed to typecheck against 0.7.0, which is the only reason it was caught. Omit them for the self-managed default.
+
 ## [0.7.0] - 2026-08-12
 
 ### Added
