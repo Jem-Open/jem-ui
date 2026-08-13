@@ -1,8 +1,21 @@
+# NOTE: the workflow name is load-bearing — it forms part of the check name branch protection may
+# require, so renaming it can silently orphan a required check. Left as-is even though it now runs
+# on more than PRs.
 name: PR Build
 
+# Runs on PRs AND on main. The main runs are what make Chromatic useful: it finds a baseline by
+# walking git history for the last build published on an ancestor commit, so with PR-only builds
+# there is no baseline on the trunk and every PR reports every story as new — the same "217 changes
+# on a one-token PR" failure the fetch-depth note below describes, from a different cause. Publishing
+# from main gives each PR something real to diff against.
+#
+# workflow_dispatch so a baseline can be published on demand without inventing a commit.
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   build:
