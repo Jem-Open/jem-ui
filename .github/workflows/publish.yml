@@ -10,7 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-      contents: read
+      # write (not read) so the same run that publishes can also cut the GitHub Release. Releases
+      # were created by hand up to v0.4.2 and then stopped, so v0.4.3–v0.7.2 shipped to npm with no
+      # entry and the Releases page read as though the library had not moved since July.
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -24,8 +27,65 @@ jobs:
 
       - run: npm ci
 
+      # The tag is what triggers this workflow, but package.json is what npm actually publishes, so
+      # nothing previously checked the two agreed. 0.6.0 is the cost of that: PR #16 bumped
+      # package.json to 0.6.0 and the tags went v0.5.0 -> v0.7.0, so 0.6.0 was documented in the
+      # CHANGELOG and never published. A mismatch is a mistake every time — fail loudly here rather
+      # than publish something nobody asked for.
+      - name: Tag matches package.json
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PKG_VERSION="$(node -p 'require("./package.json").version')"
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "::error::tag $GITHUB_REF_NAME implies $TAG_VERSION but package.json is $PKG_VERSION"
+            exit 1
+          fi
+          echo "Publishing $PKG_VERSION"
+
       - name: Verify Next.js 16 RSC compatibility
         run: npm run verify:rsc
 
       - name: Publish to npm
         run: npm publish --provenance --access public
+
+      # Deliberately AFTER the publish. v0.4.1 is the reason: it has a Release entry but never
+      # reached npm, because its publish gate failed and 0.4.2 superseded it twenty minutes later.
+      # A Release that exists for a version nobody can install is worse than no Release at all.
+      #
+      # Notes come from CHANGELOG.md rather than --generate-notes, so the hand-written entry (which
+      # explains WHY a thing changed) is what consumers read, not a list of commit subjects. Falls
+      # back to generated notes if the version has no section, so a missing entry cannot fail a
+      # release that has already published.
+      #
+      # Idempotent by necessity, not by neatness. README documents cutting the release in the GitHub
+      # UI ("Create new tag on publish"), which makes the Release BEFORE the tag push that lands
+      # here — so for anyone following it the Release already exists and a bare `create` would fail
+      # the job AFTER npm had already published. Both routes have to end in the same place: the tag
+      # is published and its notes come from the CHANGELOG.
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          awk -v v="$VERSION" '
+            $0 ~ "^## \\[" v "\\]" { f = 1; next }
+            /^## \[/ { if (f) exit }
+            f { print }
+          ' CHANGELOG.md > release-notes.md
+
+          # `gh release edit` has no --generate-notes (only `create` does), which is why the two
+          # branches are spelled out rather than sharing one flag array.
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            if [ -s release-notes.md ]; then
+              echo "Release $GITHUB_REF_NAME already exists (cut from the UI) — updating its notes"
+              gh release edit "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file release-notes.md
+            else
+              # Nothing to say is not a reason to blank what the UI already generated.
+              echo "::warning::no CHANGELOG.md section for $VERSION — leaving the existing notes alone"
+            fi
+          elif [ -s release-notes.md ]; then
+            gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file release-notes.md
+          else
+            echo "::warning::no CHANGELOG.md section for $VERSION — falling back to generated notes"
+            gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --generate-notes
+          fi
