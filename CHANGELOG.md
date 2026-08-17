@@ -2,6 +2,20 @@
 
 All notable changes to `@jem-open/jem-ui` are documented here.
 
+## [0.8.0] - 2026-08-17
+
+### Added
+
+- **`Card` gained a `flat` variant** — white fill and nothing else, no border and no shadow. For a card whose separation already comes from elsewhere: a tinted page background, or a stack where the gaps supply the rhythm and a border on each item would only add noise. It holds no edge of its own, so on a white background it is invisible; that is what it is for, and why it is a variant you ask for rather than the default. If you are passing `shadow-none` or a border through `className`, this is probably the variant you wanted.
+
+### Changed
+
+- **`Card`'s `solid` variant is bordered again**, reverting 0.7.2. Its hairline border and `shadow-card` are back exactly as they were in 0.7.1, so `solid` once more holds its own edge and works on any background.
+
+  0.7.2 removed them from `solid` itself, which was the wrong shape for the change: eight call sites in jem-hub's admin/mobile section pass `variant="solid"` alongside `shadow-none`, meaning they were flat by choice and relying on that border to stay legible. One of them, `EligibilitySummaryCard`, passed `border-secondary-pink-200` — a border *colour* — and took the *width* from the variant, so with the variant's `border` gone its pink outline would have rendered as nothing at all: no error, no failing test, just an absent outline. Mutating a variant eight consumers depended on forced all eight to react to a change none of them asked for; adding `flat` puts the same surface in the library and asks nothing of anyone.
+
+  **Upgrading from 0.7.1 is purely additive** — `solid` behaves exactly as it did, `flat` is new. **0.7.2 should be skipped.** If you are on it, `solid` regains its border on this upgrade, which is the 0.7.1 behaviour restored rather than a fresh change.
+
 ## [0.7.2] - 2026-08-17
 
 ### Changed
