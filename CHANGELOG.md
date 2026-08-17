@@ -2,6 +2,12 @@
 
 All notable changes to `@jem-open/jem-ui` are documented here.
 
+## [0.7.2] - 2026-08-17
+
+### Changed
+
+- **`Card`'s `solid` variant is now a flat white surface** — no border, no shadow. It relies on the page background being tinted to read as a card; on a white page it is intentionally seamless. `glass` is unchanged and remains the variant for the gradient dashboard surfaces, where a solid white card reads as a hole punched in the gradient. The choice between the two is still about what the card sits ON, not how it should look.
+
 ## [0.7.1] - 2026-08-12
 
 ### Fixed
