@@ -148,14 +148,30 @@ Quality checks (linting, type checking) will run automatically on your PR.
 
 ### Publishing
 
-After your PR is approved and merged to `main`, create a release to publish the changes:
+After your PR is approved and merged to `main`, release from `main`:
 
-1. Navigate to [https://github.com/Jem-Open/jem-ui/releases/new](https://github.com/Jem-Open/jem-ui/releases/new)
-2. Create a new tag (e.g., `v0.4.1`) and click "Create new tag on publish"
-3. Click "Generate release notes" for an automatic changelog
-4. Review and publish the release
+1. Add the version's section to [`CHANGELOG.md`](./CHANGELOG.md) — say **why** it changed, not just what
+2. Bump `version` in `package.json` (see [choosing the number](./CONTRIBUTING.md#choosing-the-version-number))
+3. Commit both as `chore(release): X.Y.Z`
+4. Tag and push:
 
-The GitHub Actions workflow will automatically build and publish to npm.
+```bash
+git tag vX.Y.Z
+git push origin main --follow-tags
+```
+
+Pushing the tag runs [`publish.yml`](./.github/workflows/publish.yml), which checks the tag matches
+`package.json`, publishes to npm, and then cuts the GitHub Release with your CHANGELOG section as
+the notes. **Don't write the release notes by hand** — `CHANGELOG.md` is the source and the workflow
+copies from it.
+
+Cutting the release from the GitHub UI instead still works — the workflow updates the notes from the
+CHANGELOG rather than failing on the release you already made — but the tag-push route above is
+preferred, because the version bump and the tag then travel together and can't drift.
+
+> A tag whose version disagrees with `package.json` fails the job before publishing. This is
+> deliberate: `0.6.0` was bumped in `package.json`, never tagged, and so is documented in the
+> CHANGELOG but absent from npm. The check exists so that can't recur.
 
 ## License
 
