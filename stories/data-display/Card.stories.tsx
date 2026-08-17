@@ -11,11 +11,15 @@ import {
 } from "@/components/data-display/card";
 
 /**
- * Absorbed from `@jem2.0/ui` in Phase 3 of the 2.0 restyle, unchanged.
+ * Absorbed from `@jem2.0/ui` in Phase 3 of the 2.0 restyle.
  *
  * Two surfaces, and the choice between them is about what the card sits ON, not how it should look:
- * `solid` for white page backgrounds, `glass` for the gradient dashboard surfaces where a white card
- * reads as a hole. Both use `shadow-card`, one of the elevation tokens that moved here alongside.
+ * `solid` for tinted page backgrounds, `glass` for the gradient dashboard surfaces where a white card
+ * reads as a hole. Only `glass` carries elevation, via the `shadow-card` token.
+ *
+ * `solid` is a flat white surface — no border, no shadow. The page background is what separates it,
+ * so it needs a tinted one to read as a card at all; on a white page it is deliberately seamless.
+ * Don't reintroduce a border or shadow via `className`.
  */
 const meta: Meta<typeof Card> = {
   title: "Data Display/Card",

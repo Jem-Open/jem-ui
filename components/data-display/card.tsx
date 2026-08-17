@@ -6,8 +6,9 @@ import { cn } from "@/lib/utils";
 const cardVariants = cva("rounded-2xl text-greyscale-text-body", {
   variants: {
     variant: {
-      // Standard content/table card — white surface, soft hairline border, layered card shadow.
-      solid: "border border-neutral-200 bg-neutral-white shadow-card",
+      // Standard content/table card — flat white surface, no border and no shadow. It relies on the
+      // page background being tinted to read as a card; on a white page it is intentionally seamless.
+      solid: "bg-neutral-white",
       // Frosted-glass card for gradient surfaces (the dashboard look): translucent fill + blur.
       glass: "border border-white/50 bg-white/35 shadow-card backdrop-blur-xl",
     },
