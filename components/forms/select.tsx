@@ -220,7 +220,7 @@ function SelectField({
   children,
 }: SelectFieldProps) {
   return (
-    <div className={cn("flex flex-col gap-sm", className)}>
+    <div className={cn("flex flex-col gap-xs", className)}>
       {/* Label + Description group */}
       {(label || description) && (
         <div className="flex flex-col gap-xxxs">
