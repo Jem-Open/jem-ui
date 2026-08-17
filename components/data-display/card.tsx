@@ -6,11 +6,15 @@ import { cn } from "@/lib/utils";
 const cardVariants = cva("rounded-2xl text-greyscale-text-body", {
   variants: {
     variant: {
-      // Standard content/table card — flat white surface, no border and no shadow. It relies on the
-      // page background being tinted to read as a card; on a white page it is intentionally seamless.
-      solid: "bg-neutral-white",
+      // Standard content/table card — white surface, soft hairline border, layered card shadow.
+      solid: "border border-neutral-200 bg-neutral-white shadow-card",
       // Frosted-glass card for gradient surfaces (the dashboard look): translucent fill + blur.
       glass: "border border-white/50 bg-white/35 shadow-card backdrop-blur-xl",
+      // White fill and nothing else — no border, no shadow. For a card whose separation already
+      // comes from somewhere else: a tinted page background, or a stack where the gaps do the work.
+      // It cannot hold its own edge, so on a white background it is invisible by design. Reach for
+      // `solid` unless you specifically want that.
+      flat: "bg-neutral-white",
     },
   },
   defaultVariants: {

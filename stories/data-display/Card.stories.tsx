@@ -13,13 +13,17 @@ import {
 /**
  * Absorbed from `@jem2.0/ui` in Phase 3 of the 2.0 restyle.
  *
- * Two surfaces, and the choice between them is about what the card sits ON, not how it should look:
- * `solid` for tinted page backgrounds, `glass` for the gradient dashboard surfaces where a white card
- * reads as a hole. Only `glass` carries elevation, via the `shadow-card` token.
+ * Three surfaces, and the choice between them is about what the card sits ON, not how it should look:
+ * `solid` for white page backgrounds, `glass` for the gradient dashboard surfaces where a white card
+ * reads as a hole, and `flat` for when something else is already doing the separating.
  *
- * `solid` is a flat white surface — no border, no shadow. The page background is what separates it,
- * so it needs a tinted one to read as a card at all; on a white page it is deliberately seamless.
- * Don't reintroduce a border or shadow via `className`.
+ * `solid` is the default and the right answer most of the time — it holds its own edge, so it works
+ * wherever you put it. `flat` holds no edge at all: white fill and nothing else, for a tinted page
+ * background or a stack whose gaps supply the rhythm. On a white background it is invisible, which
+ * is why it is a variant you ask for rather than the one you get by default.
+ *
+ * If you find yourself passing `shadow-none` or a border through `className`, you probably want
+ * `flat` plus the border you actually mean, rather than `solid` with its styling cancelled.
  */
 const meta: Meta<typeof Card> = {
   title: "Data Display/Card",
@@ -63,6 +67,31 @@ export const Glass: Story = {
           <p className="text-sm text-greyscale-text-body">94% of rostered shifts were attended.</p>
         </CardContent>
       </Card>
+    </div>
+  ),
+};
+
+/**
+ * `flat` in the situation it exists for: a stack on a tinted page, where the gaps between the cards
+ * separate them and a border on each one would only add noise. The grey here stands in for an app
+ * background — switch the Storybook background to white and the cards vanish, which is the behaviour
+ * to expect rather than a bug.
+ */
+export const Flat: Story = {
+  render: () => (
+    <div className="flex w-[420px] flex-col gap-xs rounded-2xl bg-greyscale-surface-subtle p-6">
+      {[
+        { title: "Payroll", detail: "4 of 6 on" },
+        { title: "Time & attendance", detail: "2 of 5 on" },
+        { title: "Earned wage access", detail: "Not available to switch on" },
+      ].map((section) => (
+        <Card key={section.title} variant="flat">
+          <CardHeader>
+            <CardTitle className="text-sm">{section.title}</CardTitle>
+            <CardDescription className="text-xs">{section.detail}</CardDescription>
+          </CardHeader>
+        </Card>
+      ))}
     </div>
   ),
 };
