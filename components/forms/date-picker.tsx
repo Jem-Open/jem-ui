@@ -66,7 +66,7 @@ function DatePicker({
   }
 
   return (
-    <div className={cn("flex flex-col gap-1.5", className)}>
+    <div className={cn("flex flex-col gap-xs", className)}>
       {label && (
         <label htmlFor={id} className="text-sm font-semibold text-[--greyscale-text-title]">
           {label}
@@ -150,7 +150,7 @@ function DateRangePicker({
   }
 
   return (
-    <div className={cn("flex flex-col gap-1.5", className)}>
+    <div className={cn("flex flex-col gap-xs", className)}>
       {label && (
         <label htmlFor={id} className="text-sm font-semibold text-[--greyscale-text-title]">
           {label}

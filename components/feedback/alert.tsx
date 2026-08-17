@@ -18,7 +18,7 @@ const alertIconMap = {
 const alertIconColorMap = {
   default: "text-greyscale-text-caption",
   success: "text-green-600",
-  warning: "text-orange-600",
+  warning: "text-orange-400",
   destructive: "text-red-600",
   note: "text-yellow-600",
 }

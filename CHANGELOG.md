@@ -2,6 +2,28 @@
 
 All notable changes to `@jem-open/jem-ui` are documented here.
 
+## [0.9.0] - 2026-08-17
+
+### Changed
+
+- **Every field puts `gap-xs` (12px) between its label and its control.** `InputField`, `TextareaField` and `SelectField` were on `gap-sm` (16px); `DatePicker` and `DateRangePicker` were on `gap-1.5` (6px). Both move to `gap-xs`, so the two tighten and the two loosen and all five land in the same place — a date field no longer sits visibly closer to its label than the text field beside it.
+
+  The date pickers had a second problem the spacing only hinted at: `gap-1.5` is a raw Tailwind value, not a token, so those two components sat outside the spacing scale entirely and no change to the scale could reach them. That is the thing the design-system rules exist to prevent, and it is why the fix belongs here rather than at a call site — jem-hub had been correcting it with `className="gap-sm"` on one field, which left every other date field in the app still wrong, `UploadBatchForm`'s three among them.
+
+  12px rather than either original: 16px was loose enough that a label read as belonging to the group above it as much as to its own control, and 6px was tight enough to crowd it. Label-to-description stays at `gap-xxxs` (4px) and control-to-helper-text likewise, so the hierarchy inside a field still reads label → description → control → helper.
+
+  **This changes the height of every form in every consumer.** Nothing breaks and nothing needs a code change, but forms will reflow slightly: a field with a label is 4px shorter for text inputs and 6px taller for date pickers. Delete any call-site `gap-*` override on these components — it is now fighting the system rather than patching it.
+
+  **What this does NOT reach, which is most of it.** Of the five, only `InputField`, `DatePicker` and `DateRangePicker` are exported from the package. `TextareaField` and `SelectField` are not in the barrel and not in `dist/index.d.ts` — `src/index.ts` hands out the bare `Textarea` and the select primitives instead — so their part of this change is internal and no consumer sees it. A consumer wanting a labelled textarea or select composes one from `Label` plus a control at the call site, which means its label gap is whatever that file chose. In jem-hub that is **75 hand-composed pairs across 19 files, split between two gaps**: 48 on `gap-xxs` (8px) and 27 already on `gap-xs`. So "every field is 12px" is true of the fields this library owns end to end, and not yet true of an app's forms. Exporting the two wrappers is the change that would make it true, and is deliberately not in this release.
+
+- `RadioField` and `CheckboxField` are deliberately untouched. Their control sits *beside* the label rather than above it, so they have no label-to-field gap; their `gap-2` is the label-to-description spacing inside the row, a different relationship.
+
+- **`Alert`'s `warning` variant uses `orange-400` for its icon and outline**, lightening both from `orange-600`. The `orange-50` fill is unchanged, as are the other four variants.
+
+  Recorded deliberately, because it is a contrast trade-off rather than a free change: against the variant's own `orange-50` fill (`#fff5e8`), `orange-600` measures 3.23:1 and `orange-400` measures **2.26:1**, so the icon no longer meets the 3:1 that WCAG 1.4.11 asks of a meaningful graphic. `orange-600` is the only tone on the ramp that clears it on this background — 500 is 2.80:1 and 300 is 1.68:1 — which is why it sat there. The judgement taken here is that the triangle is redundant rather than load-bearing: it sits beside an `AlertTitle` that names the alert in `--greyscale-text-title`, which is unaffected and still passes AA, so no information is carried by the glyph alone. A border carries weaker obligations again.
+
+  Note that `test:tokens` does **not** cover this. It checks text tokens, and the alert's text colour did not change, so the suite stays green while the icon's ratio drops. If the icon ever becomes the sole signal — an icon-only alert, or one without a title — this needs revisiting.
+
 ## [0.8.0] - 2026-08-17
 
 ### Added
