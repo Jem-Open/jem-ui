@@ -62,11 +62,29 @@ The reason the split falls at minor rather than major: consumers depend on `^0.7
 minor does not.** So the question to ask isn't "how big is this change" — it's *"if this arrived in
 someone's app unannounced and unreviewed, would that be fine?"* If no, it's a minor.
 
-Worked example — `0.7.2` dropped the border and shadow from `Card`'s `solid` variant. It was
-committed as `fix(card):` and released as a patch, but its CHANGELOG entry sits under `### Changed`,
-because every solid card in every consumer changed appearance. Under this rule it should have been
-`0.8.0`. It stays published as `0.7.2` — republishing under a different number would break anyone
-who has already installed it — but don't use it as the precedent.
+### Worked example: `Card`'s border
+
+`0.7.2` dropped the border and shadow from `Card`'s `solid` variant. It was committed as `fix(card):`
+and released as a patch, but its CHANGELOG entry sits under `### Changed`, because every solid card
+in every consumer changed appearance. By the table above it was a minor, not a patch.
+
+The version number was the smaller mistake. Eight call sites in jem-hub passed `variant="solid"`
+alongside `shadow-none` — flat by choice, and legible only because of the border the variant
+supplied. One of them passed `border-secondary-pink-200`, a border *colour*, and took the *width*
+from the variant; with the variant's `border` gone, Tailwind's preflight left it with no border at
+all. Nothing errored and no test failed. **Mutating a variant makes its change everyone's problem.**
+
+`0.8.0` fixed it by inverting the approach: `solid` went back to its `0.7.1` declaration, and the
+borderless surface arrived as a **new `flat` variant**. Same pixels available, and nothing asked of
+the eight consumers that never wanted the change — upgrading `0.7.1 → 0.8.0` is purely additive.
+
+Two rules come out of this, in order of usefulness:
+
+1. **Prefer adding a variant to changing one.** If existing call sites would have to react, you are
+   changing the wrong thing. An addition is always a minor and never a surprise.
+2. **If you must change one, bump the minor**, so consumers on `^0.7.x` opt in rather than receive it.
+
+`0.7.2` stays on npm — renumbering would break anyone who installed it — and is a version to skip.
 
 ## Reporting Issues
 
