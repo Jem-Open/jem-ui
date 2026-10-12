@@ -2,6 +2,22 @@
 
 All notable changes to `@jem-open/jem-ui` are documented here.
 
+## [0.10.0] - 2026-10-12
+
+### Changed
+
+- **The ESM build ships each component as its own module, so a bundler can leave out the ones you don't import.** `dist/index.mjs` was one file holding every component. A bundler that kept it for one export kept all of it, along with every dependency it imports. `vaul` and `sonner` are among those, and they declare no `sideEffects`, so a bundler cannot drop them on its own judgement. So a page that imported `Button` and nothing else still shipped the drawer, the toaster, the dialog, the tooltip and all three logos.
+
+  `dist/index.mjs` is now a barrel that re-exports from one chunk per source module, under `dist/chunks/`. The package already declares its JavaScript free of side effects (`"sideEffects": ["**/*.css"]`). With the code in separate modules, that declaration finally does something: a bundler skips every chunk that no export you use reaches, and every dependency only those chunks import.
+
+  **Nothing to do to upgrade.** Imports, export names, the `exports` map and the type declarations are unchanged, and `@jem-open/jem-ui` still resolves to `dist/index.mjs`. Every chunk opens with `"use client"`, as the barrel does, so the RSC boundary has not moved. The CommonJS build (`dist/index.js`) is still a single file, because a `require` consumer gets no tree-shaking either way.
+
+  **What this does not do.** It removes components you don't import. It does not shrink the ones you do. A page that renders a `Dialog` still ships Radix's dialog, and a component that uses another brings that one too: `DataTable` brings `Button`, `Input`, `DropdownMenu`, `Table` and `TablePager`, and through `TablePager`, `Select`. It also depends on the bundler tree-shaking, which production builds do and dev servers generally do not.
+
+  For a sense of scale, this was measured on the repo's Next.js 16 smoke fixture (`tests/fixtures/next16-rsc`, one page rendering `Button`, `Table` and `Tooltip`). Built with `next build --webpack` against each version's packed tarball, the client chunk that carries this package went from 105 KB to 47 KB minified, or 31 KB to 15 KB gzipped. The logos, `vaul`, `sonner` and Radix's dialog are gone from it, and the tooltip is still there. That is one page and one bundler. Your numbers will differ.
+
+  `test:boundaries` now bundles a `Button`-only consumer and fails if `vaul`, `sonner`, Radix's dialog or tooltip, or a logo reaches it. It also checks that every file in the client build opens with the directive.
+
 ## [0.9.0] - 2026-08-17
 
 ### Changed
