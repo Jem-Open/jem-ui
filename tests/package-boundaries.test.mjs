@@ -1,7 +1,7 @@
 import assert from "node:assert/strict"
-import { access, readFile } from "node:fs/promises"
+import { access, readdir, readFile } from "node:fs/promises"
 import test from "node:test"
-import { dirname, resolve } from "node:path"
+import { dirname, posix, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..")
@@ -12,8 +12,42 @@ async function read(relativePath) {
 
 function moduleSpecifiers(source) {
   return [
-    ...source.matchAll(/(?:from\s+|import\s*\(|require\()\s*["']([^"']+)["']/g),
+    ...source.matchAll(/(?:from\s+|import\s*\(|import\s+|require\()\s*["']([^"']+)["']/g),
   ].map((match) => match[1])
+}
+
+// The ESM entries tsup.nonclient.config.ts builds. Every other .mjs file in dist is client code.
+const nonClientEsmEntries = ["dist/server.mjs", "dist/tailwind-preset.mjs"]
+
+async function builtClientEsmFiles() {
+  const entries = await readdir(resolve(repoRoot, "dist"), { recursive: true })
+  return entries
+    .filter((entry) => entry.endsWith(".mjs"))
+    .map((entry) => posix.join("dist", entry.split("\\").join("/")))
+    .filter((relativePath) => !nonClientEsmEntries.includes(relativePath))
+    .sort()
+}
+
+// Follows relative imports from the client entry: the barrel, and every chunk it pulls in.
+async function clientModuleGraph() {
+  const graph = new Map()
+  const pending = ["dist/index.mjs"]
+
+  while (pending.length > 0) {
+    const relativePath = pending.pop()
+    if (graph.has(relativePath)) continue
+
+    const relativeImports = moduleSpecifiers(await read(relativePath)).filter((specifier) =>
+      specifier.startsWith("."),
+    )
+    graph.set(relativePath, relativeImports)
+
+    for (const specifier of relativeImports) {
+      pending.push(posix.join(posix.dirname(relativePath), specifier))
+    }
+  }
+
+  return graph
 }
 
 test("public source client boundaries are explicit", async () => {
@@ -27,8 +61,13 @@ test("public source client boundaries are explicit", async () => {
   }
 })
 
-test("built root entries begin with the client directive", async () => {
-  for (const relativePath of ["dist/index.mjs", "dist/index.js"]) {
+test("every built client module begins with the client directive", async () => {
+  // The ESM client build is a barrel plus a chunk per component module, and Next.js reads the
+  // directive module by module, so it has to open every one of them, not only the entry.
+  const clientEsmFiles = await builtClientEsmFiles()
+  assert.ok(clientEsmFiles.length > 1, "the ESM client build should be split into modules")
+
+  for (const relativePath of [...clientEsmFiles, "dist/index.js"]) {
     const output = await read(relativePath)
     assert.equal(
       output.startsWith('"use client";'),
@@ -36,6 +75,29 @@ test("built root entries begin with the client directive", async () => {
       `${relativePath} must begin with \"use client\";`,
     )
   }
+})
+
+test("the client barrel reaches every client chunk through fully specified imports", async () => {
+  const graph = await clientModuleGraph()
+
+  for (const [relativePath, relativeImports] of graph) {
+    for (const specifier of relativeImports) {
+      // webpack resolves an import inside an .mjs file as fully specified: no extension is guessed.
+      assert.match(specifier, /\.mjs$/, `${relativePath} imports ${specifier} without its extension`)
+      await access(resolve(repoRoot, posix.dirname(relativePath), specifier))
+    }
+  }
+
+  // And nothing ships that the barrel cannot reach: a leftover per-module entry file or a stale
+  // chunk would be published dead weight.
+  assert.deepEqual([...graph.keys()].sort(), await builtClientEsmFiles())
+})
+
+test("the CommonJS client build stays a single file", async () => {
+  const siblingRequires = moduleSpecifiers(await read("dist/index.js")).filter((specifier) =>
+    specifier.startsWith("."),
+  )
+  assert.deepEqual(siblingRequires, [])
 })
 
 test("built Tailwind preset remains outside the client boundary", async () => {
@@ -111,7 +173,7 @@ test("release metadata runs the RSC gate in CI", async () => {
   )
   assert.equal(
     packageJson.scripts["test:boundaries"],
-    "node --test tests/package-boundaries.test.mjs tests/npm-pack-output.test.mjs",
+    "node --test tests/package-boundaries.test.mjs tests/npm-pack-output.test.mjs tests/tree-shaking.test.mjs",
   )
   assert.equal(
     packageJson.scripts.prepublishOnly,
