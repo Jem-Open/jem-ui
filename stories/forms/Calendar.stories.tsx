@@ -2,6 +2,7 @@ import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, fn, userEvent, within } from "storybook/test";
 import type { DateRange } from "react-day-picker";
+import { fr } from "date-fns/locale";
 import { Calendar } from "@/components/forms/calendar";
 import { DatePicker, DateRangePicker } from "@/components/forms/date-picker";
 
@@ -439,5 +440,121 @@ export const RangeEscapeResetsTheSelectionPhase: Story = {
     await expect(rangeChanged).toHaveBeenLastCalledWith({ from: rangeEnd, to: undefined });
     await expect(trigger).toHaveAttribute("aria-expanded", "true");
     await expect(canvas.getByRole("status")).toHaveTextContent(dateKey(rangeEnd));
+  },
+};
+
+// A locale changes how a date is written and what the calendar's chrome is called. It must never
+// change which day a click or keypress selects. The strings are bracketed placeholders, not a
+// translation: the point is that every one of them is reachable.
+const calendarMessages = {
+  previousMonth: "[previous month]",
+  nextMonth: "[next month]",
+  monthDropdown: "[month]",
+  yearDropdown: "[year]",
+};
+
+export const LocalisedDatePickerSelectsTheSameDay: Story = {
+  render: () => {
+    const [date, setDate] = React.useState<Date | undefined>(new Date(2026, 0, 15));
+    return (
+      <div className="w-[280px]">
+        <DatePicker
+          label="Pay date"
+          date={date}
+          locale={fr}
+          messages={calendarMessages}
+          onDateChange={(next) => { dateChanged(next); setDate(next); }}
+        />
+        <output aria-live="polite">{dateKey(date)}</output>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    dateChanged.mockClear();
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole("button", { name: /Pay date/ });
+
+    // The trigger follows the locale...
+    await expect(trigger).toHaveTextContent("15 janvier 2026");
+    await userEvent.click(trigger);
+    // ...and so do the calendar's accessible names, where the caller named them.
+    await expect(document.body.querySelector('[aria-label="[next month]"]')).not.toBeNull();
+    await expect(document.body.querySelector('[aria-label="[previous month]"]')).not.toBeNull();
+    await expect(document.body.querySelector('[aria-label="[month]"]')).not.toBeNull();
+    await expect(document.body.querySelector('[aria-label="[year]"]')).not.toBeNull();
+
+    // Keyboard selection picks the same day it would in English.
+    const day = activeCalendarDay(new Date(2026, 0, 16));
+    day.focus();
+    await userEvent.keyboard("{Enter}");
+    await expect(canvas.getByRole("status")).toHaveTextContent("2026-01-16");
+    await expect(dateChanged).toHaveBeenCalledWith(new Date(2026, 0, 16));
+    await expect(trigger).toHaveTextContent("16 janvier 2026");
+    await expect(trigger).toHaveFocus();
+  },
+};
+
+export const LocalisedRangePickerCompletesOnSecondKeyboardActivation: Story = {
+  render: () => {
+    const [dateRange, setDateRange] = React.useState<DateRange>();
+    return (
+      <div className="w-[380px]">
+        <DateRangePicker
+          defaultMonth={sameDay}
+          label="Period"
+          dateRange={dateRange}
+          locale={fr}
+          messages={calendarMessages}
+          onDateRangeChange={setDateRange}
+        />
+        <output aria-live="polite">{dateKey(dateRange?.from)} {dateKey(dateRange?.to)}</output>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole("button", { name: /Period/ });
+
+    trigger.focus();
+    await userEvent.keyboard("{Enter}");
+    const day = activeCalendarDay(sameDay);
+    day.focus();
+    await userEvent.keyboard("{Enter}");
+    day.focus();
+    await userEvent.keyboard("{Enter}");
+    await expect(canvas.getByRole("status")).toHaveTextContent(`${dateKey(sameDay)} ${dateKey(sameDay)}`);
+    await expect(trigger).toHaveTextContent("16 janv. 2026 - 16 janv. 2026");
+    await expect(trigger).toHaveFocus();
+  },
+};
+
+export const StandaloneCalendarWithMessagesKeepsCallerLabels: Story = {
+  render: () => (
+    <Calendar
+      mode="single"
+      defaultMonth={sameDay}
+      messages={{ nextMonth: "[from messages]", previousMonth: "[previous month]" }}
+      labels={{ labelNext: () => "from labels" }}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // `labels` is react-day-picker's own prop and wins key by key, so existing call sites keep it.
+    await expect(canvas.getByRole("button", { name: "from labels" })).toBeVisible();
+    await expect(canvas.getByRole("button", { name: "[previous month]" })).toBeVisible();
+    await expect(canvas.queryByRole("button", { name: "[from messages]" })).toBeNull();
+  },
+};
+
+// `endMonth` bounds the calendar's navigation. With the dropdown caption it is also the last year
+// the year dropdown offers, so a form that must not pick past a horizon can say so.
+export const EndMonthLimitsTheYearDropdown: Story = {
+  render: () => <DatePicker label="Review date" defaultMonth={new Date(2026, 0, 15)} endMonth={new Date(2027, 11, 31)} />,
+  play: async ({ canvasElement }) => {
+    await userEvent.click(within(canvasElement).getByRole("button", { name: /Review date/ }));
+    const year = document.body.querySelector<HTMLSelectElement>('select[aria-label="Choose the Year"]');
+    if (!year) throw new Error("Expected the year dropdown");
+    const years = Array.from(year.options).map((option) => Number(option.value));
+    await expect(Math.max(...years)).toBe(2027);
   },
 };

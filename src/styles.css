@@ -181,9 +181,10 @@
   --greyscale-text-title: #062133;
   --greyscale-text-body: #384d5c;
   --greyscale-text-subtitle: #1f3747;
-  /* Was #6a7a85, which is 4.43:1 on white — below the 4.5:1 AA bar for normal text, at every one
-     of its ~1351 call sites in jem-hub. One step darker clears it and is imperceptible at caption size. */
-  --greyscale-text-caption: #697983;
+  /* Caption copy must pass on tinted and glass surfaces as well as pure white. */
+  --greyscale-text-caption: #516470;
+  /* Control outlines are independent of decorative card and table dividers. */
+  --control-border-default: #6a7a85;
   --greyscale-text-negative: #fbfbfb;
   --greyscale-text-disabled: #cdd3d6;
 

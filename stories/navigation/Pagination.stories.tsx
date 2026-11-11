@@ -1,5 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, within } from "storybook/test";
 import {
   Pagination,
   PaginationContent,
@@ -315,4 +316,59 @@ export const CurrentPageStates: Story = {
       ))}
     </div>
   ),
+};
+
+export const WithMessages: Story = {
+  render: () => (
+    <Pagination
+      messages={{
+        navigation: "[results pages]",
+        previous: "[Prev]",
+        previousAriaLabel: "[go back]",
+        next: "[Forward]",
+        nextAriaLabel: "[go forward]",
+        morePages: "[more]",
+      }}
+    >
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious href="#" />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink href="#" isActive>
+            1
+          </PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationEllipsis />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationNext href="#" />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("navigation", { name: "[results pages]" })).toBeVisible();
+    await expect(canvas.getByRole("link", { name: "[go back]" })).toBeVisible();
+    await expect(canvas.getByRole("link", { name: "[go forward]" })).toBeVisible();
+  },
+};
+
+export const AriaLabelPropsStillWin: Story = {
+  render: () => (
+    <Pagination aria-label="Results" messages={{ navigation: "[ignored]", previousAriaLabel: "[ignored]" }}>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious href="#" aria-label="Back" />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("navigation", { name: "Results" })).toBeVisible();
+    await expect(canvas.getByRole("link", { name: "Back" })).toBeVisible();
+  },
 };

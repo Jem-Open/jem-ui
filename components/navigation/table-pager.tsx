@@ -4,6 +4,7 @@ import * as React from "react";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { resolveMessage, resolveRichMessage, type Message } from "@/lib/messages";
 import { IconButton } from "@/components/forms/button";
 import {
   Select,
@@ -14,6 +15,32 @@ import {
 } from "@/components/forms/select";
 
 const DEFAULT_PAGE_SIZE_OPTIONS = [5, 10, 25, 50, 100] as const;
+
+/**
+ * The pager's own words and accessible names. Each key is optional and falls back to the English
+ * the component has always shown; placeholders are `{name}` (see `Message`).
+ *
+ * `rowsPerPageLabel` (the older prop) still wins over `rowsPerPage`.
+ */
+interface TablePagerMessages {
+  /** English: "Rows per page". Both the visible label and the select's accessible name. */
+  rowsPerPage?: Message;
+  /**
+   * What follows the bold `start–end` range. English: "of {count}". The range stays first and
+   * bold, so "1–10 de 53" is `"de {count}"`.
+   */
+  ofCount?: Message<{ count: number }>;
+  /** The `showPageReadout` text. English: "Page {page} of {pageCount}". `{page}` is the bold number. */
+  pageReadout?: Message<{ page: React.ReactNode; pageCount: number }, React.ReactNode>;
+  /** English: "First page". The jump-to-first button's accessible name. */
+  firstPage?: Message;
+  /** English: "Previous page". */
+  previousPage?: Message;
+  /** English: "Next page". */
+  nextPage?: Message;
+  /** English: "Last page". */
+  lastPage?: Message;
+}
 
 interface TablePagerProps extends Omit<React.ComponentProps<"div">, "children"> {
   /** 1-based current page. */
@@ -39,6 +66,8 @@ interface TablePagerProps extends Omit<React.ComponentProps<"div">, "children"> 
    * "where am I" more usefully; on where a page index is part of how people talk about the data.
    */
   showPageReadout?: boolean;
+  /** Translations for the pager's text and accessible names. See `TablePagerMessages`. */
+  messages?: TablePagerMessages;
 }
 
 /**
@@ -66,15 +95,18 @@ function TablePager({
   onPageChange,
   onPageSizeChange,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
-  rowsPerPageLabel = "Rows per page",
+  rowsPerPageLabel: rowsPerPageLabelProp,
   showFirstLast = false,
   showPageReadout = false,
+  messages,
   className,
   ...props
 }: TablePagerProps) {
   const pageCount = Math.max(1, Math.ceil(count / pageSize));
   if (count === 0) return null;
 
+  const rowsPerPageLabel =
+    rowsPerPageLabelProp ?? resolveMessage(messages?.rowsPerPage, "Rows per page");
   const start = (page - 1) * pageSize + 1;
   const end = Math.min(page * pageSize, count);
 
@@ -95,11 +127,14 @@ function TablePager({
         <span className="font-medium text-greyscale-text-title">
           {start}–{end}
         </span>{" "}
-        of {count}
+        {resolveMessage(messages?.ofCount, "of {count}", { count })}
       </span>
       {showPageReadout ? (
         <span>
-          Page <span className="font-medium text-greyscale-text-title">{page}</span> of {pageCount}
+          {resolveRichMessage(messages?.pageReadout, "Page {page} of {pageCount}", {
+            page: <span className="font-medium text-greyscale-text-title">{page}</span>,
+            pageCount,
+          })}
         </span>
       ) : null}
 
@@ -129,7 +164,7 @@ function TablePager({
 
         {showFirstLast ? (
           <IconButton
-            aria-label="First page"
+            aria-label={resolveMessage(messages?.firstPage, "First page")}
             shape="circle"
             size="medium"
             className="hidden lg:inline-flex"
@@ -139,7 +174,7 @@ function TablePager({
           />
         ) : null}
         <IconButton
-          aria-label="Previous page"
+          aria-label={resolveMessage(messages?.previousPage, "Previous page")}
           shape="circle"
           size="medium"
           disabled={page <= 1}
@@ -147,7 +182,7 @@ function TablePager({
           icon={<ChevronLeft className="size-4" aria-hidden />}
         />
         <IconButton
-          aria-label="Next page"
+          aria-label={resolveMessage(messages?.nextPage, "Next page")}
           shape="circle"
           size="medium"
           disabled={page >= pageCount}
@@ -156,7 +191,7 @@ function TablePager({
         />
         {showFirstLast ? (
           <IconButton
-            aria-label="Last page"
+            aria-label={resolveMessage(messages?.lastPage, "Last page")}
             shape="circle"
             size="medium"
             className="hidden lg:inline-flex"
@@ -170,4 +205,4 @@ function TablePager({
   );
 }
 
-export { TablePager, type TablePagerProps };
+export { TablePager, type TablePagerMessages, type TablePagerProps };

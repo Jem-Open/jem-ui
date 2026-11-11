@@ -45,13 +45,13 @@ function AccordionTrigger({
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          "group flex flex-1 items-center justify-between gap-4 p-4 rounded-lg text-base font-semibold text-[--greyscale-text-title] transition-all outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:text-[--pink-900] [&[data-state=open]]:text-[--pink-500] [&[data-state=open]>svg]:rotate-180",
+          "group flex flex-1 items-center justify-between gap-4 p-4 rounded-lg text-base font-semibold text-[--greyscale-text-title] transition-all outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:text-[--pink-1100] [&[data-state=open]]:text-[--pink-1100] [&[data-state=open]>svg]:rotate-180",
           className
         )}
         {...props}
       >
         {children}
-        <ChevronDown className="size-6 shrink-0 text-[--greyscale-text-title] transition-all duration-200 group-hover:text-[--pink-900] [[data-state=open]>&]:text-[--pink-500]" />
+        <ChevronDown className="size-6 shrink-0 text-[--greyscale-text-title] transition-all duration-200 group-hover:text-[--pink-1100] [[data-state=open]>&]:text-[--pink-1100]" />
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   )

@@ -1,5 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import {
   Drawer,
   DrawerBody,
@@ -300,4 +301,72 @@ export const WithForm: Story = {
       </DrawerContent>
     </Drawer>
   ),
+};
+
+/**
+ * The close button is an icon alone, so it needs a name, and it is a 44px target. `closeLabel`
+ * renames it for a translated app.
+ */
+export const CloseButtonHasAnAccessibleName: Story = {
+  render: () => (
+    <Drawer>
+      <DrawerTrigger asChild>
+        <Button variant="primary">Open</Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Title</DrawerTitle>
+        </DrawerHeader>
+      </DrawerContent>
+    </Drawer>
+  ),
+  play: async ({ canvasElement }) => {
+    await userEvent.click(within(canvasElement).getByRole("button", { name: "Open" }));
+    const close = await within(document.body).findByRole("button", { name: "Close drawer" });
+    await expect(close.getBoundingClientRect().width).toBeGreaterThanOrEqual(44);
+    await expect(close.getBoundingClientRect().height).toBeGreaterThanOrEqual(44);
+  },
+};
+
+export const CloseLabelIsOverridable: Story = {
+  render: () => (
+    <Drawer>
+      <DrawerTrigger asChild>
+        <Button variant="primary">Open</Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader closeLabel="[close]">
+          <DrawerTitle>Title</DrawerTitle>
+        </DrawerHeader>
+      </DrawerContent>
+    </Drawer>
+  ),
+  play: async ({ canvasElement }) => {
+    await userEvent.click(within(canvasElement).getByRole("button", { name: "Open" }));
+    await expect(await within(document.body).findByRole("button", { name: "[close]" })).toBeVisible();
+  },
+};
+
+/** Opening a drawer moves focus inside it by default; `autoFocus={false}` opts out. */
+export const AutoFocusesByDefault: Story = {
+  render: () => (
+    <Drawer>
+      <DrawerTrigger asChild>
+        <Button variant="primary">Open</Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Title</DrawerTitle>
+        </DrawerHeader>
+        <DrawerBody>
+          <InputField label="Field name" />
+        </DrawerBody>
+      </DrawerContent>
+    </Drawer>
+  ),
+  play: async ({ canvasElement }) => {
+    await userEvent.click(within(canvasElement).getByRole("button", { name: "Open" }));
+    const dialog = await within(document.body).findByRole("dialog");
+    await waitFor(() => expect(dialog.contains(document.activeElement)).toBe(true));
+  },
 };

@@ -303,3 +303,48 @@ export const DirectUploadTransitionDoesNotCommitTemporarySelection: Story = {
     await expect(canvas.queryByRole("status")).toBeNull();
   },
 };
+
+export const WithMessages: Story = {
+  render: () => {
+    selectedNativeFiles.mockClear();
+    return (
+      <Upload
+        maxSize="5mb"
+        onFilesSelected={selectedNativeFiles}
+        messages={{
+          uploadTitle: "[upload title]",
+          dropHint: "[hint {maxSize}]",
+          selectFile: "[select]",
+          selectedStatus: "[picked {fileNames}]",
+        }}
+      />
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("heading", { name: "[upload title]" })).toBeVisible();
+    await expect(canvas.getByText("[hint 5mb]")).toBeVisible();
+    await expect(canvas.getByRole("button", { name: "[select]" })).toBeVisible();
+
+    const file = new File(["resume"], "resume.pdf", { type: "application/pdf" });
+    await userEvent.upload(canvas.getByTestId("upload-input"), file);
+    await expect(canvas.getByRole("status")).toHaveTextContent("[picked resume.pdf]");
+    // Behaviour is untouched: the same callback receives the same file.
+    await expect(selectedNativeFiles).toHaveBeenCalledTimes(1);
+  },
+};
+
+export const MessagesDoNotOverrideCallerCopy: Story = {
+  render: () => (
+    <Upload
+      title="Caller title"
+      description="Caller description"
+      messages={{ uploadTitle: "[title]", dropHint: "[hint]" }}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("heading", { name: "Caller title" })).toBeVisible();
+    await expect(canvas.getByText("Caller description")).toBeVisible();
+  },
+};

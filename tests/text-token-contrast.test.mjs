@@ -90,3 +90,25 @@ test("the surfaces these tokens sit on are still the ones being tested", () => {
     for (const surface of surfaces) if (!surface.startsWith("#")) token(surface);
   }
 });
+
+// Not text, so the bar is WCAG 1.4.11's 3:1 for the parts of a control a person needs in order to
+// find and operate it — the outline of an empty checkbox, radio or input, and a checked checkbox's
+// tick on its fill. `--control-border-default` exists so those outlines no longer ride on the pale
+// decorative dividers (`--greyscale-border-default`), which are meant to be quiet.
+const NON_TEXT_PAIRINGS = [
+  { name: "control outline on white", fg: "--control-border-default", bg: "#ffffff" },
+  { name: "checkbox tick on its checked fill", fg: "--navy-900", bg: "--pink-900" },
+];
+const AA_NON_TEXT = 3;
+
+for (const { name, fg, bg } of NON_TEXT_PAIRINGS) {
+  test(`${name} clears the 3:1 non-text bar`, () => {
+    const fgHex = fg.startsWith("#") ? fg : token(fg);
+    const bgHex = bg.startsWith("#") ? bg : token(bg);
+    const ratio = contrast(fgHex, bgHex);
+    assert.ok(
+      ratio >= AA_NON_TEXT,
+      `${name}: ${fg} (${fgHex}) on ${bg} (${bgHex}) is ${ratio.toFixed(2)}:1, below ${AA_NON_TEXT}:1.`,
+    );
+  });
+}

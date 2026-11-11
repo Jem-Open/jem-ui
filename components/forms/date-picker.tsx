@@ -1,13 +1,13 @@
 "use client"
 
 import * as React from "react"
-import { format } from "date-fns"
+import { format, type Locale } from "date-fns"
 import { enZA } from "date-fns/locale"
 import { CalendarIcon } from "lucide-react"
 import { type DateRange, type Matcher } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/forms/calendar"
+import { Calendar, type CalendarMessages } from "@/components/forms/calendar"
 import {
   Popover,
   PopoverContent,
@@ -29,6 +29,8 @@ interface DatePickerProps {
   disabledDates?: Matcher | Matcher[]
   /** The month to show before the user chooses a date. */
   defaultMonth?: Date
+  /** The last month available in the calendar navigation. */
+  endMonth?: Date
   /**
    * Control the popover's open state. Omit for the self-managed default.
    *
@@ -41,6 +43,18 @@ interface DatePickerProps {
   onOpenChange?: (open: boolean) => void
   label?: string
   id?: string
+  /**
+   * A date-fns `Locale`: how the trigger writes the date, and the calendar's month names, weekday
+   * names and first day of the week. Defaults to `enZA`, so omitting it changes nothing.
+   *
+   * It changes how a date is written, never which day it is — no value, timezone or comparison
+   * depends on it. Pass the object, not a tag (`import { fr } from "date-fns/locale"`): the library
+   * bundles one locale rather than every one, so the app imports the ones it ships. Being an object
+   * with functions in it, it can only be created in a Client Component.
+   */
+  locale?: Locale
+  /** Translations for the calendar's accessible names. See `CalendarMessages`. */
+  messages?: CalendarMessages
 }
 
 function DatePicker({
@@ -51,10 +65,13 @@ function DatePicker({
   disabled,
   disabledDates,
   defaultMonth,
+  endMonth,
   open: openProp,
   onOpenChange,
   label,
   id: suppliedId,
+  locale = enZA,
+  messages,
 }: DatePickerProps) {
   const generatedId = React.useId()
   const id = suppliedId ?? `date-picker-${generatedId}`
@@ -85,7 +102,7 @@ function DatePicker({
               !date && "font-normal text-[--greyscale-text-disabled]"
             )}
           >
-            {date ? format(date, "PPP", { locale: enZA }) : placeholder}
+            {date ? format(date, "PPP", { locale }) : placeholder}
             <CalendarIcon className="size-4 text-[--greyscale-text-caption]" />
           </button>
         </PopoverTrigger>
@@ -94,12 +111,14 @@ function DatePicker({
             mode="single"
             selected={date}
             defaultMonth={date ?? defaultMonth}
+            endMonth={endMonth}
             onSelect={(nextDate) => {
               onDateChange?.(nextDate)
               setOpen(false)
             }}
             disabled={disabledDates}
-            locale={enZA}
+            locale={locale}
+            messages={messages}
             className="border-0 p-0"
           />
         </PopoverContent>
@@ -120,6 +139,18 @@ interface DateRangePickerProps {
   defaultMonth?: Date
   label?: string
   id?: string
+  /**
+   * A date-fns `Locale`: how the trigger writes the date, and the calendar's month names, weekday
+   * names and first day of the week. Defaults to `enZA`, so omitting it changes nothing.
+   *
+   * It changes how a date is written, never which day it is — no value, timezone or comparison
+   * depends on it. Pass the object, not a tag (`import { fr } from "date-fns/locale"`): the library
+   * bundles one locale rather than every one, so the app imports the ones it ships. Being an object
+   * with functions in it, it can only be created in a Client Component.
+   */
+  locale?: Locale
+  /** Translations for the calendar's accessible names. See `CalendarMessages`. */
+  messages?: CalendarMessages
 }
 
 function DateRangePicker({
@@ -132,6 +163,8 @@ function DateRangePicker({
   defaultMonth,
   label,
   id: suppliedId,
+  locale = enZA,
+  messages,
 }: DateRangePickerProps) {
   const generatedId = React.useId()
   const id = suppliedId ?? `date-range-picker-${generatedId}`
@@ -172,10 +205,10 @@ function DateRangePicker({
             {dateRange?.from ? (
               dateRange.to ? (
                 <>
-                  {format(dateRange.from, "dd LLL y", { locale: enZA })} - {format(dateRange.to, "dd LLL y", { locale: enZA })}
+                  {format(dateRange.from, "dd LLL y", { locale })} - {format(dateRange.to, "dd LLL y", { locale })}
                 </>
               ) : (
-                format(dateRange.from, "dd LLL y", { locale: enZA })
+                format(dateRange.from, "dd LLL y", { locale })
               )
             ) : (
               placeholder
@@ -207,7 +240,8 @@ function DateRangePicker({
               setOpen(false)
             }}
             disabled={disabledDates}
-            locale={enZA}
+            locale={locale}
+            messages={messages}
             numberOfMonths={2}
             className="border-0 p-0"
           />

@@ -1,5 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, fn, userEvent, within } from "storybook/test";
 
 import { TablePager } from "@/components/navigation/table-pager";
 
@@ -91,4 +92,44 @@ export const States: Story = {
       </div>
     </div>
   ),
+};
+
+export const WithMessages: Story = {
+  render: () => {
+    const [page, setPage] = React.useState(2);
+    return (
+      <div className="w-[680px]">
+        <TablePager
+          page={page}
+          count={53}
+          pageSize={10}
+          onPageChange={setPage}
+          onPageSizeChange={fn()}
+          showFirstLast
+          showPageReadout
+          messages={{
+            rowsPerPage: "[rows]",
+            ofCount: "[of {count}]",
+            pageReadout: "[page {page} of {pageCount}]",
+            firstPage: "[first]",
+            previousPage: "[previous]",
+            nextPage: "[next]",
+            lastPage: "[last]",
+          }}
+        />
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText(/\[of 53\]/)).toBeVisible();
+    await expect(canvas.getByText(/\[page/)).toHaveTextContent("[page 2 of 6]");
+    await expect(canvas.getByRole("combobox", { name: "[rows]" })).toBeVisible();
+
+    // Behaviour is untouched: the renamed buttons still move the page.
+    await userEvent.click(canvas.getByRole("button", { name: "[next]" }));
+    await expect(canvas.getByText(/\[page/)).toHaveTextContent("[page 3 of 6]");
+    await userEvent.click(canvas.getByRole("button", { name: "[last]" }));
+    await expect(canvas.getByText(/\[page/)).toHaveTextContent("[page 6 of 6]");
+  },
 };

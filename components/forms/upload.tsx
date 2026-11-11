@@ -5,6 +5,39 @@ import { CloudUpload, FileText } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/forms/button"
 import { Progress } from "@/components/data-display/progress"
+import { resolveMessage, type Message } from "@/lib/messages"
+
+/**
+ * Every word `Upload` writes itself. Each key is optional and falls back to the English the
+ * component has always shown; placeholders are `{name}` (see `Message`).
+ *
+ * The `title` and `description` props still win over `uploadTitle`/`uploadedTitle` and the
+ * description keys, so a call site that already supplies its own copy is untouched.
+ */
+interface UploadMessages {
+  /** Heading before a file is chosen. English: "Upload file". */
+  uploadTitle?: Message
+  /** Heading once a file is attached. English: "File uploaded". */
+  uploadedTitle?: Message
+  /** The drop-zone hint. English: "Drag and drop files here or select to upload.\nFiles must be less than {maxSize} in size." */
+  dropHint?: Message<{ maxSize: string }>
+  /** While uploading. English: "File being uploaded". */
+  uploadingDescription?: Message
+  /** Once attached. English: "You have attached {fileName}". */
+  uploadedDescription?: Message<{ fileName: string }>
+  /** The stand-in for a file's name when there is none. English: "file". */
+  fileFallback?: Message
+  /** The screen-reader progress announcement. English: "Uploading {fileName}: {progress}%". */
+  uploadingStatus?: Message<{ fileName: string; progress: number }>
+  /** The chosen-files announcement. English: "Selected {fileNames}". `{fileNames}` is comma-joined. */
+  selectedStatus?: Message<{ fileNames: string }>
+  /** English: "Select File". */
+  selectFile?: Message
+  /** English: "Remove File". */
+  removeFile?: Message
+  /** English: "Submit". */
+  submit?: Message
+}
 
 interface UploadProps {
   className?: string
@@ -22,6 +55,8 @@ interface UploadProps {
   onSelectFile?: () => void
   onRemoveFile?: () => void
   onSubmit?: () => void
+  /** Translations for the component's built-in text and accessible names. See `UploadMessages`. */
+  messages?: UploadMessages
 }
 
 function Upload({
@@ -40,6 +75,7 @@ function Upload({
   onSelectFile,
   onRemoveFile,
   onSubmit,
+  messages,
 }: UploadProps) {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [selectedFiles, setSelectedFiles] = React.useState<File[]>([])
@@ -54,14 +90,25 @@ function Upload({
   }, [isDefault])
 
   const selectedFileName = fileName ?? (isDefault ? selectedFiles[0]?.name : undefined)
-  const displayTitle = title || (isUploaded ? "File uploaded" : "Upload file")
-  const displayDescription = description || (
-    isUploaded
-      ? `You have attached ${selectedFileName || "file"}`
+  const fileFallback = resolveMessage(messages?.fileFallback, "file")
+  const displayTitle =
+    title ||
+    (isUploaded
+      ? resolveMessage(messages?.uploadedTitle, "File uploaded")
+      : resolveMessage(messages?.uploadTitle, "Upload file"))
+  const displayDescription =
+    description ||
+    (isUploaded
+      ? resolveMessage(messages?.uploadedDescription, "You have attached {fileName}", {
+          fileName: selectedFileName || fileFallback,
+        })
       : isUploading
-        ? "File being uploaded"
-        : `Drag and drop files here or select to upload.\nFiles must be less than ${maxSize} in size.`
-  )
+        ? resolveMessage(messages?.uploadingDescription, "File being uploaded")
+        : resolveMessage(
+            messages?.dropHint,
+            "Drag and drop files here or select to upload.\nFiles must be less than {maxSize} in size.",
+            { maxSize },
+          ))
 
   const selectFiles = (files: File[]) => {
     if (disabled || files.length === 0) return
@@ -150,13 +197,18 @@ function Upload({
             <>
               <Progress value={progress} className="w-full" />
               <p role="status" className="sr-only">
-                Uploading {selectedFileName ?? "file"}: {progress}%
+                {resolveMessage(messages?.uploadingStatus, "Uploading {fileName}: {progress}%", {
+                  fileName: selectedFileName ?? fileFallback,
+                  progress,
+                })}
               </p>
             </>
           )}
           {isDefault && selectedFiles.length > 0 && (
             <p role="status" className="text-sm text-greyscale-text-caption">
-              Selected {selectedFiles.map((file) => file.name).join(", ")}
+              {resolveMessage(messages?.selectedStatus, "Selected {fileNames}", {
+                fileNames: selectedFiles.map((file) => file.name).join(", "),
+              })}
             </p>
           )}
           {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
@@ -176,7 +228,7 @@ function Upload({
                   inputRef.current?.click()
                 }}
               >
-                Select File
+                {resolveMessage(messages?.selectFile, "Select File")}
               </Button>
             )}
 
@@ -193,7 +245,7 @@ function Upload({
                     onRemoveFile?.()
                   }}
                 >
-                  Remove File
+                  {resolveMessage(messages?.removeFile, "Remove File")}
                 </Button>
                 <Button
                   variant="primary"
@@ -202,7 +254,7 @@ function Upload({
                   disabled={disabled}
                   onClick={onSubmit}
                 >
-                  Submit
+                  {resolveMessage(messages?.submit, "Submit")}
                 </Button>
               </>
             )}
@@ -213,4 +265,4 @@ function Upload({
   )
 }
 
-export { Upload }
+export { Upload, type UploadMessages, type UploadProps }

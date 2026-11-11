@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import {
   ChevronLeftIcon,
@@ -6,17 +8,51 @@ import {
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { resolveMessage, type Message } from "@/lib/messages"
 import { buttonVariants, type Button } from "@/components/forms/button"
 
-function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
+/**
+ * The words and accessible names the pagination parts write themselves. Each key is optional and
+ * falls back to the English the parts have always shown (see `Message`).
+ *
+ * Set once on `Pagination`; the parts inside read it. A part's own `aria-label` prop still wins
+ * over its key here, so a call site that already passes one keeps it.
+ */
+interface PaginationMessages {
+  /** The `nav` landmark's name. English: "pagination". */
+  navigation?: Message
+  /** The previous link's visible text. English: "Previous". */
+  previous?: Message
+  /** The previous link's accessible name. English: "Go to previous page". */
+  previousAriaLabel?: Message
+  /** The next link's visible text. English: "Next". */
+  next?: Message
+  /** The next link's accessible name. English: "Go to next page". */
+  nextAriaLabel?: Message
+  /** The ellipsis' screen-reader text. English: "More pages". */
+  morePages?: Message
+}
+
+const PaginationMessagesContext = React.createContext<PaginationMessages | undefined>(undefined)
+
+function Pagination({
+  className,
+  messages,
+  ...props
+}: React.ComponentProps<"nav"> & {
+  /** Translations for the parts inside. See `PaginationMessages`. */
+  messages?: PaginationMessages
+}) {
   return (
-    <nav
-      role="navigation"
-      aria-label="pagination"
-      data-slot="pagination"
-      className={cn("mx-auto flex w-full justify-center", className)}
-      {...props}
-    />
+    <PaginationMessagesContext.Provider value={messages}>
+      <nav
+        role="navigation"
+        aria-label={resolveMessage(messages?.navigation, "pagination")}
+        data-slot="pagination"
+        className={cn("mx-auto flex w-full justify-center", className)}
+        {...props}
+      />
+    </PaginationMessagesContext.Provider>
   )
 }
 
@@ -74,15 +110,17 @@ function PaginationPrevious({
   className,
   ...props
 }: React.ComponentProps<typeof PaginationLink>) {
+  const messages = React.useContext(PaginationMessagesContext)
+
   return (
     <PaginationLink
-      aria-label="Go to previous page"
+      aria-label={resolveMessage(messages?.previousAriaLabel, "Go to previous page")}
       size="default"
       className={cn("gap-1 px-2.5 sm:pl-2.5", className)}
       {...props}
     >
       <ChevronLeftIcon />
-      <span className="hidden sm:block">Previous</span>
+      <span className="hidden sm:block">{resolveMessage(messages?.previous, "Previous")}</span>
     </PaginationLink>
   )
 }
@@ -91,14 +129,16 @@ function PaginationNext({
   className,
   ...props
 }: React.ComponentProps<typeof PaginationLink>) {
+  const messages = React.useContext(PaginationMessagesContext)
+
   return (
     <PaginationLink
-      aria-label="Go to next page"
+      aria-label={resolveMessage(messages?.nextAriaLabel, "Go to next page")}
       size="default"
       className={cn("gap-1 px-2.5 sm:pr-2.5", className)}
       {...props}
     >
-      <span className="hidden sm:block">Next</span>
+      <span className="hidden sm:block">{resolveMessage(messages?.next, "Next")}</span>
       <ChevronRightIcon />
     </PaginationLink>
   )
@@ -108,6 +148,8 @@ function PaginationEllipsis({
   className,
   ...props
 }: React.ComponentProps<"span">) {
+  const messages = React.useContext(PaginationMessagesContext)
+
   return (
     <span
       aria-hidden
@@ -116,7 +158,7 @@ function PaginationEllipsis({
       {...props}
     >
       <MoreHorizontalIcon className="size-4" />
-      <span className="sr-only">More pages</span>
+      <span className="sr-only">{resolveMessage(messages?.morePages, "More pages")}</span>
     </span>
   )
 }
@@ -129,4 +171,5 @@ export {
   PaginationPrevious,
   PaginationNext,
   PaginationEllipsis,
+  type PaginationMessages,
 }

@@ -24,8 +24,9 @@ import {
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { resolveMessage, type Message } from "@/lib/messages"
 import { Button } from "@/components/forms/button"
-import { TablePager } from "@/components/navigation/table-pager"
+import { TablePager, type TablePagerMessages } from "@/components/navigation/table-pager"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -45,6 +46,36 @@ import {
   TableRow,
 } from "@/components/data-display/table"
 
+/**
+ * The words `DataTable` writes itself. Each key is optional and falls back to the English the table
+ * has always shown (see `Message`).
+ *
+ * Set once on `DataTable`. The column headers you build with `DataTableColumnHeader` read it too,
+ * though they are rendered from your column definitions rather than by the table.
+ */
+interface DataTableMessages {
+  /** The empty-body row. English: "No results." */
+  noResults?: Message
+  /** The selection count. English: "{selected} of {total} row(s) selected." */
+  rowsSelected?: Message<{ selected: number; total: number }>
+  /** The toolbar filter's placeholder, when `filterPlaceholder` is not given. English: "Filter..." */
+  filterPlaceholder?: Message
+  /** The column-visibility button. English: "View". */
+  view?: Message
+  /** The column-visibility menu's heading. English: "Toggle columns". */
+  toggleColumns?: Message
+  /** A sortable header's menu. English: "Asc". */
+  sortAscending?: Message
+  /** English: "Desc". */
+  sortDescending?: Message
+  /** English: "Hide". */
+  hideColumn?: Message
+  /** The pager under the table. See `TablePagerMessages`. */
+  pagination?: TablePagerMessages
+}
+
+const DataTableMessagesContext = React.createContext<DataTableMessages | undefined>(undefined)
+
 // DataTable Column Header
 interface DataTableColumnHeaderProps<TData, TValue>
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -57,6 +88,8 @@ function DataTableColumnHeader<TData, TValue>({
   title,
   className,
 }: DataTableColumnHeaderProps<TData, TValue>) {
+  const messages = React.useContext(DataTableMessagesContext)
+
   if (!column.getCanSort()) {
     return <div className={cn(className)}>{title}</div>
   }
@@ -83,16 +116,16 @@ function DataTableColumnHeader<TData, TValue>({
         <DropdownMenuContent align="start">
           <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
             <ArrowUp className="mr-2 h-3.5 w-3.5 text-greyscale-text-caption" />
-            Asc
+            {resolveMessage(messages?.sortAscending, "Asc")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
             <ArrowDown className="mr-2 h-3.5 w-3.5 text-greyscale-text-caption" />
-            Desc
+            {resolveMessage(messages?.sortDescending, "Desc")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
             <EyeOff className="mr-2 h-3.5 w-3.5 text-greyscale-text-caption" />
-            Hide
+            {resolveMessage(messages?.hideColumn, "Hide")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -122,13 +155,16 @@ function DataTablePagination<TData>({
   showRowsSelected = true,
 }: DataTablePaginationProps<TData>) {
   const { pageIndex, pageSize } = table.getState().pagination
+  const messages = React.useContext(DataTableMessagesContext)
 
   return (
     <div className="flex flex-wrap items-center gap-sm px-2 py-4">
       {showRowsSelected && (
         <div className="text-sm text-greyscale-text-caption">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {resolveMessage(messages?.rowsSelected, "{selected} of {total} row(s) selected.", {
+            selected: table.getFilteredSelectedRowModel().rows.length,
+            total: table.getFilteredRowModel().rows.length,
+          })}
         </div>
       )}
       <TablePager
@@ -141,6 +177,7 @@ function DataTablePagination<TData>({
         onPageSizeChange={(next) => table.setPageSize(next)}
         showFirstLast
         showPageReadout
+        messages={messages?.pagination}
       />
     </div>
   )
@@ -154,6 +191,8 @@ interface DataTableViewOptionsProps<TData> {
 function DataTableViewOptions<TData>({
   table,
 }: DataTableViewOptionsProps<TData>) {
+  const messages = React.useContext(DataTableMessagesContext)
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -163,11 +202,11 @@ function DataTableViewOptions<TData>({
           className="ml-auto hidden h-8 lg:flex"
         >
           <Settings2 className="mr-2 h-4 w-4" />
-          View
+          {resolveMessage(messages?.view, "View")}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[150px]">
-        <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+        <DropdownMenuLabel>{resolveMessage(messages?.toggleColumns, "Toggle columns")}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {table
           .getAllColumns()
@@ -203,9 +242,13 @@ interface DataTableToolbarProps<TData> {
 function DataTableToolbar<TData>({
   table,
   filterColumn,
-  filterPlaceholder = "Filter...",
+  filterPlaceholder: filterPlaceholderProp,
   children,
 }: DataTableToolbarProps<TData>) {
+  const messages = React.useContext(DataTableMessagesContext)
+  const filterPlaceholder =
+    filterPlaceholderProp ?? resolveMessage(messages?.filterPlaceholder, "Filter...")
+
   return (
     <div className="flex items-center justify-between py-4">
       <div className="flex flex-1 items-center space-x-2">
@@ -236,6 +279,8 @@ interface DataTableProps<TData, TValue> {
   showToolbar?: boolean
   showRowsSelected?: boolean
   toolbarChildren?: React.ReactNode
+  /** Translations for the table's built-in text. See `DataTableMessages`. */
+  messages?: DataTableMessages
 }
 
 function DataTable<TData, TValue>({
@@ -247,6 +292,7 @@ function DataTable<TData, TValue>({
   showToolbar = true,
   showRowsSelected = true,
   toolbarChildren,
+  messages,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -257,7 +303,7 @@ function DataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: showPagination ? getPaginationRowModel() : undefined,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
@@ -273,62 +319,64 @@ function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="w-full">
-      {showToolbar && (
-        <DataTableToolbar
-          table={table}
-          filterColumn={filterColumn}
-          filterPlaceholder={filterPlaceholder}
-        >
-          {toolbarChildren}
-        </DataTableToolbar>
-      )}
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                )
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+    <DataTableMessagesContext.Provider value={messages}>
+      <div className="w-full">
+        {showToolbar && (
+          <DataTableToolbar
+            table={table}
+            filterColumn={filterColumn}
+            filterPlaceholder={filterPlaceholder}
+          >
+            {toolbarChildren}
+          </DataTableToolbar>
+        )}
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  )
+                })}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-      {showPagination && (
-        <DataTablePagination table={table} showRowsSelected={showRowsSelected} />
-      )}
-    </div>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  {resolveMessage(messages?.noResults, "No results.")}
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+        {showPagination && (
+          <DataTablePagination table={table} showRowsSelected={showRowsSelected} />
+        )}
+      </div>
+    </DataTableMessagesContext.Provider>
   )
 }
 
@@ -338,4 +386,5 @@ export {
   DataTablePagination,
   DataTableViewOptions,
   DataTableToolbar,
+  type DataTableMessages,
 }

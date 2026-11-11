@@ -9,11 +9,12 @@ import { IconButton } from "@/components/forms/button"
 
 function Drawer({
   direction = "right",
+  autoFocus = true,
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Root> & {
   direction?: "right" | "left" | "top" | "bottom"
 }) {
-  return <DrawerPrimitive.Root data-slot="drawer" direction={direction} {...props} />
+  return <DrawerPrimitive.Root data-slot="drawer" direction={direction} autoFocus={autoFocus} {...props} />
 }
 
 function DrawerTrigger({
@@ -80,9 +81,12 @@ function DrawerHeader({
   className,
   children,
   showCloseButton = true,
+  closeLabel = "Close drawer",
   ...props
 }: React.ComponentProps<"div"> & {
   showCloseButton?: boolean
+  /** The close button's accessible name. English: "Close drawer". */
+  closeLabel?: string
 }) {
   return (
     <div
@@ -99,10 +103,11 @@ function DrawerHeader({
       {showCloseButton && (
         <DrawerPrimitive.Close asChild>
           <IconButton
+            aria-label={closeLabel}
             size="small"
             shape="square"
             icon={<X className="size-5" />}
-            className="!border-transparent !bg-transparent hover:!bg-greyscale-surface-default"
+            className="!size-11 shrink-0 !border-transparent !bg-transparent hover:!bg-greyscale-surface-default"
           />
         </DrawerPrimitive.Close>
       )}

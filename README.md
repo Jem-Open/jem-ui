@@ -96,6 +96,35 @@ export default function Page() {
 
 Root imports of these helpers remain supported inside Client Components. Server Components should use `/server` so they do not attempt to call through a client reference.
 
+## Translating the built-in text
+
+Jem UI has no i18n dependency and no locale of its own. The components that write their own text take it from props, and every prop is optional — omit them all and a component renders the English it always has.
+
+| Component | Props | What they reach |
+| --- | --- | --- |
+| `DatePicker`, `DateRangePicker` | `locale`, `messages` | `locale` is a date-fns `Locale`: how the date reads, the month and weekday names, the first day of the week. `messages` is `CalendarMessages`: the calendar's accessible names. |
+| `Calendar` | `locale`, `messages` | As above. |
+| `Upload` | `messages` | Titles, the drop hint, status announcements and the three buttons. |
+| `TablePager` | `messages` | The range, the page readout, the rows-per-page label and each button's accessible name. |
+| `Pagination` | `messages` | The landmark, the Previous/Next text and accessible names, and the ellipsis. Set once on `Pagination`; the parts read it. |
+| `DataTable` | `messages` | The empty state, the selection count, the filter placeholder, the view menu, and the sort menu on each `DataTableColumnHeader`. Pager text nests under `pagination`. |
+
+A message is a string with `{name}` placeholders, or a function from those values to a string:
+
+```tsx
+<TablePager
+  messages={{
+    ofCount: "of {count}", // "1–10 of 53"; a plural-aware formatter can pass a function instead
+    nextPage: t("nextPage"),
+  }}
+/>
+```
+
+- **Partial is fine.** A key you leave out keeps its English, so you can translate one string at a time.
+- **An existing prop still wins.** `title`, `description`, `placeholder`, `rowsPerPageLabel`, `filterPlaceholder` and a part's own `aria-label` take precedence over the matching message, so no call site changes meaning.
+- **A locale changes how a date reads, never which day it is.** No value, timezone or comparison depends on it. Pass the `Locale` object (`import { fr } from "date-fns/locale"`), not a tag: the package bundles one locale, not all of them.
+- **Strings cross a Server Component boundary; functions and `Locale` objects do not.** Resolve strings in a Server Component and pass them down. Anything that needs a function — an ICU formatter, a `Locale` — belongs in a Client Component, where date pickers already live because they take callbacks.
+
 ## Contributing
 
 We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
