@@ -545,3 +545,16 @@ export const StandaloneCalendarWithMessagesKeepsCallerLabels: Story = {
     await expect(canvas.queryByRole("button", { name: "[from messages]" })).toBeNull();
   },
 };
+
+// `endMonth` bounds the calendar's navigation. With the dropdown caption it is also the last year
+// the year dropdown offers, so a form that must not pick past a horizon can say so.
+export const EndMonthLimitsTheYearDropdown: Story = {
+  render: () => <DatePicker label="Review date" defaultMonth={new Date(2026, 0, 15)} endMonth={new Date(2027, 11, 31)} />,
+  play: async ({ canvasElement }) => {
+    await userEvent.click(within(canvasElement).getByRole("button", { name: /Review date/ }));
+    const year = document.body.querySelector<HTMLSelectElement>('select[aria-label="Choose the Year"]');
+    if (!year) throw new Error("Expected the year dropdown");
+    const years = Array.from(year.options).map((option) => Number(option.value));
+    await expect(Math.max(...years)).toBe(2027);
+  },
+};

@@ -91,3 +91,14 @@ export const EmptyWithMessages: Story = {
     await expect(within(canvasElement).getByText("[nothing here]")).toBeVisible();
   },
 };
+
+/** With `showPagination={false}` the table shows every row, not just TanStack's first page of 10. */
+export const WithoutPaginationShowsEveryRow: Story = {
+  render: () => <DataTable columns={columns} data={people} showPagination={false} showToolbar={false} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("Person 12")).toBeVisible();
+    await expect(canvas.getAllByRole("row")).toHaveLength(13);
+    await expect(canvas.queryByRole("button", { name: "Next page" })).toBeNull();
+  },
+};

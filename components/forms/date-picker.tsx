@@ -29,6 +29,8 @@ interface DatePickerProps {
   disabledDates?: Matcher | Matcher[]
   /** The month to show before the user chooses a date. */
   defaultMonth?: Date
+  /** The last month available in the calendar navigation. */
+  endMonth?: Date
   /**
    * Control the popover's open state. Omit for the self-managed default.
    *
@@ -63,6 +65,7 @@ function DatePicker({
   disabled,
   disabledDates,
   defaultMonth,
+  endMonth,
   open: openProp,
   onOpenChange,
   label,
@@ -108,6 +111,7 @@ function DatePicker({
             mode="single"
             selected={date}
             defaultMonth={date ?? defaultMonth}
+            endMonth={endMonth}
             onSelect={(nextDate) => {
               onDateChange?.(nextDate)
               setOpen(false)
