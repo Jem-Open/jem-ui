@@ -173,7 +173,7 @@ test("release metadata runs the RSC gate in CI", async () => {
   )
   assert.equal(
     packageJson.scripts["test:boundaries"],
-    "node --test tests/package-boundaries.test.mjs tests/npm-pack-output.test.mjs tests/tree-shaking.test.mjs",
+    "node --test tests/package-boundaries.test.mjs tests/npm-pack-output.test.mjs tests/tree-shaking.test.mjs tests/i18n-defaults-parity.test.mjs",
   )
   assert.equal(
     packageJson.scripts.prepublishOnly,

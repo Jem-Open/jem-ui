@@ -2,7 +2,7 @@
 
 // Forms
 export { Button, IconButton, buttonVariants, iconButtonVariants } from "../components/forms/button"
-export { Calendar } from "../components/forms/calendar"
+export { Calendar, type CalendarMessages } from "../components/forms/calendar"
 export { Checkbox, CheckboxWithLabel, CheckboxCard } from "../components/forms/checkbox"
 export { DatePicker, DateRangePicker } from "../components/forms/date-picker"
 export { Input, InputField, SearchInput } from "../components/forms/input"
@@ -24,7 +24,7 @@ export {
 export type { SearchableSelectOption } from "../components/forms/select"
 export { Switch } from "../components/forms/switch"
 export { Textarea } from "../components/forms/textarea"
-export { Upload } from "../components/forms/upload"
+export { Upload, type UploadMessages } from "../components/forms/upload"
 
 // Absorbed from @jem2.0/ui (Phase 3 of the 2.0 restyle): the five components that existed there
 // and not here. Everything else in that package was a duplicate of a component above.
@@ -42,7 +42,7 @@ export { Stat } from "../components/data-display/stat"
 export { IconChip, iconChipVariants, type IconChipProps } from "../components/data-display/icon-chip"
 export { AskAiLink } from "../components/navigation/ask-ai-link"
 export { Stepper } from "../components/navigation/stepper"
-export { TablePager, type TablePagerProps } from "../components/navigation/table-pager"
+export { TablePager, type TablePagerMessages, type TablePagerProps } from "../components/navigation/table-pager"
 
 // Navigation
 export {
@@ -69,6 +69,7 @@ export {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
+  type PaginationMessages,
 } from "../components/navigation/pagination"
 // TODO: Sidebar requires Next.js - commented out for pure React compatibility
 // export { Sidebar } from "../components/navigation/sidebar"
@@ -81,7 +82,7 @@ export {
 
 // Data Display
 export { Avatar, AvatarFallback, AvatarImage } from "../components/data-display/avatar"
-export { DataTable, DataTableColumnHeader } from "../components/data-display/data-table"
+export { DataTable, DataTableColumnHeader, type DataTableMessages } from "../components/data-display/data-table"
 export { Divider, dividerVariants } from "../components/data-display/divider"
 export { Progress } from "../components/data-display/progress"
 export { Skeleton } from "../components/data-display/skeleton"
@@ -164,3 +165,4 @@ export {
 
 // Utilities
 export { cn } from "../lib/utils"
+export type { Message } from "../lib/messages"
