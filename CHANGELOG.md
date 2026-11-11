@@ -2,6 +2,37 @@
 
 All notable changes to `@jem-open/jem-ui` are documented here.
 
+## [0.11.0] - 2026-11-11
+
+### Added
+
+- **The components that write their own text now take it from props, so an app can translate them.** `DatePicker`, `DateRangePicker`, `Calendar`, `Upload`, `TablePager`, `Pagination` and `DataTable` accept an optional `messages` prop, and the two date pickers and `Calendar` an optional `locale`. Until now the only copy an app could change was whatever already had a prop of its own (a `placeholder`, a `title`); the rest — the calendar's "Go to the Next Month", a pager's "Previous page", the table's "No results." and "row(s) selected" — was fixed English inside the component, and an app's translation layer had no way to reach it. The date pickers also wrote every date through the hardcoded `enZA` locale.
+
+  **Nothing to do to upgrade, and nothing changes if you pass neither prop.** Every key defaults to the English the component has always shown. This is pinned rather than hoped for: `tests/i18n-defaults-parity.test.mjs` renders 26 cases from the built package and compares them, byte for byte, with the markup 0.10.0 produced, including every `aria-label`. A `messages` object may be partial; a key you leave out keeps its English.
+
+  A message is a string with `{name}` placeholders (`"of {count}"`) or a function from those values to a string. Strings are the form to use from a Server Component, because a string crosses the server-to-client boundary and a function does not. The library takes no dependency on an i18n package: resolve your strings with whatever you use and pass the result. The exported types are `CalendarMessages`, `UploadMessages`, `TablePagerMessages`, `PaginationMessages`, `DataTableMessages` and `Message`; the README has the full table.
+
+  **Props you already pass still win.** `title`, `description`, `placeholder`, `rowsPerPageLabel`, `filterPlaceholder`, a part's own `aria-label`, and `Calendar`'s own react-day-picker `labels` all take precedence over the matching message, key by key. A call site that supplies its own copy is not changed by a message arriving beside it.
+
+  **`locale` is a date-fns `Locale` object, and it changes how a date is written, never which day it is.** It sets the trigger's format, the calendar's month and weekday names and its first day of the week. No value, comparison or timezone depends on it. It is an object rather than a tag so the package keeps bundling the one locale it always did; the app imports the ones it ships (`import { fr } from "date-fns/locale"`). Because it carries functions it can only be created in a Client Component, which is where a date picker already is. `Calendar` already forwarded `locale` to react-day-picker; the pickers now forward theirs.
+
+  **`Pagination` takes its `messages` once, on the root.** `PaginationPrevious`, `PaginationNext` and `PaginationEllipsis` read it through context, so one prop reaches the landmark, both links' text and accessible names, and the ellipsis, and a translated "Previous" cannot sit beside an English "Go to previous page". `DataTable` does the same for the sort menu on a `DataTableColumnHeader`, which is built from your column definitions rather than by the table.
+
+  **What this does not cover.** These seven components only. Other fixed English remains in `SearchInput` ("Clear search"), `Tag` ("Remove tag"), `Breadcrumb` ("breadcrumb", "More"), and the `EmptyState` and `Select` default copy; `Select`'s `emptyMessage` and `EmptyState`'s `title` already take a prop. Number formatting in the pager (`1–10 of 1234`) is unchanged: a function message receives the raw numbers if you want them formatted.
+- **`Drawer` takes `autoFocus`; `DrawerHeader` takes `closeLabel`; `DatePicker` takes `endMonth`.** `Drawer`'s `autoFocus` defaults to `true`, so opening a drawer moves focus inside it. vaul's own default is `false`, so this changes every drawer that never passed the prop; pass `autoFocus={false}` to keep the old behaviour. `DrawerHeader`'s close button now has an accessible name, "Close drawer", where it was an unnamed icon, and `closeLabel` renames it for a translated app. `DatePicker`'s `endMonth` bounds the calendar's navigation and, with the dropdown caption, the last year the year dropdown offers.
+
+### Changed
+
+jem-hub has carried these as a pnpm patch on 0.9.0. They land here so it can drop the patch when it bumps. **They are visual and behavioural changes, which is why they ride a minor.**
+
+- **Control outlines come from a new `--control-border-default` (`#6a7a85`), and caption text is darker.** `Input`, `Checkbox`, `CheckboxCard` and `RadioGroupItem` drew their outline from the pale decorative dividers (`--greyscale-border-default`, `--navy-200`), which are meant to be quiet and read at well under 3:1 against white. The new token is 4.4:1, clearing WCAG 1.4.11's 3:1 for the part of a control a person has to find. `--greyscale-text-caption` goes from `#697983` to `#516470`, so caption copy also passes on tinted and glass surfaces, not only on white. `Input`'s placeholder moves from `--greyscale-text-disabled` (which fails AA as text) to the caption token, and its focus border to `--navy-700`.
+- **Checked checkboxes and radios are navy-outlined.** A checked `Checkbox` and `CheckboxCard` get a `--navy-900` border and tick on the pink fill; a checked `RadioGroupItem` gets a `--navy-900` border, a `--pink-50` fill and a navy dot. `RadioGroup`'s card variant is not changed.
+- **`AccordionTrigger` uses `--pink-1100` for hover and open**, in place of `--pink-900` and `--pink-500`, which were too light to read as text.
+- **`DrawerHeader`'s close button is a 44px target** (`!size-11`), up from the small icon-button size.
+- **`DataTable` with `showPagination={false}` now shows every row.** The row model paginated regardless, so a table with its pager turned off silently showed only the first 10 rows.
+
+`tests/control-styling.test.mjs` pins the class names, `test:tokens` holds the contrast ratios (including the new non-text pairs), and the Drawer, `endMonth` and `DataTable` behaviours are stories.
+
 ## [0.10.0] - 2026-10-12
 
 ### Changed
