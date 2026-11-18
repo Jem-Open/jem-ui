@@ -2,7 +2,7 @@
 
 All notable changes to `@jem-open/jem-ui` are documented here.
 
-## [0.11.0] - 2026-11-11
+## [0.11.0] - 2026-11-18
 
 ### Added
 
