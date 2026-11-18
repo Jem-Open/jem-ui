@@ -20,7 +20,7 @@ on:
 jobs:
   build:
     name: Build Library
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     # Job-level, deliberately: a step's own `env` is NOT in scope for that step's `if`, so guarding on
     # a step-level env var would make the condition always false and skip Chromatic silently forever.
